@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140">
+<defs><mask id="m"><rect width="140" height="140" fill="#fff"/><path d="M26 62 L108 62" stroke="#000" stroke-width="5"/>
+<text x="67" y="104" text-anchor="middle" font-family="CNA" font-weight="700" font-size="48" fill="#000" stroke="#000" stroke-width="3" stroke-linejoin="round">31</text></mask></defs>
+<g mask="url(#m)" fill="currentColor"><rect x="18" y="30" width="98" height="96" rx="9"/>
+<rect x="38" y="12" width="14" height="36" rx="7"/><rect x="82" y="12" width="14" height="36" rx="7"/></g></svg>

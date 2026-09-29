@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>HUD Concept</title>
 <style>
-@font-face { font-family: "Fredoka One"; src: url("assets/fonts/FredokaOne.woff2") format("woff2"); }
+@font-face { font-family: "CNA"; font-weight: 400; src: url("assets/fonts/ComicNeueAngular-Bold.ttf") format("truetype"); }
 
 :root {
   --ink: #0b0f1d;
@@ -21,7 +21,7 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; font-family: "Fredoka One", sans-serif; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; font-family: "CNA", sans-serif; font-weight: 700; }
 #stage { position: relative; width: 1920px; height: 1080px; }
 
 /* isolation mode used by the exporter: only the element being exported is painted */
@@ -35,45 +35,45 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
    ====================================================================== */
 .skin {
   position: absolute; overflow: hidden; isolation: isolate;
-  border: 4px solid var(--ink); border-radius: 8px;
-  background: linear-gradient(165deg, var(--c1) 0%, var(--c2) 52%, var(--c3) 100%);
-  box-shadow: 0 4px 0 var(--ink);
+  border: 4px solid var(--ink); border-radius: 7px;
+  background: linear-gradient(172deg, var(--c1) 0%, var(--c2) 48%, var(--c3) 100%);
+  box-shadow: 0 4px 0 var(--ink), 0 7px 8px rgba(0,0,0,.22);
 }
 .skin > .facets { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
 .skin::before {                              /* soft top light, no hard gloss line */
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(180deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,.08) 45%, rgba(255,255,255,0) 60%, rgba(0,0,0,.06) 100%);
+  background: linear-gradient(180deg, rgba(255,255,255,.20) 0%, rgba(255,255,255,.05) 38%, rgba(255,255,255,0) 52%, rgba(0,0,0,.08) 100%);
 }
 .skin::after {                               /* inner bevel rim + bottom lip */
-  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: 4px;
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: 3px;
   box-shadow:
-    inset 0 0 0 3px var(--rim, rgba(255,255,255,.34)),
-    inset 0 -6px 0 rgba(0,0,0,.20),
-    inset 0 5px 0 rgba(255,255,255,.18);
+    inset 0 0 0 2.5px var(--rim, rgba(255,255,255,.42)),
+    inset 0 3px 0 2.5px rgba(255,255,255,.14),
+    inset 0 -6px 0 rgba(0,0,0,.24),
+    inset 0 -8px 10px -4px rgba(0,0,0,.12);
 }
 .skin > .content { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; }
 
-.red    { --c1: #ff5a78; --c2: #f2213f; --c3: #c70f2b; }
-.blue   { --c1: #5fd8ff; --c2: #24a8f6; --c3: #1478dc; }
-.green  { --c1: #c3f542; --c2: #74d81c; --c3: #38a810; }
-.lime   { --c1: #d2fa4a; --c2: #93e21e; --c3: #52bb12; }
-.gold   { --c1: #fff05a; --c2: #ffc51c; --c3: #ff9800; }
-.purple { --c1: #e07cff; --c2: #ad3ff6; --c3: #7a1fdc; }
+.red    { --c1: #ff4a6c; --c2: #f5173f; --c3: #c40b2c; }
+.blue   { --c1: #47d2ff; --c2: #16a0f7; --c3: #0d6fdd; }
+.green  { --c1: #b8f82e; --c2: #6ada12; --c3: #2ea60c; }
+.lime   { --c1: #cdfd34; --c2: #8ae712; --c3: #47b90b; }
+.gold   { --c1: #ffec30; --c2: #ffc10a; --c3: #ff9000; }
+.purple { --c1: #e865ff; --c2: #b133fa; --c3: #7818e2; }
 .gray   { --c1: #c3c8d0; --c2: #8b919b; --c3: #5d626b; --rim: rgba(255,255,255,.28); }
 .rainbow {
-  background: linear-gradient(115deg, #b54cff 0%, #6b6cff 18%, #2fc6ff 34%, #4de88a 50%, #c8f04a 62%, #ffc93a 74%, #ff6fb5 88%, #c24cff 100%);
+  background: linear-gradient(115deg, #b030ff 0%, #5a5cff 17%, #12c0ff 33%, #22e070 49%, #c4f22a 61%, #ffc21a 73%, #ff3fa8 87%, #b030ff 100%);
 }
 .base {                                          /* "My Base": blue with purple core glow */
-  --c1: #62d6ff; --c2: #2aa2f4; --c3: #1674da;
+  --c1: #4cd2ff; --c2: #189ff6; --c3: #0e6cdc;
 }
 
 /* ======================================================================
    TEXT: outline layer + gradient fill layer (built by script below)
    ====================================================================== */
-.t { position: relative; display: inline-block; line-height: 1.05; white-space: nowrap; text-align: center; font-size: var(--fs, 40px); }
-.t > .ts { display: block; color: var(--ink); -webkit-text-stroke: .2em var(--ink); filter: drop-shadow(0 .075em 0 var(--ink)); }
-.t > .tf { position: absolute; inset: 0; display: block;
-  background: var(--tf, var(--tf-white)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.t { position: relative; display: inline-block; line-height: 1.08; white-space: nowrap; text-align: center; font-size: var(--fs, 40px); letter-spacing: .012em; }
+.t > .tm { display: block; color: transparent; }                 /* invisible copy that sizes the box */
+.t > svg { position: absolute; left: 0; top: 0; overflow: visible; }
 
 /* ======================================================================
    ICONS & DECOR
@@ -93,6 +93,15 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 .glow { position: absolute; pointer-events: none; z-index: 1; border-radius: 50%;
   background: radial-gradient(circle, rgba(255,255,255,var(--ga,.45)) 0%, rgba(255,255,255,0) 68%); }
 .sparkle { position: absolute; pointer-events: none; z-index: 2; }
+.svgi { display: block; }
+.svgi > svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.studs-light {
+  background-image:
+    radial-gradient(circle at 50% 42%, rgba(255,255,255,.95) 0 3.1px, transparent 3.7px),
+    radial-gradient(circle at 50% 58%, rgba(96,112,140,.30) 0 3.7px, transparent 4.3px);
+  background-size: 15px 15px; background-position: 4px 3px;
+}
+.deco { position: absolute; pointer-events: none; overflow: visible; }
 
 /* ======================================================================
    TOP TABS
@@ -133,10 +142,16 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
   display: flex; align-items: center; justify-content: center;
 }
 #badge-daily { left: 294px; top: -20px; }
+.cal-layer { position: absolute; z-index: 1; pointer-events: none;
+  -webkit-mask: linear-gradient(175deg, #000 40%, rgba(0,0,0,.35) 100%); mask: linear-gradient(175deg, #000 40%, rgba(0,0,0,.35) 100%); }
+.cal-layer .svgi { position: absolute; inset: 0; }
+.cal-layer .back  { color: #16690a; opacity: .42; transform: translate(5px, 6px); }
+.cal-layer .front { color: #d6ff9a; opacity: .20; }
+.cal-layer.small .front { color: #ffffff; opacity: .12; }
 
 .tile { width: 158px; height: 158px; }
 .tile .content { flex-direction: column; justify-content: flex-start; }
-.tile .icon { width: 106px; height: 106px; margin-top: 3px; }
+.tile .icon, .tile .icon-c { width: 106px; height: 106px; margin-top: 3px; flex: none; }
 .tile .t { --fs: 38px; margin-top: -3px; }
 .tile .glow { left: 50%; top: 58px; width: 150px; height: 150px; transform: translate(-50%,-50%); --ga: .38; }
 .tile .wm { right: -26px; bottom: -22px; width: 118px; height: 118px; transform: rotate(-16deg); --wmc: #fff; --wmo: .13; }
@@ -150,15 +165,13 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
    ====================================================================== */
 #starter { left: 1683px; top: 344px; width: 210px; height: 200px; }
 #starter .t.label { --fs: 30px; position: absolute; left: 50%; top: 0; transform: translateX(-50%); z-index: 3; }
-#starter .glow { left: 50%; top: 100px; width: 180px; height: 160px; transform: translate(-50%,-50%); --ga: .42; }
-#starter .rays { position: absolute; left: 50%; top: 96px; width: 200px; height: 200px; transform: translate(-50%,-50%); z-index: 1; border-radius: 50%;
-  background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.18) 0deg 7deg, rgba(255,255,255,0) 7deg 22deg);
-  -webkit-mask: radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 35%, transparent 68%); mask: radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 35%, transparent 68%); }
-#starter > .icon { position: absolute; left: 50%; top: 36px; width: 128px; height: 128px; transform: translateX(-50%); z-index: 2; }
+#starter .glow { left: 50%; top: 104px; width: 170px; height: 150px; transform: translate(-50%,-50%); --ga: .5; }
+#starter .rays { position: absolute; left: 50%; top: 100px; width: 230px; height: 230px; transform: translate(-50%,-50%); z-index: 1; }
+#starter .gift { position: absolute; left: 50%; top: 30px; width: 150px; height: 142px; transform: translateX(-50%); z-index: 2; }
 .price { position: absolute; display: flex; align-items: center; gap: 3px; z-index: 6; }
 .price .icon { width: 38px; height: 38px; }
 .price .t { --tf: var(--tf-green); }
-#starter .price { left: 50%; top: 166px; transform: translateX(-50%); }
+#starter .price { left: 50%; top: 162px; transform: translateX(-50%); }
 #starter .price .t { --fs: 40px; }
 
 .card { width: 234px; height: 82px; }
@@ -175,14 +188,14 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
    BOTTOM LEFT
    ====================================================================== */
 #rebirths { left: 23px; top: 890px; display: flex; align-items: center; gap: 10px; }
-#rebirths .icon { width: 62px; height: 62px; }
+#rebirths .icon-c { width: 64px; height: 64px; }
 #rebirths .t { --fs: 54px; --tf: var(--tf-red); }
 #money-row { left: 23px; top: 956px; display: flex; align-items: center; gap: 14px; }
-#money .t { --fs: 64px; --tf: var(--tf-green); }
+#money .t { --fs: 64px; --tf: var(--tf-green); --to: .056; }
 #btn-add { position: relative; width: 58px; height: 58px; }
 #btn-add .t { --fs: 54px; margin-top: -6px; }
 #friend { left: 23px; top: 1032px; }
-#friend .t { --fs: 32px; }
+#friend .t { --fs: 32px; --to: .078; }
 
 /* ======================================================================
    BOTTOM CENTRE
@@ -190,22 +203,18 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 #mult { right: 573px; top: 898px; }
 #mult .t { --fs: 38px; --tf: var(--tf-gold); }
 #xpbar { left: 571px; top: 942px; width: 776px; height: 54px;
-  background: linear-gradient(180deg, #ffffff 0%, #eef1f5 55%, #d9dee6 100%); --rim: rgba(255,255,255,.7); }
-#xpbar .empty-pattern { position: absolute; inset: 0; z-index: 0; opacity: .5;
-  background:
-    radial-gradient(ellipse 18px 9px at 12% 40%, #cfd5de 60%, transparent 62%),
-    radial-gradient(ellipse 14px 8px at 23% 70%, #d6dbe3 60%, transparent 62%),
-    radial-gradient(ellipse 20px 10px at 37% 30%, #cfd5de 60%, transparent 62%),
-    radial-gradient(ellipse 12px 7px at 49% 72%, #d6dbe3 60%, transparent 62%),
-    radial-gradient(ellipse 18px 9px at 61% 38%, #cfd5de 60%, transparent 62%),
-    radial-gradient(ellipse 14px 8px at 72% 68%, #d6dbe3 60%, transparent 62%),
-    radial-gradient(ellipse 20px 10px at 84% 34%, #cfd5de 60%, transparent 62%),
-    radial-gradient(ellipse 14px 8px at 94% 66%, #d6dbe3 60%, transparent 62%); }
-#xpbar .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 57%; z-index: 2;
-  background:
-    repeating-linear-gradient(115deg, rgba(255,255,255,.2) 0 12px, rgba(255,255,255,0) 12px 44px),
-    linear-gradient(180deg, #ffe867 0%, #ffbf12 48%, #ff8d00 100%);
-  box-shadow: inset 0 5px 0 rgba(255,255,255,.35), inset 0 -6px 0 rgba(0,0,0,.14), 3px 0 0 rgba(0,0,0,.12); }
+  background: linear-gradient(180deg, #fbfcfe 0%, #eceff4 55%, #d6dce5 100%); --rim: rgba(255,255,255,.75); }
+#xpbar .track { position: absolute; inset: 0; z-index: 0; opacity: .9; }
+#xpbar .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 57%; z-index: 2; overflow: hidden;
+  background: linear-gradient(180deg, #ffec5c 0%, #ffc414 46%, #ff9a00 78%, #f58200 100%);
+  box-shadow: inset 0 -6px 0 rgba(170,70,0,.22), inset -3px 0 0 rgba(170,70,0,.28), 3px 0 0 rgba(0,0,0,.10); }
+#xpbar .fill::before {                     /* clean glossy top highlight */
+  content: ""; position: absolute; left: 7px; right: 7px; top: 4px; height: 38%; border-radius: 6px;
+  background: linear-gradient(180deg, rgba(255,255,255,.72) 0%, rgba(255,255,255,.18) 100%); }
+#xpbar .fill::after {                      /* two soft diagonal glints */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(112deg, transparent 0 16%, rgba(255,255,255,.22) 16% 19%, transparent 19% 23%, rgba(255,255,255,.14) 23% 30%, transparent 30%),
+              linear-gradient(112deg, transparent 0 66%, rgba(255,255,255,.16) 66% 72%, transparent 72%); }
 #xpbar .content { justify-content: space-between; padding: 0 18px; }
 #xpbar .t { --fs: 34px; }
 
@@ -219,7 +228,7 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
    BOTTOM RIGHT BOOSTS
    ====================================================================== */
 .boost { top: 976px; width: 80px; display: flex; flex-direction: column; align-items: center; gap: 0; }
-.boost .icon { width: 64px; height: 64px; }
+.boost .icon, .boost .icon-c { width: 64px; height: 64px; }
 .boost .t { --fs: 30px; margin-top: 1px; }
 #boost-money { left: 1672px; } #boost-money .t { --tf: var(--tf-green); }
 #boost-reb   { left: 1752px; } #boost-reb .t   { --tf: var(--tf-pink); }
@@ -237,21 +246,21 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 #panel .body-rim { position: absolute; inset: 0; border-radius: 6px; box-shadow: inset 0 0 0 2px rgba(255,255,255,.08); z-index: 3; pointer-events: none; }
 #panel .body-grid { position: absolute; left: 0; right: 0; top: 93px; bottom: 0; z-index: 0;
   background:
-    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 46px 46px,
-    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 46px 46px; }
-#panel .body-wm { left: 50%; top: 330px; width: 520px; height: 520px; transform: translate(-50%,-50%) rotate(-8deg); z-index: 0;
-  --wm: url(assets/silhouettes/calendar.png); --wmc: #7fb6ff; --wmo: .12;
-  --wmfade: radial-gradient(circle, #000 20%, transparent 70%); }
+    radial-gradient(circle at 50% 42%, rgba(255,255,255,.07) 0 4.4px, transparent 5px) 0 0 / 24px 24px,
+    radial-gradient(circle at 50% 58%, rgba(0,0,0,.34) 0 5px, transparent 5.6px) 0 0 / 24px 24px; }
+#panel .body-wm { position: absolute; left: 50%; top: 380px; width: 540px; height: 540px; transform: translate(-50%,-50%) rotate(-8deg); z-index: 0;
+  color: #7fb6ff; opacity: .10; }
 
 #header { position: absolute; left: 0; top: 0; right: 0; height: 93px; border: 0; border-bottom: 5px solid var(--ink); border-radius: 0; box-shadow: none; z-index: 2; }
 #header::after { border-radius: 0; box-shadow: inset 0 3px 0 rgba(255,255,255,.34), inset 0 -5px 0 rgba(0,0,0,.18); }
 #header .dots { position: absolute; inset: 0; z-index: 1;
-  background: radial-gradient(circle, rgba(255,255,255,.22) 1.7px, transparent 2.2px) 0 0 / 13px 13px;
+  background: radial-gradient(circle, rgba(255,255,255,.24) 2.6px, transparent 3.1px) 0 0 / 16px 16px;
   -webkit-mask: linear-gradient(100deg, transparent 20%, #000 55%, rgba(0,0,0,.6) 80%, transparent 100%);
   mask: linear-gradient(100deg, transparent 20%, #000 55%, rgba(0,0,0,.6) 80%, transparent 100%); }
-#header .wm { left: 600px; top: -28px; width: 150px; height: 150px; transform: rotate(12deg);
-  --wm: url(assets/silhouettes/calendar.png); --wmc: #ffffff; --wmo: .2;
-  --wmfade: linear-gradient(180deg, #000 30%, transparent 95%); }
+#header .cal-wm { position: absolute; z-index: 1; left: 610px; top: -18px; width: 140px; height: 140px; transform: rotate(12deg);
+  -webkit-mask: linear-gradient(180deg, #000 35%, transparent 92%); mask: linear-gradient(180deg, #000 35%, transparent 92%); }
+#header .cal-wm .back { position: absolute; inset: 0; color: #0a4fb0; opacity: .30; transform: translate(6px, 6px); }
+#header .cal-wm .front { position: absolute; inset: 0; color: #ffffff; opacity: .20; }
 #header > .content { justify-content: flex-start; }
 #header .title { --fs: 58px; margin-left: 142px; margin-top: -4px; }
 #btn-claimall { right: 104px; top: 9px; width: 262px; height: 70px; }
@@ -259,7 +268,7 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 #btn-claimall, #btn-close { z-index: 5; }
 #btn-close { right: 12px; top: 9px; width: 80px; height: 70px; }
 #btn-close .t { --fs: 50px; }
-#cal-icon { left: -18px; top: -28px; width: 134px; height: 134px; transform: rotate(-9deg); z-index: 6; }
+#cal-icon { left: -22px; top: -34px; width: 146px; height: 146px; z-index: 6; }
 
 #grid { position: absolute; left: 0; right: 0; top: 93px; bottom: 0; z-index: 2;
   display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; gap: 14px; padding: 14px 20px 16px; }
@@ -275,18 +284,17 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 .status.skin { position: relative; }
 
 #day7 { grid-column: 4; grid-row: 1 / span 2; }
-#day7 .rays { position: absolute; left: 50%; top: 44%; width: 560px; height: 560px; transform: translate(-50%,-50%); z-index: 1;
-  background: repeating-conic-gradient(from 3deg, rgba(255,255,255,.22) 0deg 6deg, rgba(255,255,255,0) 6deg 18deg);
-  -webkit-mask: radial-gradient(circle, #000 0%, rgba(0,0,0,.7) 30%, transparent 62%); mask: radial-gradient(circle, #000 0%, rgba(0,0,0,.7) 30%, transparent 62%); }
-#day7 .skin.rainbow { background: linear-gradient(170deg, #ff4fd8 0%, #ff7a9a 20%, #ffb83a 38%, #ffe74a 50%, #8ef06a 64%, #3fd8ff 80%, #7b8bff 100%); }
-#day7 .glow { top: 44%; width: 290px; height: 290px; --ga: .6; }
+#day7 .rays { position: absolute; left: 50%; top: 44%; width: 520px; height: 520px; transform: translate(-50%,-50%); z-index: 1; }
+#day7 > .skin.rainbow { background: linear-gradient(162deg, #ff1fcf 0%, #ff3d8c 16%, #ff8a1a 32%, #ffd70f 46%, #b8f21c 58%, #2ee06a 70%, #13c9ff 84%, #5a6cff 100%); }
+#day7 > .skin::before { background: linear-gradient(180deg, rgba(255,255,255,.14) 0%, rgba(255,255,255,0) 30%); }
+#day7 .glow { top: 44%; width: 300px; height: 300px; --ga: .7; }
 #day7 .t.dn { --fs: 60px; --tf: var(--tf-gold); margin-top: 6px; }
 #day7 .icon { width: 196px; height: 196px; margin: 0; }
 #day7 .t.name { --fs: 40px; line-height: 1.02; }
 #day7 .status { width: 234px; height: 58px; }
 #day7 .status .t { --fs: 36px; }
 #op { right: -40px; top: 96px; z-index: 7; transform: rotate(20deg); }
-#op .t { --fs: 52px; --tf: var(--tf-pink); letter-spacing: -2px; }
+#op .t { --fs: 56px; --tf: var(--tf-pink); letter-spacing: 0; }
 </style>
 </head>
 <body>
@@ -304,9 +312,21 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
     <feOffset in="o" dy="4" result="s"/><feFlood flood-color="#0b0f1d" flood-opacity=".55"/><feComposite in2="s" operator="in" result="sh"/>
     <feMerge><feMergeNode in="sh"/><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
+  <g id="leafA"><path d="M0 0 L9 -8 L26 -10 L44 0 L26 10 L9 8 Z" fill="#2aa820" stroke="#0b0f1d" stroke-width="3.2" stroke-linejoin="round"/>
+    <path d="M2.5 -0.6 L9.5 -7 L26 -8.6 L41 -0.6 Z" fill="#6fe044"/><path d="M5 0 L39 0" stroke="#1b7414" stroke-width="2" stroke-linecap="round"/></g>
+  <g id="leafB"><path d="M0 0 L8 -7 L22 -9 L36 0 L22 9 L8 7 Z" fill="#1f9419" stroke="#0b0f1d" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M2.5 -0.6 L8.5 -6 L22 -7.6 L33 -0.6 Z" fill="#55cc36"/><path d="M5 0 L31 0" stroke="#156410" stroke-width="1.8" stroke-linecap="round"/></g>
 </svg>
 
 <div id="stage">
+
+  <!-- ============================== TERRARIUM DECOR (sits behind the UI) ============================== -->
+  <svg class="deco" style="left:468px;top:22px" width="90" height="110" data-export="Decor/Leaves_ShopTab"><path d="M84 44 Q52 50 30 88" fill="none" stroke="#0b0f1d" stroke-width="8" stroke-linecap="round"/><path d="M84 44 Q52 50 30 88" fill="none" stroke="#3b9c22" stroke-width="3.6" stroke-linecap="round"/><use href="#leafA" transform="translate(62 46) rotate(196) scale(1.30)"/><use href="#leafB" transform="translate(44 64) rotate(152) scale(1.10)"/><use href="#leafA" transform="translate(30 88) rotate(120) scale(0.98)"/></svg>
+  <svg class="deco" style="left:1366px;top:22px" width="90" height="110" data-export="Decor/Leaves_UpgradesTab"><g transform="translate(90 0) scale(-1 1)"><path d="M84 44 Q52 50 30 88" fill="none" stroke="#0b0f1d" stroke-width="8" stroke-linecap="round"/><path d="M84 44 Q52 50 30 88" fill="none" stroke="#3b9c22" stroke-width="3.6" stroke-linecap="round"/><use href="#leafA" transform="translate(62 46) rotate(196) scale(1.30)"/><use href="#leafB" transform="translate(44 64) rotate(152) scale(1.10)"/><use href="#leafA" transform="translate(30 88) rotate(120) scale(0.98)"/></g></svg>
+  <svg class="deco" style="left:330px;top:772px" width="130" height="140" data-export="Decor/Leaves_PanelBottomLeft"><path d="M92 64 Q58 84 30 116" fill="none" stroke="#0b0f1d" stroke-width="8" stroke-linecap="round"/><path d="M92 64 Q58 84 30 116" fill="none" stroke="#3b9c22" stroke-width="3.6" stroke-linecap="round"/><use href="#leafA" transform="translate(62 80) rotate(170) scale(1.30)"/><use href="#leafB" transform="translate(44 100) rotate(128) scale(1.10)"/><use href="#leafA" transform="translate(76 96) rotate(100) scale(1.04)"/><use href="#leafB" transform="translate(30 116) rotate(140) scale(0.85)"/></svg>
+  <svg class="deco" style="left:1460px;top:772px" width="130" height="140" data-export="Decor/Leaves_PanelBottomRight"><g transform="translate(130 0) scale(-1 1)"><path d="M92 64 Q58 84 30 116" fill="none" stroke="#0b0f1d" stroke-width="8" stroke-linecap="round"/><path d="M92 64 Q58 84 30 116" fill="none" stroke="#3b9c22" stroke-width="3.6" stroke-linecap="round"/><use href="#leafA" transform="translate(62 80) rotate(170) scale(1.30)"/><use href="#leafB" transform="translate(44 100) rotate(128) scale(1.10)"/><use href="#leafA" transform="translate(76 96) rotate(100) scale(1.04)"/><use href="#leafB" transform="translate(30 116) rotate(140) scale(0.85)"/></g></svg>
+  <svg class="deco" style="left:-6px;top:282px" width="100" height="80" data-export="Decor/Leaves_DailyButton"><path d="M52 58 Q44 50 38 44" fill="none" stroke="#0b0f1d" stroke-width="8" stroke-linecap="round"/><path d="M52 58 Q44 50 38 44" fill="none" stroke="#3b9c22" stroke-width="3.6" stroke-linecap="round"/><use href="#leafA" transform="translate(40 46) rotate(232) scale(1.30)"/><use href="#leafB" transform="translate(50 46) rotate(268) scale(1.04)"/><use href="#leafA" transform="translate(38 52) rotate(198) scale(0.91)"/></svg>
+  <svg class="deco" style="left:560px;top:880px" width="90" height="70" data-export="Decor/Sprout_XPBar"><path d="M34 70 Q30 50 38 36" fill="none" stroke="#0b0f1d" stroke-width="8" stroke-linecap="round"/><path d="M34 70 Q30 50 38 36" fill="none" stroke="#3b9c22" stroke-width="3.6" stroke-linecap="round"/><use href="#leafA" transform="translate(37 40) rotate(-145) scale(0.94)"/><use href="#leafB" transform="translate(38 38) rotate(-38) scale(1.04)"/></svg>
 
   <!-- ============================== TOP ============================== -->
   <div id="tab-shop" class="skin red" data-facets="60" data-seed="11" data-streaks="3" data-export="HUD/Top/Tab_Shop">
@@ -326,11 +346,14 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
   <!-- ============================== LEFT ============================== -->
   <div id="daily-wrap" class="abs" data-export="HUD/Left/Btn_DailyRewards">
     <div id="btn-daily" class="skin green" data-facets="58" data-seed="41" data-streaks="3" data-export="HUD/Left/Btn_DailyRewards_NoBadge">
-      <div class="wm" style="left:168px;top:-6px;width:122px;height:122px;transform:rotate(-12deg);--wm:url(assets/silhouettes/calendar.png);--wmc:#1f7d0b;--wmo:.34;--wmfade:linear-gradient(170deg,#000 30%,rgba(0,0,0,.45) 75%,rgba(0,0,0,.15) 100%)"></div>
-      <div class="wm" style="left:18px;top:30px;width:90px;height:90px;transform:rotate(14deg);--wm:url(assets/silhouettes/calendar.png);--wmc:#ffffff;--wmo:.12;--wmfade:linear-gradient(180deg,#000 10%,transparent 90%)"></div>
+      <div class="cal-layer" style="left:160px;top:-14px;width:136px;height:136px;transform:rotate(-12deg)">
+        <div class="svgi back" data-src="assets/icons-custom/calendar-silhouette.svg"></div>
+        <div class="svgi front" data-src="assets/icons-custom/calendar-silhouette.svg"></div></div>
+      <div class="cal-layer small" style="left:14px;top:34px;width:86px;height:86px;transform:rotate(14deg)">
+        <div class="svgi front" data-src="assets/icons-custom/calendar-silhouette.svg"></div></div>
       <div class="content" style="padding-right:18px"><span class="t" style="--fs:39px;margin-top:-4px">Daily Rewards</span></div>
     </div>
-    <div id="badge-daily" class="badge" data-export="HUD/Left/Badge_Alert"><span class="t" style="--fs:34px;margin-top:-2px">!</span></div>
+    <div id="badge-daily" class="badge" data-export="HUD/Left/Badge_Alert"><span class="t" style="--fs:36px;--tb:0.0001;margin-top:-2px">!</span></div>
   </div>
 
   <div id="tile-shop" class="skin tile red" data-facets="52" data-seed="51" data-streaks="2" data-export="HUD/Left/Btn_Shop">
@@ -339,23 +362,23 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
   </div>
   <div id="tile-pass" class="skin tile gold" data-facets="52" data-seed="52" data-streaks="2" data-export="HUD/Left/Btn_Pass">
     <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/ticket.png)"></div>
-    <div class="content"><img class="icon" src="assets/icons/ticket.png"><span class="t">Pass</span></div>
+    <div class="content"><div class="svgi icon-c" data-src="assets/icons-custom/ticket.svg"></div><span class="t">Pass</span></div>
   </div>
   <div id="tile-reb" class="skin tile purple" data-facets="52" data-seed="53" data-streaks="2" data-export="HUD/Left/Btn_Rebirth">
     <div class="glow"></div><div class="wm" style="--wm:url(assets/icons/rebirth.png)"></div>
-    <div class="content"><img class="icon" src="assets/icons/rebirth.png"><span class="t">Rebirth</span></div>
+    <div class="content"><div class="svgi icon-c" data-src="assets/icons-custom/rebirth.svg"></div><span class="t">Rebirth</span></div>
   </div>
   <div id="tile-idx" class="skin tile blue" data-facets="52" data-seed="54" data-streaks="2" data-export="HUD/Left/Btn_Index">
     <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/book.png)"></div>
-    <div class="content"><img class="icon" src="assets/icons/book.png"><span class="t">Index</span></div>
+    <div class="content"><div class="svgi icon-c" data-src="assets/icons-custom/book.svg"></div><span class="t">Index</span></div>
   </div>
 
   <!-- ============================== RIGHT ============================== -->
   <div id="starter" class="abs" data-export="HUD/Right/StarterPack">
     <span class="t label">Starter Pack</span>
-    <div class="rays"></div><div class="glow"></div>
+    <div class="rays" data-rays="18" data-seed="63" data-ra=".55"></div><div class="glow"></div>
     <div data-sparkles="5" data-seed="61" style="position:absolute;left:20px;top:40px;width:170px;height:120px"></div>
-    <img class="icon lg" src="assets/icons/gift.png">
+    <div class="svgi gift" data-src="assets/icons-custom/gift.svg"></div>
     <div class="price"><img class="icon" src="assets/icons/robux.png"><span class="t">19</span></div>
   </div>
 
@@ -378,7 +401,7 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 
   <!-- ============================== BOTTOM LEFT ============================== -->
   <div id="rebirths" class="abs" data-export="HUD/BottomLeft/RebirthCounter">
-    <img class="icon" src="assets/icons/rebirth.png"><span class="t">4</span></div>
+    <div class="svgi icon-c" data-src="assets/icons-custom/rebirth.svg"></div><span class="t">4</span></div>
   <div id="money-row" class="abs">
     <div id="money" data-export="HUD/BottomLeft/Money"><span class="t">$572,831</span></div>
     <div id="btn-add" class="skin lime" data-facets="40" data-seed="81" data-streaks="1" data-export="HUD/BottomLeft/Btn_AddMoney">
@@ -388,7 +411,8 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 
   <!-- ============================== BOTTOM CENTRE ============================== -->
   <div id="mult" class="abs" data-export="HUD/Bottom/MultiplierLabel"><span class="t">x3 Multiplier</span></div>
-  <div id="xpbar" class="skin" data-facets="44" data-seed="95" data-export="HUD/Bottom/XPBar">
+  <div id="xpbar" class="skin" data-export="HUD/Bottom/XPBar">
+    <div class="track studs-light"></div>
     <div class="fill"></div>
     <div class="content"><span class="t">Level 5</span><span class="t">57/100 XP</span></div>
   </div>
@@ -398,17 +422,17 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 
   <!-- ============================== BOTTOM RIGHT ============================== -->
   <div id="boost-money" class="abs boost" data-export="HUD/BottomRight/Boost_Money"><img class="icon" src="assets/icons/cash.png"><span class="t">x1.1</span></div>
-  <div id="boost-reb"   class="abs boost" data-export="HUD/BottomRight/Boost_Rebirth"><img class="icon" src="assets/icons/rebirth.png"><span class="t">x1.2</span></div>
+  <div id="boost-reb"   class="abs boost" data-export="HUD/BottomRight/Boost_Rebirth"><div class="svgi icon-c" data-src="assets/icons-custom/rebirth.svg"></div><span class="t">x1.2</span></div>
   <div id="boost-gem"   class="abs boost" data-export="HUD/BottomRight/Boost_Gems"><img class="icon" src="assets/icons/diamond.png"><span class="t">x1.3</span></div>
 
   <!-- ============================== DAILY REWARDS PANEL ============================== -->
   <div id="panel-wrap" class="abs" data-export="DailyRewards/Panel_Full">
     <div id="panel" data-export="DailyRewards/Panel_Frame">
       <div class="body-grid"></div>
-      <div class="wm body-wm"></div>
+      <div class="svgi body-wm" data-src="assets/icons-custom/calendar-silhouette.svg"></div>
       <div id="header" class="skin blue" data-facets="80" data-seed="101" data-streaks="4" data-export="DailyRewards/Header_Bar">
         <div class="dots"></div>
-        <div class="wm"></div>
+        <div class="cal-wm"><div class="svgi back" data-src="assets/icons-custom/calendar-silhouette.svg"></div><div class="svgi front" data-src="assets/icons-custom/calendar-silhouette.svg"></div></div>
         <div class="content"><span class="t title">Daily Rewards</span></div>
         <div id="btn-claimall" class="skin gold" data-facets="46" data-seed="102" data-streaks="2" data-export="DailyRewards/Btn_ClaimAll"><div class="content"><span class="t">CLAIM ALL</span></div></div>
         <div id="btn-close" class="skin red" data-facets="40" data-seed="103" data-streaks="1" data-export="DailyRewards/Btn_Close"><div class="content"><span class="t">X</span></div></div>
@@ -429,8 +453,8 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
           <div class="content"><span class="t dn">DAY 3</span><img class="icon" src="assets/icons/box.png"><span class="t name">[ITEM NAME]</span>
             <div class="status skin red" data-facets="40" data-seed="123" data-streaks="1" data-export="DailyRewards/Btn_Locked"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
         <div class="day" id="day7"><div data-export="DailyRewards/Card_Day7" class="skin rainbow" data-facets="90" data-seed="117" data-streaks="0">
-          <div class="rays"></div><div class="glow"></div>
-          <div data-sparkles="14" data-seed="171" style="position:absolute;inset:10px;z-index:2"></div>
+          <div class="rays" data-rays="24" data-seed="177" data-ra=".42"></div><div class="glow"></div>
+          <div data-sparkles="18" data-seed="171" style="position:absolute;inset:10px;z-index:2"></div>
           <div class="content"><span class="t dn">DAY 7</span><img class="icon lg" src="assets/icons/box.png"><span class="t name">[ITEM<br>NAME]</span>
             <div class="status skin red" data-facets="40" data-seed="127" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
         <div class="day" id="day4"><div data-export="DailyRewards/Card_Day4" class="skin purple" data-facets="70" data-seed="114" data-streaks="5">
@@ -447,7 +471,7 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
             <div class="status skin red" data-facets="40" data-seed="126" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
       </div>
     </div>
-    <img id="cal-icon" class="abs icon lg" src="assets/icons/calendar.png" data-export="DailyRewards/Icon_Calendar">
+    <div id="cal-icon" class="abs svgi" data-src="assets/icons-custom/calendar.svg" data-export="DailyRewards/Icon_Calendar"></div>
     <div id="op" class="abs" data-export="DailyRewards/Sticker_OP"><span class="t">OP</span></div>
   </div>
 
@@ -458,60 +482,118 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
   t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 const NS = 'http://www.w3.org/2000/svg';
+let uid = 0;
 
-// outlined text: stroke layer underneath, gradient fill layer on top
-document.querySelectorAll('.t').forEach(el => {
-  const html = el.innerHTML;
-  el.innerHTML = `<span class="ts">${html}</span><span class="tf">${html}</span>`;
-});
+// inline the custom SVG icons (inline so they can use the page font); ids are made unique per copy
+async function injectSvgs() {
+  const cache = {};
+  for (const el of document.querySelectorAll('.svgi[data-src]')) {
+    const src = el.dataset.src;
+    cache[src] = cache[src] || await (await fetch(src)).text();
+    const k = uid++;
+    el.innerHTML = cache[src]
+      .replace(/id="([^"]+)"/g, (m, id) => `id="${id}_${k}"`)
+      .replace(/url\(#([^)]+)\)/g, (m, id) => `url(#${id}_${k})`);
+  }
+}
 
-// low-poly shard facets + diagonal light streaks inside every skin
-document.querySelectorAll('[data-facets]').forEach(el => {
+// outlined text drawn as SVG: emboldened Comic Neue Angular with round joins, ink outline + drop, gradient fill
+function buildText(el) {
+  const cs = getComputedStyle(el), fs = parseFloat(cs.fontSize);
+  const to = parseFloat(cs.getPropertyValue('--to')) || .072;      // visible outline, em
+  const tb = parseFloat(cs.getPropertyValue('--tb')) || .016;       // extra weight, em
+  const tf = cs.getPropertyValue('--tf') || cs.getPropertyValue('--tf-white');
+  const stops = [...tf.matchAll(/(#[0-9a-fA-F]{3,8})\s+([\d.]+)%/g)].map(m => [m[1], +m[2] / 100]);
+  const html = el.innerHTML, lines = html.split(/<br\s*\/?>/i);
+  el.innerHTML = `<span class="tm">${html}</span>`;
+  const w = el.firstChild.offsetWidth, h = el.firstChild.offsetHeight, lh = h / lines.length;
+  const ls = parseFloat(cs.letterSpacing) || 0, gid = 'tg' + (uid++);
+  const txt = (attrs) => lines.map((l, i) => `<text x="${w / 2}" y="${lh * (i + .5) + fs * .03}" text-anchor="middle" dominant-baseline="central"
+      font-family="CNA" font-weight="700" font-size="${fs}" letter-spacing="${ls}" stroke-linejoin="round" ${attrs}>${l}</text>`).join('');
+  const ink = 2 * (tb + to) * fs;
+  el.insertAdjacentHTML('beforeend', `<svg width="${w}" height="${h}">
+    <defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">${stops.map(([c, o]) => `<stop offset="${o}" stop-color="${c}"/>`).join('')}</linearGradient></defs>
+    <g transform="translate(0 ${(fs * .055).toFixed(2)})">${txt(`fill="#0b0f1d" stroke="#0b0f1d" stroke-width="${ink}"`)}</g>
+    ${txt(`fill="#0b0f1d" stroke="#0b0f1d" stroke-width="${ink}"`)}
+    ${txt(`fill="url(#${gid})" stroke="url(#${gid})" stroke-width="${2 * tb * fs}"`)}</svg>`);
+}
+
+// low-poly shard facets with crisp light shard edges and one soft sheen, inside every skin
+function buildFacets(el) {
   const w = el.clientWidth, h = el.clientHeight, cell = +el.dataset.facets, r = rng(+el.dataset.seed || 1);
   const cols = Math.max(2, Math.round(w / cell)), rows = Math.max(1, Math.round(h / cell));
   const pts = [];
   for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) {
     const edgeX = i === 0 || i === cols, edgeY = j === 0 || j === rows;
-    const x = i * w / cols + (edgeX ? 0 : (r() - .5) * .7 * w / cols);
-    const y = j * h / rows + (edgeY ? 0 : (r() - .5) * .7 * h / rows);
-    pts.push([x, y]);
+    pts.push([i * w / cols + (edgeX ? 0 : (r() - .5) * .75 * w / cols), j * h / rows + (edgeY ? 0 : (r() - .5) * .75 * h / rows)]);
   }
-  const P = (i, j) => pts[j * (cols + 1) + i].map(v => v.toFixed(1)).join(',');
-  let s = '';
+  const P = (i, j) => pts[j * (cols + 1) + i];
+  const S = p => p.map(v => v.toFixed(1)).join(',');
+  let s = '', edges = '';
   for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
     const tris = (i + j) % 2
       ? [[P(i, j), P(i + 1, j), P(i + 1, j + 1)], [P(i, j), P(i + 1, j + 1), P(i, j + 1)]]
       : [[P(i, j), P(i + 1, j), P(i, j + 1)], [P(i + 1, j), P(i + 1, j + 1), P(i, j + 1)]];
     for (const t of tris) {
       const k = r();
-      if (k < .45) s += `<polygon points="${t.join(' ')}" fill="#fff" fill-opacity="${(.04 + r() * .13).toFixed(3)}"/>`;
-      else if (k < .8) s += `<polygon points="${t.join(' ')}" fill="#000" fill-opacity="${(.02 + r() * .06).toFixed(3)}"/>`;
+      if (k < .42) s += `<polygon points="${t.map(S).join(' ')}" fill="#fff" fill-opacity="${(.05 + r() * .14).toFixed(3)}"/>`;
+      else if (k < .82) s += `<polygon points="${t.map(S).join(' ')}" fill="#000" fill-opacity="${(.03 + r() * .08).toFixed(3)}"/>`;
+      if (r() < .2) edges += `<line x1="${t[0][0].toFixed(1)}" y1="${t[0][1].toFixed(1)}" x2="${t[1][0].toFixed(1)}" y2="${t[1][1].toFixed(1)}"/>`;
     }
   }
-  const n = +el.dataset.streaks || 0;
-  for (let q = 0; q < n; q++) {                   // slanted light bars, like the reference's sheen
-    const x = (q + .3 + r() * .5) * w / n, bw = 6 + r() * (q % 2 ? 26 : 12), sl = h * .55;
-    s += `<polygon points="${x},0 ${x + bw},0 ${x + bw - sl},${h} ${x - sl},${h}" fill="#fff" fill-opacity="${(.08 + r() * .1).toFixed(3)}"/>`;
+  const n = +el.dataset.streaks || 0, gid = 'sh' + (uid++);
+  let sheen = '';
+  if (n) {                                               // one soft, feathered diagonal sheen + thin glints
+    const x = w * (.25 + r() * .3), bw = Math.max(28, w * .16), sl = h * .6;
+    sheen += `<polygon points="${x},0 ${x + bw},0 ${x + bw - sl},${h} ${x - sl},${h}" fill="url(#${gid})"/>`;
+    for (let q = 1; q < n; q++) {
+      const gx = (q / n) * w + r() * 30, gw = 2 + r() * 3;
+      sheen += `<polygon points="${gx},0 ${gx + gw},0 ${gx + gw - sl},${h} ${gx - sl},${h}" fill="#fff" fill-opacity="${(.16 + r() * .12).toFixed(3)}"/>`;
+    }
   }
   const svg = document.createElementNS(NS, 'svg');
   svg.setAttribute('class', 'facets'); svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('preserveAspectRatio', 'none');
-  svg.innerHTML = s;
+  svg.innerHTML = `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+    ${s}<g stroke="#fff" stroke-opacity=".32" stroke-width="1.2" stroke-linecap="round">${edges}</g>${sheen}`;
   el.prepend(svg);
-});
+}
+
+// sun rays: alternating wide/narrow wedges fading out from the centre
+function buildRays(el) {
+  const n = +el.dataset.rays, a = +el.dataset.ra || .5, r = rng(+el.dataset.seed || 3), gid = 'ry' + (uid++);
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const c = i * 360 / n + r() * 4, half = (i % 2 ? 3 : 6.5) * Math.PI / 180, len = i % 2 ? 78 : 100, t = c * Math.PI / 180;
+    s += `<polygon points="0,0 ${(len * Math.cos(t - half)).toFixed(1)},${(len * Math.sin(t - half)).toFixed(1)} ${(len * Math.cos(t + half)).toFixed(1)},${(len * Math.sin(t + half)).toFixed(1)}"/>`;
+  }
+  el.innerHTML = `<svg viewBox="-100 -100 200 200" width="100%" height="100%"><defs><radialGradient id="${gid}" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#fffbe6" stop-opacity="${a}"/><stop offset=".45" stop-color="#fffbe6" stop-opacity="${a * .55}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+    <g fill="url(#${gid})">${s}</g></svg>`;
+}
 
 // four-point sparkles
-document.querySelectorAll('[data-sparkles]').forEach(el => {
+function buildSparkles(el) {
   const r = rng(+el.dataset.seed || 7), n = +el.dataset.sparkles, w = el.clientWidth, h = el.clientHeight;
   for (let q = 0; q < n; q++) {
     const size = 8 + r() * 16, x = r() * (w - size), y = r() * (h - size);
     const sp = document.createElementNS(NS, 'svg');
     sp.setAttribute('class', 'sparkle'); sp.setAttribute('viewBox', '-10 -10 20 20');
-    sp.setAttribute('style', `left:${x}px;top:${y}px;width:${size}px;height:${size}px;opacity:${(.55 + r() * .45).toFixed(2)}`);
+    sp.setAttribute('style', `left:${x}px;top:${y}px;width:${size}px;height:${size}px;opacity:${(.6 + r() * .4).toFixed(2)}`);
     sp.innerHTML = '<path d="M0-10C1-3 3-1 10 0C3 1 1 3 0 10C-1 3-3 1-10 0C-3-1-1-3 0-10Z" fill="#fff"/>';
     el.appendChild(sp);
   }
-});
-document.body.dataset.ready = '1';
+}
+
+(async () => {
+  await document.fonts.load('40px CNA');
+  await injectSvgs();
+  document.querySelectorAll('.t').forEach(buildText);
+  document.querySelectorAll('[data-facets]').forEach(buildFacets);
+  document.querySelectorAll('[data-rays]').forEach(buildRays);
+  document.querySelectorAll('[data-sparkles]').forEach(buildSparkles);
+  document.body.dataset.ready = '1';
+})();
 </script>
 </body>
 </html>

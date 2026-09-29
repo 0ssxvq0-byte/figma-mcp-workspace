@@ -9,7 +9,7 @@ catch { ({ chromium } = require('/opt/node22/lib/node_modules/playwright')); }
 
 const root = path.resolve(__dirname, '..', '..');
 const out = path.resolve(root, process.argv[2] || 'Concepts');
-const MARGIN = 10;                       // transparent breathing room around each export (CSS px)
+const MARGIN = 16;                       // transparent breathing room around each export (CSS px)
 const types = { '.html': 'text/html', '.png': 'image/png', '.woff2': 'font/woff2' };
 
 // CSS masks need a real origin, so serve the folder over http instead of file://

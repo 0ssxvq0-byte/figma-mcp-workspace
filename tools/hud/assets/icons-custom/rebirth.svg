@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 108 108">
+<defs>
+ <linearGradient id="rr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7a88"/><stop offset=".6" stop-color="#f2263f"/><stop offset="1" stop-color="#cf122d"/></linearGradient>
+ <linearGradient id="rw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#eaf6ff"/><stop offset="1" stop-color="#9fd2f4"/></linearGradient>
+</defs>
+<g stroke="#0b0f1d" stroke-width="4.5" stroke-linejoin="round">
+ <path d="M96.14,68.74 A38,38 0 0 1 28.87,78.80 L15.77,87.97 L20.68,47.91 L51.81,62.74 A10,10 0 0 0 69.51,60.09 Z" transform="translate(0 6)" fill="#5f93bd"/>
+ <path d="M23.86,45.26 A38,38 0 0 1 91.13,35.20 L104.23,26.03 L99.32,66.09 L68.19,51.26 A10,10 0 0 0 50.49,53.91 Z" transform="translate(0 6)" fill="#8a0a20"/>
+ <path d="M96.14,68.74 A38,38 0 0 1 28.87,78.80 L15.77,87.97 L20.68,47.91 L51.81,62.74 A10,10 0 0 0 69.51,60.09 Z" fill="url(#rw)"/>
+ <path d="M23.86,45.26 A38,38 0 0 1 91.13,35.20 L104.23,26.03 L99.32,66.09 L68.19,51.26 A10,10 0 0 0 50.49,53.91 Z" fill="url(#rr)"/>
+ <circle cx="60" cy="57" r="6" fill="#0b0f1d" stroke-width="2"/>
+</g>
+<path d="M31.81,36.99 A34,34 0 0 1 77.00,26.56" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3.5" stroke-linecap="round"/>
+<path d="M86.05,77.85 A34,34 0 0 1 57.04,89.87" fill="none" stroke="#fff" stroke-opacity=".95" stroke-width="3.5" stroke-linecap="round"/>
+</svg>
