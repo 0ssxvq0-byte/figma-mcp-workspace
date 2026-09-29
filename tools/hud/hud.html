@@ -7,190 +7,511 @@
 @font-face { font-family: "Fredoka One"; src: url("assets/fonts/FredokaOne.woff2") format("woff2"); }
 
 :root {
-  --ink: #10131f;          /* outline colour used everywhere */
-  --red: #ff3b4e;   --red-d: #c0142a;
-  --blue: #36b6ff;  --blue-d: #1466d6;
-  --green: #7be633; --green-d: #2f9e12;
-  --gold: #ffd21f;  --gold-d: #f08a00;
-  --purple: #b35cff; --purple-d: #6a1fd6;
+  --ink: #0b0f1d;
+
+  /* text fills */
+  --tf-white:  linear-gradient(180deg, #ffffff 0%, #ffffff 52%, #dfe7f3 100%);
+  --tf-green:  linear-gradient(180deg, #e2ff6a 0%, #97f02a 45%, #45c214 100%);
+  --tf-red:    linear-gradient(180deg, #ffa3ad 0%, #ff4f63 50%, #d8192f 100%);
+  --tf-gold:   linear-gradient(180deg, #fff79a 0%, #ffd83a 45%, #ffa200 100%);
+  --tf-blue:   linear-gradient(180deg, #c4f6ff 0%, #52cfff 45%, #1d7fff 100%);
+  --tf-purple: linear-gradient(180deg, #ffc4fb 0%, #f25cf0 45%, #a524ff 100%);
+  --tf-yellow: linear-gradient(180deg, #fbff9a 0%, #f1e233 50%, #b9a300 100%);
+  --tf-pink:   linear-gradient(180deg, #ffc0c8 0%, #ff6f80 50%, #e62a44 100%);
 }
 
-* { box-sizing: border-box; margin: 0; }
-html, body { width: 1920px; height: 1080px; overflow: hidden; font-family: "Fredoka One", sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: transparent; font-family: "Fredoka One", sans-serif; }
+#stage { position: relative; width: 1920px; height: 1080px; }
 
-/* ---------- preview backdrop (not exported) ---------- */
-#stage {
-  position: relative; width: 1920px; height: 1080px;
-  background:
-    radial-gradient(ellipse 260px 70px at 18% 22%, #fff 60%, transparent 62%),
-    radial-gradient(ellipse 200px 60px at 24% 18%, #fff 60%, transparent 62%),
-    radial-gradient(ellipse 300px 80px at 78% 16%, #fff 60%, transparent 62%),
-    radial-gradient(ellipse 220px 60px at 70% 26%, #fff 60%, transparent 62%),
-    linear-gradient(180deg, #5fb8ff 0%, #9fd8ff 48%, #5cc24a 48.2%, #3d9a35 100%);
+/* isolation mode used by the exporter: only the element being exported is painted */
+body.isolate #stage * { visibility: hidden; }
+body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
+
+.abs { position: absolute; }
+
+/* ======================================================================
+   SKIN: outlined, faceted, bevelled surface shared by every button/card
+   ====================================================================== */
+.skin {
+  position: absolute; overflow: hidden; isolation: isolate;
+  border: 4px solid var(--ink); border-radius: 8px;
+  background: linear-gradient(165deg, var(--c1) 0%, var(--c2) 52%, var(--c3) 100%);
+  box-shadow: 0 4px 0 var(--ink);
 }
-body.export #stage { background: transparent; }
-
-/* ---------- shared pieces ---------- */
-.comp { position: absolute; padding: 10px; }          /* padding keeps outlines/shadows inside the export */
-
-.btn {
-  position: relative; display: flex; align-items: center; justify-content: center;
-  border: 5px solid var(--ink); border-radius: 14px; overflow: hidden;
-  background: linear-gradient(180deg, var(--c1) 0%, var(--c2) 100%);
+.skin > .facets { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+.skin::before {                              /* soft top light, no hard gloss line */
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.26) 0%, rgba(255,255,255,.08) 45%, rgba(255,255,255,0) 60%, rgba(0,0,0,.06) 100%);
+}
+.skin::after {                               /* inner bevel rim + bottom lip */
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: 4px;
   box-shadow:
-    inset 0 -8px 0 rgba(0,0,0,.22),
-    inset 0 5px 0 rgba(255,255,255,.45),
-    0 5px 0 var(--ink);
+    inset 0 0 0 3px var(--rim, rgba(255,255,255,.34)),
+    inset 0 -6px 0 rgba(0,0,0,.20),
+    inset 0 5px 0 rgba(255,255,255,.18);
 }
-.btn::before {                                         /* diagonal gloss stripes */
-  content: ""; position: absolute; inset: 0;
-  background: repeating-linear-gradient(120deg, rgba(255,255,255,.16) 0 26px, transparent 26px 60px);
-  pointer-events: none;
+.skin > .content { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; }
+
+.red    { --c1: #ff5a78; --c2: #f2213f; --c3: #c70f2b; }
+.blue   { --c1: #5fd8ff; --c2: #24a8f6; --c3: #1478dc; }
+.green  { --c1: #c3f542; --c2: #74d81c; --c3: #38a810; }
+.lime   { --c1: #d2fa4a; --c2: #93e21e; --c3: #52bb12; }
+.gold   { --c1: #fff05a; --c2: #ffc51c; --c3: #ff9800; }
+.purple { --c1: #e07cff; --c2: #ad3ff6; --c3: #7a1fdc; }
+.gray   { --c1: #c3c8d0; --c2: #8b919b; --c3: #5d626b; --rim: rgba(255,255,255,.28); }
+.rainbow {
+  background: linear-gradient(115deg, #b54cff 0%, #6b6cff 18%, #2fc6ff 34%, #4de88a 50%, #c8f04a 62%, #ffc93a 74%, #ff6fb5 88%, #c24cff 100%);
 }
-.btn > * { position: relative; }
-
-.red    { --c1: var(--red);    --c2: var(--red-d); }
-.blue   { --c1: var(--blue);   --c2: var(--blue-d); }
-.green  { --c1: var(--green);  --c2: var(--green-d); }
-.gold   { --c1: var(--gold);   --c2: var(--gold-d); }
-.purple { --c1: var(--purple); --c2: var(--purple-d); }
-
-.t {                                                   /* chunky outlined text */
-  color: #fff; line-height: 1; white-space: nowrap;
-  -webkit-text-stroke: 8px var(--ink); paint-order: stroke fill;
-  text-shadow: 0 4px 0 var(--ink);
+.base {                                          /* "My Base": blue with purple core glow */
+  --c1: #62d6ff; --c2: #2aa2f4; --c3: #1674da;
 }
-.icon { display: block; object-fit: contain; filter: drop-shadow(0 4px 0 rgba(0,0,0,.35)); }
 
-/* ---------- top tabs ---------- */
-#tabs { left: 50%; top: 4px; transform: translateX(-50%); display: flex; align-items: flex-start; gap: 10px; }
-.tab { width: 260px; height: 88px; font-size: 50px; }
-.tab.main { width: 330px; height: 112px; font-size: 64px;
-  background: linear-gradient(135deg, #3fc4ff 0%, #6a7bff 45%, #9b4dff 55%, #2a8cff 100%); }
+/* ======================================================================
+   TEXT: outline layer + gradient fill layer (built by script below)
+   ====================================================================== */
+.t { position: relative; display: inline-block; line-height: 1.05; white-space: nowrap; text-align: center; font-size: var(--fs, 40px); }
+.t > .ts { display: block; color: var(--ink); -webkit-text-stroke: .2em var(--ink); filter: drop-shadow(0 .075em 0 var(--ink)); }
+.t > .tf { position: absolute; inset: 0; display: block;
+  background: var(--tf, var(--tf-white)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-/* ---------- left menu ---------- */
-.daily { width: 360px; height: 92px; font-size: 42px; }
+/* ======================================================================
+   ICONS & DECOR
+   ====================================================================== */
+.icon { display: block; object-fit: contain; filter: url(#outline); }
+.icon.lg { filter: url(#outline-lg); }
+
+.wm {                                             /* faded silhouette graphic */
+  position: absolute; pointer-events: none; z-index: 1;
+  background: var(--wmc, #000); opacity: var(--wmo, .16);
+  -webkit-mask-image: var(--wm), var(--wmfade, linear-gradient(#000, #000));
+  -webkit-mask-size: contain, 100% 100%; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
+  -webkit-mask-composite: source-in;
+  mask-image: var(--wm), var(--wmfade, linear-gradient(#000, #000));
+  mask-size: contain, 100% 100%; mask-repeat: no-repeat; mask-position: center; mask-composite: intersect;
+}
+.glow { position: absolute; pointer-events: none; z-index: 1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,var(--ga,.45)) 0%, rgba(255,255,255,0) 68%); }
+.sparkle { position: absolute; pointer-events: none; z-index: 2; }
+
+/* ======================================================================
+   TOP TABS
+   ====================================================================== */
+#tab-shop { left: 520px; top: 14px; width: 265px; height: 92px; }
+#tab-base { left: 795px; top: 14px; width: 333px; height: 118px; }
+#tab-upg  { left: 1138px; top: 14px; width: 265px; height: 92px; }
+#tab-base .core {                                  /* purple crystal-house glow */
+  position: absolute; left: 50%; top: 56%; width: 250px; height: 220px; transform: translate(-50%, -50%); z-index: 1;
+  background: radial-gradient(ellipse at 50% 55%, rgba(196,110,255,.95) 0%, rgba(150,80,245,.75) 38%, rgba(120,90,255,0) 70%);
+  -webkit-mask-image: url(assets/silhouettes/house.png), linear-gradient(180deg, #000 35%, transparent 92%);
+  -webkit-mask-size: contain, 100% 100%; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; -webkit-mask-composite: source-in;
+  mask-image: url(assets/silhouettes/house.png), linear-gradient(180deg, #000 35%, transparent 92%);
+  mask-size: contain, 100% 100%; mask-repeat: no-repeat; mask-position: center; mask-composite: intersect;
+  opacity: .8;
+}
+#tab-base .halo { position: absolute; left: 50%; top: 55%; width: 300px; height: 150px; transform: translate(-50%,-50%); z-index: 1;
+  background: radial-gradient(ellipse, rgba(170,90,255,.45) 0%, rgba(170,90,255,0) 70%); }
+#tab-chip {                                         /* "selected" marker on My Base */
+  left: 941px; top: 2px; width: 40px; height: 24px; z-index: 5;
+  border: 3px solid var(--ink); border-radius: 6px;
+  background: linear-gradient(180deg, #fff27a 0%, #ffd21f 50%, #ffa400 100%);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.35), 0 3px 0 var(--ink);
+}
+#tab-chip::after { content: ""; position: absolute; left: 50%; top: 4px; width: 9px; height: 9px; transform: translateX(-50%) rotate(45deg);
+  border-right: 3px solid #c86a00; border-bottom: 3px solid #c86a00; }
+
+/* ======================================================================
+   LEFT MENU
+   ====================================================================== */
+#daily-wrap { left: 23px; top: 322px; width: 326px; height: 96px; }
+#btn-daily { left: 0; top: 0; width: 326px; height: 96px; }
 .badge {
-  position: absolute; right: -2px; top: -14px; width: 50px; height: 50px; border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #ff7a86, #e0102a 70%);
-  border: 5px solid var(--ink); display: flex; align-items: center; justify-content: center;
-  font-size: 34px; box-shadow: 0 4px 0 var(--ink);
+  position: absolute; width: 50px; height: 50px; border-radius: 50%; z-index: 6;
+  border: 4px solid var(--ink);
+  background: radial-gradient(circle at 38% 32%, #ff96a0 0%, #ff4458 38%, #d3102a 78%);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.35), inset 0 -4px 0 rgba(0,0,0,.2), 0 4px 0 var(--ink);
+  display: flex; align-items: center; justify-content: center;
 }
-.tile { width: 170px; height: 160px; flex-direction: column; justify-content: flex-end; padding-bottom: 8px; }
-.tile .icon { position: absolute; top: 4px; left: 50%; transform: translateX(-50%); width: 118px; height: 118px; }
-.tile .t { font-size: 40px; }
+#badge-daily { left: 294px; top: -20px; }
 
-/* ---------- right side ---------- */
-.starter { width: 210px; display: flex; flex-direction: column; align-items: center; }
-.starter .label { font-size: 30px; }
-.starter .icon  { width: 150px; height: 150px; margin-top: -4px; }
-.price { display: flex; align-items: center; gap: 4px; margin-top: -26px; }
-.price img.icon { width: 44px; height: 44px; margin: 0; }
-.price .t  { font-size: 38px; color: #9dff4a; }
+.tile { width: 158px; height: 158px; }
+.tile .content { flex-direction: column; justify-content: flex-start; }
+.tile .icon { width: 106px; height: 106px; margin-top: 3px; }
+.tile .t { --fs: 38px; margin-top: -3px; }
+.tile .glow { left: 50%; top: 58px; width: 150px; height: 150px; transform: translate(-50%,-50%); --ga: .38; }
+.tile .wm { right: -26px; bottom: -22px; width: 118px; height: 118px; transform: rotate(-16deg); --wmc: #fff; --wmo: .13; }
+#tile-shop { left: 23px;  top: 428px; }
+#tile-pass { left: 191px; top: 428px; }
+#tile-reb  { left: 23px;  top: 596px; }
+#tile-idx  { left: 191px; top: 596px; }
 
-.card { width: 270px; height: 86px; font-size: 42px; border-radius: 12px;
-  background: linear-gradient(135deg, #b35cff 0%, #5f7bff 50%, #36d0ff 100%); }
-.card .price { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); margin: 0; }
-.card .price img.icon { width: 38px; height: 38px; }
-.card .price .t  { font-size: 32px; }
+/* ======================================================================
+   RIGHT SIDE
+   ====================================================================== */
+#starter { left: 1683px; top: 344px; width: 210px; height: 200px; }
+#starter .t.label { --fs: 30px; position: absolute; left: 50%; top: 0; transform: translateX(-50%); z-index: 3; }
+#starter .glow { left: 50%; top: 100px; width: 180px; height: 160px; transform: translate(-50%,-50%); --ga: .42; }
+#starter .rays { position: absolute; left: 50%; top: 96px; width: 200px; height: 200px; transform: translate(-50%,-50%); z-index: 1; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255,255,255,.18) 0deg 7deg, rgba(255,255,255,0) 7deg 22deg);
+  -webkit-mask: radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 35%, transparent 68%); mask: radial-gradient(circle, #000 0%, rgba(0,0,0,.6) 35%, transparent 68%); }
+#starter > .icon { position: absolute; left: 50%; top: 36px; width: 128px; height: 128px; transform: translateX(-50%); z-index: 2; }
+.price { position: absolute; display: flex; align-items: center; gap: 3px; z-index: 6; }
+.price .icon { width: 38px; height: 38px; }
+.price .t { --tf: var(--tf-green); }
+#starter .price { left: 50%; top: 166px; transform: translateX(-50%); }
+#starter .price .t { --fs: 40px; }
 
-/* ---------- bottom left ---------- */
-.stat { display: flex; align-items: center; gap: 10px; }
-.stat img { width: 72px; height: 72px; }
-.money .t { font-size: 66px; color: #7dff3a; }
-.plus { width: 66px; height: 66px; border-radius: 12px; }
-.plus .t { font-size: 60px; line-height: .8; padding-bottom: 6px; }
-.small .t { font-size: 34px; }
+.card { width: 234px; height: 82px; }
+.card .t { --fs: 38px; margin-top: -4px; }
+.card .wm { --wmc: #fff; --wmo: .2; }
+.card-wrap { width: 234px; height: 108px; }
+.card-wrap .price { left: 50%; top: 62px; transform: translateX(-50%); }
+.card-wrap .price .icon { width: 34px; height: 34px; }
+.card-wrap .price .t { --fs: 36px; }
+#x2money { left: 1672px; top: 556px; }
+#x2luck  { left: 1672px; top: 672px; }
 
-/* ---------- bottom centre ---------- */
-.mult .t { font-size: 38px; color: #ffe23a; }
-.xpbar {
-  position: relative; width: 780px; height: 64px; border: 5px solid var(--ink); border-radius: 12px;
-  background: #f4f4f4; overflow: hidden; box-shadow: 0 5px 0 var(--ink), inset 0 -8px 0 rgba(0,0,0,.08);
+/* ======================================================================
+   BOTTOM LEFT
+   ====================================================================== */
+#rebirths { left: 23px; top: 890px; display: flex; align-items: center; gap: 10px; }
+#rebirths .icon { width: 62px; height: 62px; }
+#rebirths .t { --fs: 54px; --tf: var(--tf-red); }
+#money-row { left: 23px; top: 956px; display: flex; align-items: center; gap: 14px; }
+#money .t { --fs: 64px; --tf: var(--tf-green); }
+#btn-add { position: relative; width: 58px; height: 58px; }
+#btn-add .t { --fs: 54px; margin-top: -6px; }
+#friend { left: 23px; top: 1032px; }
+#friend .t { --fs: 32px; }
+
+/* ======================================================================
+   BOTTOM CENTRE
+   ====================================================================== */
+#mult { right: 573px; top: 898px; }
+#mult .t { --fs: 38px; --tf: var(--tf-gold); }
+#xpbar { left: 571px; top: 942px; width: 776px; height: 54px;
+  background: linear-gradient(180deg, #ffffff 0%, #eef1f5 55%, #d9dee6 100%); --rim: rgba(255,255,255,.7); }
+#xpbar .empty-pattern { position: absolute; inset: 0; z-index: 0; opacity: .5;
+  background:
+    radial-gradient(ellipse 18px 9px at 12% 40%, #cfd5de 60%, transparent 62%),
+    radial-gradient(ellipse 14px 8px at 23% 70%, #d6dbe3 60%, transparent 62%),
+    radial-gradient(ellipse 20px 10px at 37% 30%, #cfd5de 60%, transparent 62%),
+    radial-gradient(ellipse 12px 7px at 49% 72%, #d6dbe3 60%, transparent 62%),
+    radial-gradient(ellipse 18px 9px at 61% 38%, #cfd5de 60%, transparent 62%),
+    radial-gradient(ellipse 14px 8px at 72% 68%, #d6dbe3 60%, transparent 62%),
+    radial-gradient(ellipse 20px 10px at 84% 34%, #cfd5de 60%, transparent 62%),
+    radial-gradient(ellipse 14px 8px at 94% 66%, #d6dbe3 60%, transparent 62%); }
+#xpbar .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 57%; z-index: 2;
+  background:
+    repeating-linear-gradient(115deg, rgba(255,255,255,.2) 0 12px, rgba(255,255,255,0) 12px 44px),
+    linear-gradient(180deg, #ffe867 0%, #ffbf12 48%, #ff8d00 100%);
+  box-shadow: inset 0 5px 0 rgba(255,255,255,.35), inset 0 -6px 0 rgba(0,0,0,.14), 3px 0 0 rgba(0,0,0,.12); }
+#xpbar .content { justify-content: space-between; padding: 0 18px; }
+#xpbar .t { --fs: 34px; }
+
+.lvl { width: 248px; height: 68px; top: 1006px; }
+.lvl .t { --fs: 38px; }
+#lvl5  { left: 571px; }  #lvl5 .t  { --tf: var(--tf-yellow); }
+#lvl10 { left: 835px; }  #lvl10 .t { --tf: var(--tf-blue); }
+#lvl25 { left: 1099px; } #lvl25 .t { --tf: var(--tf-purple); }
+
+/* ======================================================================
+   BOTTOM RIGHT BOOSTS
+   ====================================================================== */
+.boost { top: 976px; width: 80px; display: flex; flex-direction: column; align-items: center; gap: 0; }
+.boost .icon { width: 64px; height: 64px; }
+.boost .t { --fs: 30px; margin-top: 1px; }
+#boost-money { left: 1672px; } #boost-money .t { --tf: var(--tf-green); }
+#boost-reb   { left: 1752px; } #boost-reb .t   { --tf: var(--tf-pink); }
+#boost-gem   { left: 1832px; } #boost-gem .t   { --tf: var(--tf-blue); }
+
+/* ======================================================================
+   DAILY REWARDS PANEL
+   ====================================================================== */
+#panel-wrap { left: 376px; top: 204px; width: 1168px; height: 684px; }
+#panel {
+  position: absolute; inset: 0; border: 5px solid var(--ink); border-radius: 10px; overflow: hidden;
+  background: linear-gradient(180deg, rgba(14,30,46,.86) 0%, rgba(10,22,34,.9) 100%);
+  box-shadow: 0 5px 0 var(--ink);
 }
-.xpbar .fill { position: absolute; inset: 0 auto 0 0; width: 57%;
-  background: linear-gradient(180deg, #ffe45a 0%, #ffb400 55%, #ff8a00 100%);
-  box-shadow: inset 0 5px 0 rgba(255,255,255,.45), inset 0 -8px 0 rgba(0,0,0,.18); }
-.xpbar .t { position: absolute; top: 50%; transform: translateY(-50%); font-size: 36px; }
-.xpbar .l { left: 18px; } .xpbar .r { right: 18px; }
-.lvl { width: 250px; height: 72px; font-size: 40px; }
-.lvl .t { -webkit-text-stroke-width: 8px; }
+#panel .body-rim { position: absolute; inset: 0; border-radius: 6px; box-shadow: inset 0 0 0 2px rgba(255,255,255,.08); z-index: 3; pointer-events: none; }
+#panel .body-grid { position: absolute; left: 0; right: 0; top: 93px; bottom: 0; z-index: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 46px 46px,
+    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 46px 46px; }
+#panel .body-wm { left: 50%; top: 330px; width: 520px; height: 520px; transform: translate(-50%,-50%) rotate(-8deg); z-index: 0;
+  --wm: url(assets/silhouettes/calendar.png); --wmc: #7fb6ff; --wmo: .12;
+  --wmfade: radial-gradient(circle, #000 20%, transparent 70%); }
 
-/* ---------- bottom right boosts ---------- */
-.boost { display: flex; flex-direction: column; align-items: center; width: 90px; }
-.boost img { width: 84px; height: 84px; }
-.boost .t { font-size: 32px; margin-top: -14px; }
+#header { position: absolute; left: 0; top: 0; right: 0; height: 93px; border: 0; border-bottom: 5px solid var(--ink); border-radius: 0; box-shadow: none; z-index: 2; }
+#header::after { border-radius: 0; box-shadow: inset 0 3px 0 rgba(255,255,255,.34), inset 0 -5px 0 rgba(0,0,0,.18); }
+#header .dots { position: absolute; inset: 0; z-index: 1;
+  background: radial-gradient(circle, rgba(255,255,255,.22) 1.7px, transparent 2.2px) 0 0 / 13px 13px;
+  -webkit-mask: linear-gradient(100deg, transparent 20%, #000 55%, rgba(0,0,0,.6) 80%, transparent 100%);
+  mask: linear-gradient(100deg, transparent 20%, #000 55%, rgba(0,0,0,.6) 80%, transparent 100%); }
+#header .wm { left: 600px; top: -28px; width: 150px; height: 150px; transform: rotate(12deg);
+  --wm: url(assets/silhouettes/calendar.png); --wmc: #ffffff; --wmo: .2;
+  --wmfade: linear-gradient(180deg, #000 30%, transparent 95%); }
+#header > .content { justify-content: flex-start; }
+#header .title { --fs: 58px; margin-left: 142px; margin-top: -4px; }
+#btn-claimall { right: 104px; top: 9px; width: 262px; height: 70px; }
+#btn-claimall .t { --fs: 35px; }
+#btn-claimall, #btn-close { z-index: 5; }
+#btn-close { right: 12px; top: 9px; width: 80px; height: 70px; }
+#btn-close .t { --fs: 50px; }
+#cal-icon { left: -18px; top: -28px; width: 134px; height: 134px; transform: rotate(-9deg); z-index: 6; }
+
+#grid { position: absolute; left: 0; right: 0; top: 93px; bottom: 0; z-index: 2;
+  display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; gap: 14px; padding: 14px 20px 16px; }
+.day { position: relative; width: auto; height: auto; }
+.day > .skin { inset: 0; width: auto; height: auto; }
+.day .content { flex-direction: column; justify-content: space-between; padding: 6px 0 10px; }
+.day .t.dn { --fs: 44px; }
+.day .icon { width: 106px; height: 106px; margin: -4px 0; }
+.day .t.name { --fs: 26px; }
+.day .glow { left: 50%; top: 104px; width: 170px; height: 150px; transform: translate(-50%,-50%); --ga: .4; }
+.status { position: relative; width: 234px; height: 54px; flex: none; }
+.status .t { --fs: 33px; margin-top: -2px; }
+.status.skin { position: relative; }
+
+#day7 { grid-column: 4; grid-row: 1 / span 2; }
+#day7 .rays { position: absolute; left: 50%; top: 44%; width: 560px; height: 560px; transform: translate(-50%,-50%); z-index: 1;
+  background: repeating-conic-gradient(from 3deg, rgba(255,255,255,.22) 0deg 6deg, rgba(255,255,255,0) 6deg 18deg);
+  -webkit-mask: radial-gradient(circle, #000 0%, rgba(0,0,0,.7) 30%, transparent 62%); mask: radial-gradient(circle, #000 0%, rgba(0,0,0,.7) 30%, transparent 62%); }
+#day7 .skin.rainbow { background: linear-gradient(170deg, #ff4fd8 0%, #ff7a9a 20%, #ffb83a 38%, #ffe74a 50%, #8ef06a 64%, #3fd8ff 80%, #7b8bff 100%); }
+#day7 .glow { top: 44%; width: 290px; height: 290px; --ga: .6; }
+#day7 .t.dn { --fs: 60px; --tf: var(--tf-gold); margin-top: 6px; }
+#day7 .icon { width: 196px; height: 196px; margin: 0; }
+#day7 .t.name { --fs: 40px; line-height: 1.02; }
+#day7 .status { width: 234px; height: 58px; }
+#day7 .status .t { --fs: 36px; }
+#op { right: -40px; top: 96px; z-index: 7; transform: rotate(20deg); }
+#op .t { --fs: 52px; --tf: var(--tf-pink); letter-spacing: -2px; }
 </style>
 </head>
 <body>
+<!-- crisp outline for icons: square-kernel dilation keeps corners tight instead of bubbly -->
+<svg width="0" height="0" style="position:absolute">
+  <filter id="outline" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d"/>
+    <feFlood flood-color="#0b0f1d"/><feComposite in2="d" operator="in" result="o"/>
+    <feOffset in="o" dy="3" result="s"/><feFlood flood-color="#0b0f1d" flood-opacity=".55"/><feComposite in2="s" operator="in" result="sh"/>
+    <feMerge><feMergeNode in="sh"/><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="outline-lg" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="4" result="d"/>
+    <feFlood flood-color="#0b0f1d"/><feComposite in2="d" operator="in" result="o"/>
+    <feOffset in="o" dy="4" result="s"/><feFlood flood-color="#0b0f1d" flood-opacity=".55"/><feComposite in2="s" operator="in" result="sh"/>
+    <feMerge><feMergeNode in="sh"/><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+</svg>
+
 <div id="stage">
 
-  <!-- TOP -->
-  <div class="comp" id="tabs">
-    <div class="comp" style="position:relative;padding:0" data-export="Top/Tab_Shop"><div class="btn tab red"><span class="t">Shop</span></div></div>
-    <div class="comp" style="position:relative;padding:0" data-export="Top/Tab_MyBase"><div class="btn tab main"><span class="t">My Base</span></div></div>
-    <div class="comp" style="position:relative;padding:0" data-export="Top/Tab_Upgrades"><div class="btn tab green"><span class="t">Upgrades</span></div></div>
+  <!-- ============================== TOP ============================== -->
+  <div id="tab-shop" class="skin red" data-facets="60" data-seed="11" data-streaks="3" data-export="HUD/Top/Tab_Shop">
+    <div class="wm" style="left:150px;top:-8px;width:120px;height:110px;transform:rotate(14deg);--wm:url(assets/silhouettes/bag.png);--wmc:#fff;--wmo:.14;--wmfade:linear-gradient(180deg,#000 20%,transparent 100%)"></div>
+    <div class="content"><span class="t" style="--fs:52px;margin-top:-4px">Shop</span></div>
+  </div>
+  <div id="tab-base" class="skin base" data-facets="62" data-seed="23" data-streaks="4" data-export="HUD/Top/Tab_MyBase">
+    <div class="halo"></div><div class="core"></div>
+    <div class="content"><span class="t" style="--fs:66px;margin-top:-6px">My Base</span></div>
+  </div>
+  <div id="tab-chip" class="abs" data-export="HUD/Top/Tab_SelectedMarker"></div>
+  <div id="tab-upg" class="skin green" data-facets="60" data-seed="37" data-streaks="3" data-export="HUD/Top/Tab_Upgrades">
+    <div class="wm" style="left:170px;top:-6px;width:100px;height:110px;transform:rotate(10deg);--wm:url(assets/silhouettes/upgrade.png);--wmc:#fff;--wmo:.15;--wmfade:linear-gradient(180deg,#000 20%,transparent 100%)"></div>
+    <div class="content"><span class="t" style="--fs:50px;margin-top:-4px">Upgrades</span></div>
   </div>
 
-  <!-- LEFT -->
-  <div class="comp" style="left:14px;top:300px" data-export="Left/Btn_DailyRewards">
-    <div class="btn daily green" style="overflow:visible"><span class="t">Daily Rewards</span></div>
-    <div class="badge" style="right:0;top:-6px"><span class="t" style="font-size:34px">!</span></div>
+  <!-- ============================== LEFT ============================== -->
+  <div id="daily-wrap" class="abs" data-export="HUD/Left/Btn_DailyRewards">
+    <div id="btn-daily" class="skin green" data-facets="58" data-seed="41" data-streaks="3" data-export="HUD/Left/Btn_DailyRewards_NoBadge">
+      <div class="wm" style="left:168px;top:-6px;width:122px;height:122px;transform:rotate(-12deg);--wm:url(assets/silhouettes/calendar.png);--wmc:#1f7d0b;--wmo:.34;--wmfade:linear-gradient(170deg,#000 30%,rgba(0,0,0,.45) 75%,rgba(0,0,0,.15) 100%)"></div>
+      <div class="wm" style="left:18px;top:30px;width:90px;height:90px;transform:rotate(14deg);--wm:url(assets/silhouettes/calendar.png);--wmc:#ffffff;--wmo:.12;--wmfade:linear-gradient(180deg,#000 10%,transparent 90%)"></div>
+      <div class="content" style="padding-right:18px"><span class="t" style="--fs:39px;margin-top:-4px">Daily Rewards</span></div>
+    </div>
+    <div id="badge-daily" class="badge" data-export="HUD/Left/Badge_Alert"><span class="t" style="--fs:34px;margin-top:-2px">!</span></div>
   </div>
-  <div class="comp" style="left:14px;top:412px" data-export="Left/Btn_Shop">
-    <div class="btn tile red"><img class="icon" src="assets/icons/cart.png"><span class="t">Shop</span></div></div>
-  <div class="comp" style="left:204px;top:412px" data-export="Left/Btn_Pass">
-    <div class="btn tile gold"><img class="icon" src="assets/icons/ticket.png"><span class="t">Pass</span></div></div>
-  <div class="comp" style="left:14px;top:592px" data-export="Left/Btn_Rebirth">
-    <div class="btn tile purple"><img class="icon" src="assets/icons/rebirth.png"><span class="t">Rebirth</span></div></div>
-  <div class="comp" style="left:204px;top:592px" data-export="Left/Btn_Index">
-    <div class="btn tile blue"><img class="icon" src="assets/icons/book.png"><span class="t">Index</span></div></div>
 
-  <!-- RIGHT -->
-  <div class="comp starter" style="right:40px;top:330px;width:230px" data-export="Right/StarterPack">
+  <div id="tile-shop" class="skin tile red" data-facets="52" data-seed="51" data-streaks="2" data-export="HUD/Left/Btn_Shop">
+    <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/cart.png)"></div>
+    <div class="content"><img class="icon" src="assets/icons/cart.png"><span class="t">Shop</span></div>
+  </div>
+  <div id="tile-pass" class="skin tile gold" data-facets="52" data-seed="52" data-streaks="2" data-export="HUD/Left/Btn_Pass">
+    <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/ticket.png)"></div>
+    <div class="content"><img class="icon" src="assets/icons/ticket.png"><span class="t">Pass</span></div>
+  </div>
+  <div id="tile-reb" class="skin tile purple" data-facets="52" data-seed="53" data-streaks="2" data-export="HUD/Left/Btn_Rebirth">
+    <div class="glow"></div><div class="wm" style="--wm:url(assets/icons/rebirth.png)"></div>
+    <div class="content"><img class="icon" src="assets/icons/rebirth.png"><span class="t">Rebirth</span></div>
+  </div>
+  <div id="tile-idx" class="skin tile blue" data-facets="52" data-seed="54" data-streaks="2" data-export="HUD/Left/Btn_Index">
+    <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/book.png)"></div>
+    <div class="content"><img class="icon" src="assets/icons/book.png"><span class="t">Index</span></div>
+  </div>
+
+  <!-- ============================== RIGHT ============================== -->
+  <div id="starter" class="abs" data-export="HUD/Right/StarterPack">
     <span class="t label">Starter Pack</span>
-    <img class="icon" src="assets/icons/gift.png">
+    <div class="rays"></div><div class="glow"></div>
+    <div data-sparkles="5" data-seed="61" style="position:absolute;left:20px;top:40px;width:170px;height:120px"></div>
+    <img class="icon lg" src="assets/icons/gift.png">
     <div class="price"><img class="icon" src="assets/icons/robux.png"><span class="t">19</span></div>
   </div>
-  <div class="comp" style="right:20px;top:560px" data-export="Right/Card_X2Money">
-    <div class="btn card" style="overflow:visible"><span class="t">X2 Money</span>
-      <div class="price"><img class="icon" src="assets/icons/robux.png"><span class="t">9</span></div></div>
+
+  <div id="x2money" class="abs card-wrap" data-export="HUD/Right/Card_X2Money">
+    <div class="skin card rainbow" data-facets="50" data-seed="71" data-streaks="3" style="left:0;top:0">
+      <div class="wm" style="left:-14px;top:18px;width:74px;height:74px;transform:rotate(-18deg);--wm:url(assets/silhouettes/cash.png)"></div>
+      <div class="wm" style="right:-12px;top:-14px;width:70px;height:70px;transform:rotate(16deg);--wm:url(assets/silhouettes/cash.png)"></div>
+      <div class="content"><span class="t">X2 Money</span></div>
+    </div>
+    <div class="price"><img class="icon" src="assets/icons/robux.png"><span class="t">9</span></div>
   </div>
-  <div class="comp" style="right:20px;top:680px" data-export="Right/Card_X2Luck">
-    <div class="btn card" style="overflow:visible"><span class="t">X2 Luck</span>
-      <div class="price"><img class="icon" src="assets/icons/robux.png"><span class="t">9</span></div></div>
+  <div id="x2luck" class="abs card-wrap" data-export="HUD/Right/Card_X2Luck">
+    <div class="skin card rainbow" data-facets="50" data-seed="72" data-streaks="3" style="left:0;top:0">
+      <div class="wm" style="left:-12px;top:18px;width:72px;height:72px;transform:rotate(-14deg);--wm:url(assets/silhouettes/clover.png)"></div>
+      <div class="wm" style="right:-10px;top:-14px;width:68px;height:68px;transform:rotate(18deg);--wm:url(assets/silhouettes/clover.png)"></div>
+      <div class="content"><span class="t">X2 Luck</span></div>
+    </div>
+    <div class="price"><img class="icon" src="assets/icons/robux.png"><span class="t">9</span></div>
   </div>
 
-  <!-- BOTTOM LEFT -->
-  <div class="comp stat" style="left:14px;top:870px" data-export="BottomLeft/RebirthCounter">
-    <img class="icon" src="assets/icons/rebirth.png"><span class="t" style="font-size:52px;color:#ff4a5a">4</span></div>
-  <div class="comp stat money" style="left:14px;top:942px" data-export="BottomLeft/Money">
-    <span class="t">$572,831</span></div>
-  <div class="comp" style="left:318px;top:944px" data-export="BottomLeft/Btn_AddMoney">
-    <div class="btn plus green"><span class="t">+</span></div></div>
-  <div class="comp small" style="left:14px;top:1022px" data-export="BottomLeft/FriendBoost">
-    <span class="t">Friend Boost: +0%</span></div>
+  <!-- ============================== BOTTOM LEFT ============================== -->
+  <div id="rebirths" class="abs" data-export="HUD/BottomLeft/RebirthCounter">
+    <img class="icon" src="assets/icons/rebirth.png"><span class="t">4</span></div>
+  <div id="money-row" class="abs">
+    <div id="money" data-export="HUD/BottomLeft/Money"><span class="t">$572,831</span></div>
+    <div id="btn-add" class="skin lime" data-facets="40" data-seed="81" data-streaks="1" data-export="HUD/BottomLeft/Btn_AddMoney">
+      <div class="content"><span class="t">+</span></div></div>
+  </div>
+  <div id="friend" class="abs" data-export="HUD/BottomLeft/FriendBoost"><span class="t">Friend Boost: +0%</span></div>
 
-  <!-- BOTTOM CENTRE -->
-  <div class="comp mult" style="left:1090px;top:852px" data-export="Bottom/MultiplierLabel">
-    <span class="t">x3 Multiplier</span></div>
-  <div class="comp" style="left:560px;top:898px" data-export="Bottom/XPBar">
-    <div class="xpbar"><div class="fill"></div><span class="t l">Level 5</span><span class="t r">57/100 XP</span></div></div>
-  <div class="comp" style="left:560px;top:985px" data-export="Bottom/Btn_5Levels">
-    <div class="btn lvl green"><span class="t" style="color:#fff04a">+5 Levels</span></div></div>
-  <div class="comp" style="left:825px;top:985px" data-export="Bottom/Btn_10Levels">
-    <div class="btn lvl green"><span class="t" style="color:#4ad2ff">+10 Levels</span></div></div>
-  <div class="comp" style="left:1090px;top:985px" data-export="Bottom/Btn_25Levels">
-    <div class="btn lvl green"><span class="t" style="color:#ff6af0">+25 Levels</span></div></div>
+  <!-- ============================== BOTTOM CENTRE ============================== -->
+  <div id="mult" class="abs" data-export="HUD/Bottom/MultiplierLabel"><span class="t">x3 Multiplier</span></div>
+  <div id="xpbar" class="skin" data-facets="44" data-seed="95" data-export="HUD/Bottom/XPBar">
+    <div class="fill"></div>
+    <div class="content"><span class="t">Level 5</span><span class="t">57/100 XP</span></div>
+  </div>
+  <div id="lvl5"  class="skin lvl lime" data-facets="56" data-seed="91" data-streaks="3" data-export="HUD/Bottom/Btn_5Levels"><div class="content"><span class="t">+5 Levels</span></div></div>
+  <div id="lvl10" class="skin lvl lime" data-facets="56" data-seed="92" data-streaks="3" data-export="HUD/Bottom/Btn_10Levels"><div class="content"><span class="t">+10 Levels</span></div></div>
+  <div id="lvl25" class="skin lvl lime" data-facets="56" data-seed="93" data-streaks="3" data-export="HUD/Bottom/Btn_25Levels"><div class="content"><span class="t">+25 Levels</span></div></div>
 
-  <!-- BOTTOM RIGHT -->
-  <div class="comp boost" style="right:230px;top:925px;width:110px" data-export="BottomRight/Boost_Money">
-    <img class="icon" src="assets/icons/cash.png"><span class="t">x1.1</span></div>
-  <div class="comp boost" style="right:120px;top:925px;width:110px" data-export="BottomRight/Boost_Rebirth">
-    <img class="icon" src="assets/icons/rebirth.png"><span class="t">x1.2</span></div>
-  <div class="comp boost" style="right:10px;top:925px;width:110px" data-export="BottomRight/Boost_Gems">
-    <img class="icon" src="assets/icons/diamond.png"><span class="t">x1.3</span></div>
+  <!-- ============================== BOTTOM RIGHT ============================== -->
+  <div id="boost-money" class="abs boost" data-export="HUD/BottomRight/Boost_Money"><img class="icon" src="assets/icons/cash.png"><span class="t">x1.1</span></div>
+  <div id="boost-reb"   class="abs boost" data-export="HUD/BottomRight/Boost_Rebirth"><img class="icon" src="assets/icons/rebirth.png"><span class="t">x1.2</span></div>
+  <div id="boost-gem"   class="abs boost" data-export="HUD/BottomRight/Boost_Gems"><img class="icon" src="assets/icons/diamond.png"><span class="t">x1.3</span></div>
+
+  <!-- ============================== DAILY REWARDS PANEL ============================== -->
+  <div id="panel-wrap" class="abs" data-export="DailyRewards/Panel_Full">
+    <div id="panel" data-export="DailyRewards/Panel_Frame">
+      <div class="body-grid"></div>
+      <div class="wm body-wm"></div>
+      <div id="header" class="skin blue" data-facets="80" data-seed="101" data-streaks="4" data-export="DailyRewards/Header_Bar">
+        <div class="dots"></div>
+        <div class="wm"></div>
+        <div class="content"><span class="t title">Daily Rewards</span></div>
+        <div id="btn-claimall" class="skin gold" data-facets="46" data-seed="102" data-streaks="2" data-export="DailyRewards/Btn_ClaimAll"><div class="content"><span class="t">CLAIM ALL</span></div></div>
+        <div id="btn-close" class="skin red" data-facets="40" data-seed="103" data-streaks="1" data-export="DailyRewards/Btn_Close"><div class="content"><span class="t">X</span></div></div>
+      </div>
+      <div class="body-rim"></div>
+
+      <div id="grid">
+        <div class="day" id="day1"><div data-export="DailyRewards/Card_Day1" class="skin blue" data-facets="70" data-seed="111" data-streaks="5">
+          <div class="glow"></div>
+          <div class="content"><span class="t dn">DAY 1</span><img class="icon" src="assets/icons/box.png"><span class="t name">[ITEM NAME]</span>
+            <div class="status skin gray" data-facets="40" data-seed="121" data-streaks="1" data-export="DailyRewards/Btn_Claimed"><div class="content"><span class="t">CLAIMED</span></div></div></div></div></div>
+        <div class="day" id="day2"><div data-export="DailyRewards/Card_Day2" class="skin blue" data-facets="70" data-seed="112" data-streaks="5">
+          <div class="glow"></div>
+          <div class="content"><span class="t dn">DAY 2</span><img class="icon" src="assets/icons/box.png"><span class="t name">[ITEM NAME]</span>
+            <div class="status skin green" data-facets="40" data-seed="122" data-streaks="1" data-export="DailyRewards/Btn_Claim"><div class="content"><span class="t">CLAIM</span></div></div></div></div></div>
+        <div class="day" id="day3"><div data-export="DailyRewards/Card_Day3" class="skin blue" data-facets="70" data-seed="113" data-streaks="5">
+          <div class="glow"></div>
+          <div class="content"><span class="t dn">DAY 3</span><img class="icon" src="assets/icons/box.png"><span class="t name">[ITEM NAME]</span>
+            <div class="status skin red" data-facets="40" data-seed="123" data-streaks="1" data-export="DailyRewards/Btn_Locked"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
+        <div class="day" id="day7"><div data-export="DailyRewards/Card_Day7" class="skin rainbow" data-facets="90" data-seed="117" data-streaks="0">
+          <div class="rays"></div><div class="glow"></div>
+          <div data-sparkles="14" data-seed="171" style="position:absolute;inset:10px;z-index:2"></div>
+          <div class="content"><span class="t dn">DAY 7</span><img class="icon lg" src="assets/icons/box.png"><span class="t name">[ITEM<br>NAME]</span>
+            <div class="status skin red" data-facets="40" data-seed="127" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
+        <div class="day" id="day4"><div data-export="DailyRewards/Card_Day4" class="skin purple" data-facets="70" data-seed="114" data-streaks="5">
+          <div class="glow"></div>
+          <div class="content"><span class="t dn">DAY 4</span><img class="icon" src="assets/icons/box.png"><span class="t name">[ITEM NAME]</span>
+            <div class="status skin red" data-facets="40" data-seed="124" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
+        <div class="day" id="day5"><div data-export="DailyRewards/Card_Day5" class="skin purple" data-facets="70" data-seed="115" data-streaks="5">
+          <div class="glow"></div>
+          <div class="content"><span class="t dn">DAY 5</span><img class="icon" src="assets/icons/box.png"><span class="t name">[ITEM NAME]</span>
+            <div class="status skin red" data-facets="40" data-seed="125" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
+        <div class="day" id="day6"><div data-export="DailyRewards/Card_Day6" class="skin gold" data-facets="70" data-seed="116" data-streaks="5">
+          <div class="glow"></div>
+          <div class="content"><span class="t dn">DAY 6</span><img class="icon" src="assets/icons/box.png"><span class="t name">[ITEM NAME]</span>
+            <div class="status skin red" data-facets="40" data-seed="126" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
+      </div>
+    </div>
+    <img id="cal-icon" class="abs icon lg" src="assets/icons/calendar.png" data-export="DailyRewards/Icon_Calendar">
+    <div id="op" class="abs" data-export="DailyRewards/Sticker_OP"><span class="t">OP</span></div>
+  </div>
 
 </div>
+
+<script>
+// deterministic RNG so every build produces identical art
+function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const NS = 'http://www.w3.org/2000/svg';
+
+// outlined text: stroke layer underneath, gradient fill layer on top
+document.querySelectorAll('.t').forEach(el => {
+  const html = el.innerHTML;
+  el.innerHTML = `<span class="ts">${html}</span><span class="tf">${html}</span>`;
+});
+
+// low-poly shard facets + diagonal light streaks inside every skin
+document.querySelectorAll('[data-facets]').forEach(el => {
+  const w = el.clientWidth, h = el.clientHeight, cell = +el.dataset.facets, r = rng(+el.dataset.seed || 1);
+  const cols = Math.max(2, Math.round(w / cell)), rows = Math.max(1, Math.round(h / cell));
+  const pts = [];
+  for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) {
+    const edgeX = i === 0 || i === cols, edgeY = j === 0 || j === rows;
+    const x = i * w / cols + (edgeX ? 0 : (r() - .5) * .7 * w / cols);
+    const y = j * h / rows + (edgeY ? 0 : (r() - .5) * .7 * h / rows);
+    pts.push([x, y]);
+  }
+  const P = (i, j) => pts[j * (cols + 1) + i].map(v => v.toFixed(1)).join(',');
+  let s = '';
+  for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+    const tris = (i + j) % 2
+      ? [[P(i, j), P(i + 1, j), P(i + 1, j + 1)], [P(i, j), P(i + 1, j + 1), P(i, j + 1)]]
+      : [[P(i, j), P(i + 1, j), P(i, j + 1)], [P(i + 1, j), P(i + 1, j + 1), P(i, j + 1)]];
+    for (const t of tris) {
+      const k = r();
+      if (k < .45) s += `<polygon points="${t.join(' ')}" fill="#fff" fill-opacity="${(.04 + r() * .13).toFixed(3)}"/>`;
+      else if (k < .8) s += `<polygon points="${t.join(' ')}" fill="#000" fill-opacity="${(.02 + r() * .06).toFixed(3)}"/>`;
+    }
+  }
+  const n = +el.dataset.streaks || 0;
+  for (let q = 0; q < n; q++) {                   // slanted light bars, like the reference's sheen
+    const x = (q + .3 + r() * .5) * w / n, bw = 6 + r() * (q % 2 ? 26 : 12), sl = h * .55;
+    s += `<polygon points="${x},0 ${x + bw},0 ${x + bw - sl},${h} ${x - sl},${h}" fill="#fff" fill-opacity="${(.08 + r() * .1).toFixed(3)}"/>`;
+  }
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'facets'); svg.setAttribute('viewBox', `0 0 ${w} ${h}`); svg.setAttribute('preserveAspectRatio', 'none');
+  svg.innerHTML = s;
+  el.prepend(svg);
+});
+
+// four-point sparkles
+document.querySelectorAll('[data-sparkles]').forEach(el => {
+  const r = rng(+el.dataset.seed || 7), n = +el.dataset.sparkles, w = el.clientWidth, h = el.clientHeight;
+  for (let q = 0; q < n; q++) {
+    const size = 8 + r() * 16, x = r() * (w - size), y = r() * (h - size);
+    const sp = document.createElementNS(NS, 'svg');
+    sp.setAttribute('class', 'sparkle'); sp.setAttribute('viewBox', '-10 -10 20 20');
+    sp.setAttribute('style', `left:${x}px;top:${y}px;width:${size}px;height:${size}px;opacity:${(.55 + r() * .45).toFixed(2)}`);
+    sp.innerHTML = '<path d="M0-10C1-3 3-1 10 0C3 1 1 3 0 10C-1 3-3 1-10 0C-3-1-1-3 0-10Z" fill="#fff"/>';
+    el.appendChild(sp);
+  }
+});
+document.body.dataset.ready = '1';
+</script>
 </body>
 </html>

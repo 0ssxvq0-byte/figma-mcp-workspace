@@ -1,32 +1,69 @@
-// Renders hud.html to a full-screen preview plus one transparent PNG per [data-export] element.
-// Usage: node tools/hud/build.js [outDir]   (default: Concepts/HUD)
+// Renders hud.html to a transparent full-screen preview plus one transparent PNG per [data-export] element.
+// Usage: node tools/hud/build.js [outDir]   (default: Concepts)
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 let chromium;
 try { ({ chromium } = require('playwright')); }
 catch { ({ chromium } = require('/opt/node22/lib/node_modules/playwright')); }
 
 const root = path.resolve(__dirname, '..', '..');
-const out = path.resolve(root, process.argv[2] || 'Concepts/HUD');
-const page_url = 'file://' + path.join(__dirname, 'hud.html');
+const out = path.resolve(root, process.argv[2] || 'Concepts');
+const MARGIN = 10;                       // transparent breathing room around each export (CSS px)
+const types = { '.html': 'text/html', '.png': 'image/png', '.woff2': 'font/woff2' };
 
-(async () => {
+// CSS masks need a real origin, so serve the folder over http instead of file://
+const server = http.createServer((req, res) => {
+  const file = path.join(__dirname, decodeURIComponent(req.url.split('?')[0]));
+  if (!file.startsWith(__dirname) || !fs.existsSync(file)) { res.writeHead(404); return res.end(); }
+  res.writeHead(200, { 'Content-Type': types[path.extname(file)] || 'application/octet-stream' });
+  fs.createReadStream(file).pipe(res);
+});
+
+server.listen(0, async () => {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 2 });
-  await page.goto(page_url);
+  await page.goto(`http://127.0.0.1:${server.address().port}/hud.html`);
+  await page.waitForFunction(() => document.body.dataset.ready === '1');
   await page.evaluate(() => document.fonts.ready);
+  await page.waitForLoadState('networkidle');
 
   fs.mkdirSync(out, { recursive: true });
-  await page.screenshot({ path: path.join(out, '_Preview.png'), scale: 'css' });
+  await page.screenshot({ path: path.join(out, '_Preview.png'), omitBackground: true, scale: 'css' });
 
-  await page.evaluate(() => document.body.classList.add('export'));
-  const els = await page.$$('[data-export]');
-  for (const el of els) {
-    const name = await el.getAttribute('data-export');
+  const names = await page.$$eval('[data-export]', els => els.map(e => e.dataset.export));
+  for (const name of names) {
+    const clip = await page.evaluate(([name, m]) => {
+      document.querySelectorAll('.solo').forEach(e => e.classList.remove('solo'));
+      document.body.classList.add('isolate');
+      const el = document.querySelector(`[data-export="${name}"]`);
+      el.classList.add('solo');
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      for (const e of [el, ...el.querySelectorAll('*')]) {
+        let r = e.getBoundingClientRect();
+        // anything inside an overflow:hidden ancestor only counts as far as that ancestor's box
+        for (let a = e.parentElement; a && a !== el.parentElement; a = a.parentElement) {
+          if (getComputedStyle(a).overflow !== 'hidden') continue;
+          const c = a.getBoundingClientRect();
+          r = { left: Math.max(r.left, c.left), top: Math.max(r.top, c.top), right: Math.min(r.right, c.right), bottom: Math.min(r.bottom, c.bottom) };
+          r.width = r.right - r.left; r.height = r.bottom - r.top;
+        }
+        if (r.width <= 0 || r.height <= 0) continue;
+        x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom);
+      }
+      // clip to the element's own overflow box when it hides overflow (skins), so hidden decor doesn't pad the export
+      if (getComputedStyle(el).overflow === 'hidden') {
+        const r = el.getBoundingClientRect(); x0 = r.left; y0 = r.top; x1 = r.right; y1 = r.bottom;
+      }
+      x0 = Math.max(0, Math.floor(x0 - m)); y0 = Math.max(0, Math.floor(y0 - m));
+      x1 = Math.min(1920, Math.ceil(x1 + m)); y1 = Math.min(1080, Math.ceil(y1 + m));
+      return { x: x0, y: y0, width: x1 - x0, height: y1 - y0 };
+    }, [name, MARGIN]);
     const file = path.join(out, name + '.png');
     fs.mkdirSync(path.dirname(file), { recursive: true });
-    await el.screenshot({ path: file, omitBackground: true });
-    console.log('exported', path.relative(root, file));
+    await page.screenshot({ path: file, clip, omitBackground: true });
+    console.log('exported', path.relative(root, file), `${clip.width}x${clip.height}`);
   }
   await browser.close();
-})();
+  server.close();
+});
