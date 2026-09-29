@@ -63,18 +63,19 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 .skin > .content { position: absolute; inset: 0; z-index: 4; display: flex; align-items: center; justify-content: center; }
 
 /* earthy, forest palette */
-.red     { --c1: #ff6a4c; --c2: #e8412e; --c3: #b52a1e; }            /* clay / berry   */
-.blue    { --c1: #52cdea; --c2: #2a9bd2; --c3: #1a6ea6; }            /* stream         */
-.green   { --c1: #b3e24a; --c2: #74c22a; --c3: #3f8f17; }            /* leaf           */
-.lime    { --c1: #c2ec4e; --c2: #86cc2a; --c3: #4f9a17; }
-.gold    { --c1: #ffd956; --c2: #f7ab26; --c3: #cf7812; }            /* amber          */
-.purple  { --c1: #c592ea; --c2: #9460cc; --c3: #663a9f; }            /* dusk           */
+.red     { --c1: #ff4a6c; --c2: #f5173f; --c3: #c40b2c; }
+.blue    { --c1: #47d2ff; --c2: #16a0f7; --c3: #0d6fdd; }
+.green   { --c1: #b8f82e; --c2: #6ada12; --c3: #2ea60c; }
+.lime    { --c1: #cdfd34; --c2: #8ae712; --c3: #47b90b; }
+.gold    { --c1: #ffec30; --c2: #ffc10a; --c3: #ff9000; }
+.purple  { --c1: #e865ff; --c2: #b133fa; --c3: #7818e2; }
 .emerald { --c1: #6fe3a0; --c2: #2fb872; --c3: #16864c; }
 .gray    { --c1: #b9bdb0; --c2: #878c7e; --c3: #5c6055; --rim: rgba(255,255,255,.26); }
-.earth   { --c1: #6a5638; --c2: #4f3f27; --c3: #372b19; --rim: rgba(255,235,200,.16); }
+.earth   { --c1: #2f6b4a; --c2: #235539; --c3: #173f2a; --rim: rgba(200,255,220,.16); }
+.cat.off { --c1: #3f5a44; --c2: #2f4633; --c3: #233626; --rim: rgba(255,255,255,.12); }
 .unknown { --c1: #3e4a3a; --c2: #2d372b; --c3: #1f271e; --rim: rgba(255,255,255,.10); }
-.amber7  { background: linear-gradient(168deg, #ffe46a 0%, #ffbf2e 26%, #f58a1e 46%, #d9611a 58%, #8cc43a 80%, #2f9e55 100%); }
-.base    { --c1: #52cdea; --c2: #2a9bd2; --c3: #1a6ea6; }
+.amber7  { background: linear-gradient(162deg, #ff1fcf 0%, #ff3d8c 16%, #ff8a1a 32%, #ffd70f 46%, #b8f21c 58%, #2ee06a 70%, #13c9ff 84%, #5a6cff 100%); }
+.base    { --c1: #4cd2ff; --c2: #189ff6; --c3: #0e6cdc; }
 
 /* ======================================================================
    NATURAL MATERIALS: wood, moss, vines
@@ -155,12 +156,12 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 #tab-upg  { left: 1138px; top: 14px; width: 265px; height: 92px; }
 #tab-base .core {
   position: absolute; left: 50%; top: 56%; width: 250px; height: 220px; transform: translate(-50%, -50%); z-index: 1;
-  background: radial-gradient(ellipse at 50% 55%, rgba(140,230,120,.85) 0%, rgba(80,190,120,.6) 38%, rgba(80,190,120,0) 70%);
+  background: radial-gradient(ellipse at 50% 55%, rgba(196,110,255,.95) 0%, rgba(150,80,245,.75) 38%, rgba(120,90,255,0) 70%);
   -webkit-mask-image: url(assets/silhouettes/house.png), linear-gradient(180deg, #000 35%, transparent 92%);
   -webkit-mask-size: contain, 100% 100%; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; -webkit-mask-composite: source-in;
   mask-image: url(assets/silhouettes/house.png), linear-gradient(180deg, #000 35%, transparent 92%);
   mask-size: contain, 100% 100%; mask-repeat: no-repeat; mask-position: center; mask-composite: intersect;
-  opacity: .7;
+  opacity: .8;
 }
 #tab-chip {
   left: 941px; top: 2px; width: 40px; height: 24px; z-index: 8;
@@ -249,15 +250,19 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 /* ======================================================================
    BOTTOM RIGHT: events
    ====================================================================== */
-#events { left: 1560px; top: 922px; width: 352px; }
-#events .head { display: flex; justify-content: flex-end; padding-right: 10px; margin-bottom: 2px; }
+#events { left: 1580px; top: 910px; width: 332px; }
+#events .head { display: flex; justify-content: flex-end; padding-right: 10px; margin-bottom: 0; }
 #events .head .t { --fs: 22px; --tf: var(--tf-cream); opacity: .9; }
-.event { position: relative; height: 58px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding-right: 12px; margin-top: 4px; }
+.event { position: relative; height: 66px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding-right: 12px; margin-top: 4px; }
 .event::before { content: ""; position: absolute; inset: 4px 0; z-index: -1; border-radius: 6px;
   background: linear-gradient(90deg, rgba(10,18,8,0) 0%, rgba(10,18,8,.34) 38%, rgba(10,18,8,.5) 100%); }
 .event .ev-icon { width: 54px; height: 54px; flex: none; position: relative; }
 .event .ev-icon img { position: absolute; }
-.event .t { --fs: 36px; transform: skewX(-9deg); }
+.event .ev-txt { display: flex; flex-direction: column; align-items: flex-end; }
+.event .t.nm { --fs: 20px; --tf: var(--tf-cream); }
+.event .dur { display: flex; align-items: center; gap: 6px; margin-top: -2px; }
+.event .dur img { width: 26px; height: 26px; }
+.event .t.tm { --fs: 32px; --tf: var(--tf-green); }
 
 /* ======================================================================
    CENTRE PANELS (shared frame)
@@ -274,7 +279,13 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
     radial-gradient(circle at 50% 42%, rgba(255,255,255,.05) 0 4.4px, transparent 5px) 0 0 / 24px 24px,
     radial-gradient(circle at 50% 58%, rgba(0,0,0,.30) 0 5px, transparent 5.6px) 0 0 / 24px 24px; }
 .phead { position: absolute; left: 0; top: 0; right: 0; height: 93px; border: 0; border-bottom: 5px solid var(--ink); border-radius: 0; box-shadow: none; z-index: 2; }
-.phead::after { border-radius: 0; }
+.phead::after { border-radius: 0; box-shadow: inset 0 3px 0 rgba(255,255,255,.34), inset 0 -5px 0 rgba(0,0,0,.18); }
+.phead .dots { position: absolute; inset: 0; z-index: 1;
+  background: radial-gradient(circle, rgba(255,255,255,.24) 2.6px, transparent 3.1px) 0 0 / 16px 16px;
+  -webkit-mask: linear-gradient(100deg, transparent 20%, #000 55%, rgba(0,0,0,.6) 80%, transparent 100%);
+  mask: linear-gradient(100deg, transparent 20%, #000 55%, rgba(0,0,0,.6) 80%, transparent 100%); }
+.panel .leaf-wm { position: absolute; z-index: 0; pointer-events: none; background: #9cf06a; opacity: .07;
+  -webkit-mask: url(assets/silhouettes/leaf.png) center / contain no-repeat; mask: url(assets/silhouettes/leaf.png) center / contain no-repeat; }
 .phead > .content { justify-content: flex-start; }
 .phead .title { --fs: 58px; margin-left: 142px; margin-top: -4px; }
 .phead-icon { left: -22px; top: -34px; width: 146px; height: 146px; z-index: 9; }
@@ -286,7 +297,7 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 .section-label img, .section-label .svgi { width: 34px; height: 34px; }
 
 /* ---------- daily rewards ---------- */
-#scr-daily .phead .cal-burn { position: absolute; z-index: 1; left: 600px; top: -16px; width: 140px; height: 140px; transform: rotate(12deg); color: #4a2a0e; opacity: .28;
+#scr-daily .phead .cal-burn { position: absolute; z-index: 1; left: 600px; top: -16px; width: 140px; height: 140px; transform: rotate(12deg); color: #ffffff; opacity: .2;
   -webkit-mask: linear-gradient(180deg, #000 40%, transparent 95%); mask: linear-gradient(180deg, #000 40%, transparent 95%); }
 #btn-claimall { right: 104px; top: 9px; width: 262px; height: 70px; z-index: 5; }
 #btn-claimall .t { --fs: 35px; }
@@ -314,37 +325,62 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 #op { right: -40px; top: 96px; z-index: 9; transform: rotate(20deg); }
 #op .t { --fs: 56px; --tf: var(--tf-red); }
 
-/* ---------- shop ---------- */
-.seg { top: 13px; height: 62px; width: 150px; z-index: 5; }
-.seg .t { --fs: 30px; }
-#seg-coins { right: 268px; } #seg-robux { right: 106px; }
-.seg.off, .cat.off { --c1: #7d6a4a; --c2: #5f4f33; --c3: #463a24; --rim: rgba(255,235,200,.14); }
-#shop-body { display: grid; grid-template-columns: 1fr 404px; gap: 20px; padding: 14px 20px 18px; height: 100%; }
-#shop-items { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 36px 1fr 1fr; gap: 12px; }
-#shop-items .section-label { grid-column: 1 / span 3; }
-.item { position: relative; }
-.item > .skin { inset: 0; width: auto; height: auto; }
-.item > .skin > .content { flex-direction: column; justify-content: space-between; padding: 22px 0 10px; }
-.item .icon { width: 92px; height: 92px; }
-.item .t.name { --fs: 24px; }
-.item .glow { left: 50%; top: 86px; width: 170px; height: 150px; transform: translate(-50%,-50%); --ga: .42; }
-.rarity { position: absolute; left: 10px; top: 6px; z-index: 5; }
-.rarity .t { --fs: 17px; }
-.buy { position: relative; width: 190px; height: 50px; flex: none; }
-.buy .t { --fs: 30px; }
-.buy .content { gap: 6px; }
+/* ---------- shop (Robux store) ---------- */
+#shop-side { position: absolute; left: 18px; top: 16px; bottom: 18px; width: 196px; display: flex; flex-direction: column; gap: 12px; }
+.scat { position: relative; height: 70px; flex: none; }
+.scat > .content { justify-content: flex-start; gap: 8px; padding-left: 10px; }
+.scat .icon { width: 46px; height: 46px; flex: none; }
+.scat .t { --fs: 26px; }
+.scat.off { --c1: #3f5a44; --c2: #2f4633; --c3: #233626; --rim: rgba(255,255,255,.12); }
+.scat.off .t { --tf: var(--tf-cream); }
+#shop-side .note { margin-top: auto; padding: 10px 6px; text-align: center; }
+#shop-side .note .t { --fs: 17px; --tf: var(--tf-cream); --to: .09; }
+#shop-main { position: absolute; left: 230px; right: 18px; top: 16px; bottom: 18px; display: flex; flex-direction: column; gap: 10px; }
+#shop-main .section-label { height: 28px; flex: none; }
+#shop-main .section-label .t { --fs: 24px; }
+.buy { position: relative; flex: none; }
+.buy > .content { gap: 6px; }
 .buy .rbx { width: 30px; height: 30px; }
-#shop-deals { display: flex; flex-direction: column; gap: 12px; }
-#shop-deals .section-label { height: 36px; flex: none; }
-.deal { position: relative; flex: 1; }
-.deal > .skin { inset: 0; width: auto; height: auto; }
-.deal > .skin > .content { justify-content: flex-start; gap: 12px; padding: 0 14px; }
-.deal .icon { width: 86px; height: 86px; flex: none; }
-.deal .txt { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; flex: 1; }
-.deal .t.name { --fs: 28px; }
-.deal .t.desc { --fs: 17px; --tf: var(--tf-cream); --to: .09; }
-.deal .buy { width: 96px; height: 50px; }
-.deal .wm { --wmc: #fff; --wmo: .14; }
+.buy .t { --fs: 30px; }
+/* featured bundle banner */
+#feat { position: relative; height: 136px; flex: none; }
+#feat > .skin { inset: 0; width: auto; height: auto; }
+#feat .rays { position: absolute; left: 90px; top: 50%; width: 360px; height: 360px; transform: translate(-50%,-50%); z-index: 1; }
+#feat > .skin > .content { justify-content: flex-start; gap: 18px; padding: 0 20px 0 24px; }
+#feat > .skin > .content > .icon { width: 116px; height: 116px; flex: none; }
+#feat .txt { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; flex: 1; }
+#feat .t.name { --fs: 40px; }
+#feat .t.desc { --fs: 20px; --tf: var(--tf-cream); --to: .09; }
+#feat .chips { display: flex; gap: 8px; }
+.chip { position: relative; display: flex; align-items: center; gap: 4px; padding: 3px 10px 3px 6px; border-radius: 8px; border: 3px solid var(--ink); background: rgba(10,15,30,.35); }
+.chip img { width: 28px; height: 28px; }
+.chip .t { --fs: 19px; }
+#feat .buy { width: 170px; height: 64px; }
+#feat .buy .t { --fs: 36px; }
+#feat .ribbon { position: absolute; right: -8px; top: 12px; z-index: 6; transform: rotate(8deg); }
+#feat .ribbon .t { --fs: 26px; --tf: var(--tf-gold); }
+/* game pass cards */
+#passes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; height: 128px; flex: none; }
+.pass { position: relative; }
+.pass > .skin { inset: 0; width: auto; height: auto; }
+.pass > .skin > .content { justify-content: flex-start; gap: 14px; padding: 0 16px; }
+.pass .icon { width: 86px; height: 86px; flex: none; }
+.pass .txt { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; flex: 1; }
+.pass .t.tag { --fs: 16px; --tf: var(--tf-cream); --to: .1; }
+.pass .t.name { --fs: 34px; }
+.pass .t.desc { --fs: 18px; --tf: var(--tf-cream); --to: .09; }
+.pass .buy { width: 118px; height: 56px; }
+.pass .wm { --wmc: #fff; --wmo: .16; }
+/* currency packs */
+#packs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
+.pack { position: relative; }
+.pack > .skin { inset: 0; width: auto; height: auto; }
+.pack > .skin > .content { flex-direction: column; justify-content: space-between; padding: 6px 0 9px; }
+.pack .icon { width: 72px; height: 72px; }
+.pack .t.amt { --fs: 30px; --tf: var(--tf-green); }
+.pack .buy { width: 150px; height: 46px; }
+.pack .bonus { position: absolute; right: -6px; top: -8px; z-index: 6; transform: rotate(10deg); }
+.pack .bonus .t { --fs: 24px; --tf: var(--tf-gold); }
 
 /* ---------- index ---------- */
 #index-top { position: absolute; left: 20px; right: 20px; top: 14px; height: 56px; display: flex; align-items: center; gap: 10px; }
@@ -434,26 +470,6 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 
 <div id="stage">
 
-  <!-- ============================== WOODEN MOUNTS (behind everything) ============================== -->
-  <div id="beam" class="wood" data-grain="1" data-seed="5" data-export="HUD/Wood/Beam_TopTabs"></div>
-  <div class="moss" data-moss="70" data-seed="6" style="left:462px;top:24px;width:70px;height:30px;z-index:0" data-export="HUD/Wood/Moss_BeamLeft"></div>
-  <div class="moss" data-moss="70" data-seed="7" style="left:1388px;top:24px;width:70px;height:30px;z-index:0" data-export="HUD/Wood/Moss_BeamRight"></div>
-  <svg class="vine" style="left:452px;top:60px" width="90" height="130" data-vine="M30 16 C18 44 30 70 20 104" data-leaves="24,40,160,1.1,A|30,64,20,.95,B|22,90,150,.9,A|20,104,110,.8,B" data-export="HUD/Wood/Vine_BeamLeft"></svg>
-  <svg class="vine" style="left:1378px;top:60px" width="90" height="130" data-vine="M60 16 C72 44 60 70 70 104" data-leaves="66,40,20,1.1,A|60,64,160,.95,B|68,90,30,.9,A|70,104,70,.8,B" data-export="HUD/Wood/Vine_BeamRight"></svg>
-
-  <div id="board-left" class="wood dark" data-grain="1" data-seed="8" data-planks="2" data-export="HUD/Wood/Board_LeftMenu">
-    <div class="peg" style="left:6px;top:6px"></div><div class="peg" style="right:6px;top:6px"></div>
-    <div class="peg" style="left:6px;bottom:6px"></div><div class="peg" style="right:6px;bottom:6px"></div>
-  </div>
-  <div class="moss" data-moss="170" data-seed="9" style="left:40px;top:282px;width:170px;height:30px" data-export="HUD/Wood/Moss_LeftBoard"></div>
-  <svg class="vine" style="left:-4px;top:330px" width="60" height="420" data-vine="M16 0 C4 80 26 150 12 230 C2 300 22 350 14 420" data-leaves="14,40,200,1,A|18,110,-20,.9,B|12,180,190,1,A|16,250,-10,.85,B|12,320,200,.95,A|16,390,-25,.8,B" data-export="HUD/Wood/Vine_LeftBoard"></svg>
-
-  <div id="board-right" class="wood dark" data-grain="1" data-seed="10" data-planks="2" data-export="HUD/Wood/Board_RightShop">
-    <div class="peg" style="left:6px;top:6px"></div><div class="peg" style="right:6px;top:6px"></div>
-    <div class="peg" style="left:6px;bottom:6px"></div><div class="peg" style="right:6px;bottom:6px"></div>
-  </div>
-  <div class="moss" data-moss="150" data-seed="11" style="left:1740px;top:308px;width:150px;height:30px" data-export="HUD/Wood/Moss_RightBoard"></div>
-
   <!-- ============================== TOP ============================== -->
   <div id="tab-shop" class="skin red" data-facets="60" data-seed="11" data-streaks="3" data-export="HUD/Top/Tab_Shop">
     <div class="wm" style="left:150px;top:-8px;width:120px;height:110px;transform:rotate(14deg);--wm:url(assets/silhouettes/bag.png);--wmc:#fff;--wmo:.14;--wmfade:linear-gradient(180deg,#000 20%,transparent 100%)"></div>
@@ -540,24 +556,22 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 
   <!-- ============================== BOTTOM RIGHT: EVENTS ============================== -->
   <div id="events" class="abs" data-export="HUD/BottomRight/Events">
-    <div class="head"><span class="t">EVENTS</span></div>
+    <div class="head"><span class="t">ACTIVE EVENTS</span></div>
     <div class="event" data-export="HUD/BottomRight/Event_ToxicRain">
       <div class="ev-icon"><img class="icon" src="assets/icons/potion.png" style="left:2px;top:0;width:50px;height:54px"></div>
-      <span class="t">in 7m 30s</span></div>
+      <div class="ev-txt"><span class="t nm">Toxic Rain</span><div class="dur"><img class="icon" src="assets/fluent/hourglass_not_done.png"><span class="t tm">Lasts 5m</span></div></div></div>
     <div class="event" data-export="HUD/BottomRight/Event_Night">
       <div class="ev-icon"><img class="icon" src="assets/fluent/crescent_moon.png" style="left:10px;top:0;width:40px;height:40px">
         <img class="icon" src="assets/fluent/cloud.png" style="left:0;top:20px;width:44px;height:34px;filter:url(#outline) brightness(.55) saturate(.6)"></div>
-      <span class="t">in 2m 20s</span></div>
+      <div class="ev-txt"><span class="t nm">Night Time</span><div class="dur"><img class="icon" src="assets/fluent/hourglass_not_done.png"><span class="t tm">Lasts 3m</span></div></div></div>
   </div>
 
   <!-- ============================== CENTRE: DAILY REWARDS ============================== -->
   <div id="scr-daily" class="abs panel-wrap screen" data-export="DailyRewards/Panel_Full">
-    <div class="pframe wood" data-grain="1" data-seed="201" data-export="DailyRewards/Frame_Wood">
-      <div class="peg" style="left:8px;top:8px"></div><div class="peg" style="right:8px;top:8px"></div>
-      <div class="peg" style="left:8px;bottom:8px"></div><div class="peg" style="right:8px;bottom:8px"></div></div>
     <div class="panel" data-export="DailyRewards/Panel_Body">
-      <div class="body-studs"></div>
-      <div class="phead wood" data-grain="1" data-seed="202" data-export="DailyRewards/Header_Bar">
+      <div class="body-studs"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div><div class="leaf-wm" style="right:-50px;top:90px;width:220px;height:220px;transform:rotate(140deg)"></div>
+      <div class="phead skin blue" data-facets="80" data-seed="202" data-streaks="4" data-export="DailyRewards/Header_Bar">
+        <div class="dots"></div>
         <div class="svgi cal-burn" data-src="assets/icons-custom/calendar-silhouette.svg"></div>
         <div class="content"><span class="t title">Daily Rewards</span></div>
         <div id="btn-claimall" class="skin gold" data-facets="46" data-seed="102" data-streaks="2" data-export="DailyRewards/Btn_ClaimAll"><div class="content"><span class="t">CLAIM ALL</span></div></div>
@@ -596,87 +610,72 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
             <div class="status skin red" data-facets="40" data-seed="126" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
       </div></div>
     </div>
-    <div class="moss" data-moss="300" data-seed="211" style="left:140px;top:-40px;width:300px;height:32px"></div>
-    <div class="moss" data-moss="200" data-seed="212" style="left:760px;top:-40px;width:200px;height:32px"></div>
     <svg class="vine" style="left:1146px;top:120px" width="60" height="480" data-vine="M36 0 C52 90 26 170 42 260 C54 340 30 420 40 480" data-leaves="40,40,-20,1,A|36,120,195,.9,B|44,200,-15,1,A|40,280,190,.9,B|44,360,-20,.95,A|38,440,200,.85,B"></svg>
-    <svg class="vine" style="left:40px;top:664px" width="200" height="60" data-vine="M0 26 C50 8 110 42 190 18" data-leaves="34,18,-60,.9,A|80,26,70,.85,B|128,30,-50,.95,A|186,18,20,.8,B"></svg>
     <div id="cal-icon" class="abs svgi phead-icon" data-src="assets/icons-custom/calendar.svg" data-export="DailyRewards/Icon_Calendar"></div>
     <div id="op" class="abs" data-export="DailyRewards/Sticker_OP"><span class="t">OP</span></div>
   </div>
 
-  <!-- ============================== CENTRE: SHOP ============================== -->
+  <!-- ============================== CENTRE: SHOP (Robux store) ============================== -->
   <div id="scr-shop" class="abs panel-wrap screen" data-export="Shop/Panel_Full">
-    <div class="pframe wood" data-grain="1" data-seed="301">
-      <div class="peg" style="left:8px;top:8px"></div><div class="peg" style="right:8px;top:8px"></div>
-      <div class="peg" style="left:8px;bottom:8px"></div><div class="peg" style="right:8px;bottom:8px"></div></div>
     <div class="panel">
-      <div class="body-studs"></div>
-      <div class="phead wood" data-grain="1" data-seed="302" data-export="Shop/Header_Bar">
+      <div class="body-studs"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div>
+      <div class="phead skin red" data-facets="80" data-seed="302" data-streaks="4" data-export="Shop/Header_Bar">
+        <div class="dots"></div>
         <div class="content"><span class="t title">Shop</span></div>
-        <div id="seg-coins" class="abs skin seg gold" data-facets="40" data-seed="303" data-streaks="1" data-export="Shop/Tab_Coins_On"><div class="content"><span class="t">Coins</span></div></div>
-        <div id="seg-robux" class="abs skin seg off" data-facets="40" data-seed="304" data-streaks="1" data-export="Shop/Tab_Robux_Off"><div class="content"><span class="t">Robux</span></div></div>
         <div class="skin red btn-close" data-facets="40" data-seed="305" data-streaks="1"><div class="content"><span class="t">X</span></div></div>
       </div>
       <div class="body-rim"></div>
-      <div class="pbody"><div id="shop-body">
-        <div id="shop-items">
-          <div class="section-label"><img class="icon" src="assets/fluent/coin.png"><span class="t">SEEDS &amp; SUPPLIES</span></div>
-          <div class="item"><div class="skin green" data-facets="70" data-seed="311" data-streaks="4" data-export="Shop/Item_SeedlingPack">
-            <div class="glow"></div><div class="rarity"><span class="t">COMMON</span></div>
-            <div class="content"><img class="icon" src="assets/fluent/seedling.png"><span class="t name">Seedling Pack</span>
-              <div class="buy skin lime" data-facets="40" data-seed="321" data-streaks="1" data-export="Shop/Btn_BuyCoins"><div class="content"><span class="t">$250</span></div></div></div></div></div>
-          <div class="item"><div class="skin green" data-facets="70" data-seed="312" data-streaks="4" data-export="Shop/Item_FernBundle">
-            <div class="glow"></div><div class="rarity"><span class="t">COMMON</span></div>
-            <div class="content"><img class="icon" src="assets/fluent/herb.png"><span class="t name">Fern Bundle</span>
-              <div class="buy skin lime" data-facets="40" data-seed="322" data-streaks="1"><div class="content"><span class="t">$1.2K</span></div></div></div></div></div>
-          <div class="item"><div class="skin blue" data-facets="70" data-seed="313" data-streaks="4" data-export="Shop/Item_MushroomSpores">
-            <div class="glow"></div><div class="rarity"><span class="t" style="--tf:var(--tf-blue)">UNCOMMON</span></div>
-            <div class="content"><img class="icon" src="assets/fluent/mushroom.png"><span class="t name">Mushroom Spores</span>
-              <div class="buy skin lime" data-facets="40" data-seed="323" data-streaks="1"><div class="content"><span class="t">$3.5K</span></div></div></div></div></div>
-          <div class="item"><div class="skin blue" data-facets="70" data-seed="314" data-streaks="4" data-export="Shop/Item_MossyStone">
-            <div class="glow"></div><div class="rarity"><span class="t" style="--tf:var(--tf-blue)">UNCOMMON</span></div>
-            <div class="content"><img class="icon" src="assets/fluent/rock.png"><span class="t name">Mossy Stone</span>
-              <div class="buy skin lime" data-facets="40" data-seed="324" data-streaks="1"><div class="content"><span class="t">$8K</span></div></div></div></div></div>
-          <div class="item"><div class="skin purple" data-facets="70" data-seed="315" data-streaks="4" data-export="Shop/Item_AncientFern">
-            <div class="glow"></div><div class="rarity"><span class="t" style="--tf:var(--tf-purple)">EPIC</span></div>
-            <div class="content"><img class="icon" src="assets/fluent/evergreen_tree.png"><span class="t name">Ancient Fern</span>
-              <div class="buy skin lime" data-facets="40" data-seed="325" data-streaks="1"><div class="content"><span class="t">$25K</span></div></div></div></div></div>
-          <div class="item"><div class="skin gold" data-facets="70" data-seed="316" data-streaks="4" data-export="Shop/Item_DinoEgg">
-            <div class="glow"></div><div class="rarity"><span class="t" style="--tf:var(--tf-gold)">LEGENDARY</span></div>
-            <div class="content"><img class="icon" src="assets/fluent/egg.png"><span class="t name">Dino Egg</span>
-              <div class="buy skin lime" data-facets="40" data-seed="326" data-streaks="1"><div class="content"><span class="t">$50K</span></div></div></div></div></div>
+      <div class="pbody">
+        <div id="shop-side">
+          <div class="scat skin gold" data-facets="40" data-seed="361" data-streaks="1" data-export="Shop/Category_Bundles_On"><div class="content"><img class="icon" src="assets/icons/gift.png"><span class="t">Bundles</span></div></div>
+          <div class="scat skin off" data-facets="40" data-seed="362" data-streaks="1" data-export="Shop/Category_GamePasses_Off"><div class="content"><img class="icon" src="assets/fluent/ticket.png"><span class="t">Passes</span></div></div>
+          <div class="scat skin off" data-facets="40" data-seed="363" data-streaks="1" data-export="Shop/Category_Currency_Off"><div class="content"><img class="icon" src="assets/icons/cash2.png"><span class="t">Cash</span></div></div>
+          <div class="note"><span class="t">Purchases support<br>Build a Terrarium!</span></div>
         </div>
-        <div id="shop-deals">
-          <div class="section-label"><div class="svgi" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">ROBUX DEALS</span></div>
-          <div class="deal"><div class="skin purple" data-facets="60" data-seed="331" data-streaks="3" data-export="Shop/Deal_StarterPack">
-            <div class="wm" style="right:-20px;top:-20px;width:110px;height:110px;transform:rotate(14deg);--wm:url(assets/silhouettes/gift.png)"></div>
-            <div class="content"><img class="icon" src="assets/icons/gift.png"><div class="txt"><span class="t name">Starter Pack</span><span class="t desc">Seeds + a critter</span></div>
-              <div class="buy skin green" data-facets="40" data-seed="341" data-streaks="1" data-export="Shop/Btn_BuyRobux"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">19</span></div></div></div></div></div>
-          <div class="deal"><div class="skin gold" data-facets="60" data-seed="332" data-streaks="3" data-export="Shop/Deal_X2Money">
-            <div class="wm" style="right:-20px;top:-20px;width:110px;height:110px;transform:rotate(14deg);--wm:url(assets/silhouettes/cash.png)"></div>
-            <div class="content"><img class="icon" src="assets/fluent/money_bag.png"><div class="txt"><span class="t name">X2 Money</span><span class="t desc">Double all earnings</span></div>
-              <div class="buy skin green" data-facets="40" data-seed="342" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">99</span></div></div></div></div></div>
-          <div class="deal"><div class="skin emerald" data-facets="60" data-seed="333" data-streaks="3" data-export="Shop/Deal_X2Luck">
-            <div class="wm" style="right:-20px;top:-20px;width:110px;height:110px;transform:rotate(14deg);--wm:url(assets/silhouettes/clover.png)"></div>
-            <div class="content"><img class="icon" src="assets/fluent/four_leaf_clover.png"><div class="txt"><span class="t name">X2 Luck</span><span class="t desc">Rarer discoveries</span></div>
-              <div class="buy skin green" data-facets="40" data-seed="343" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">99</span></div></div></div></div></div>
+        <div id="shop-main">
+          <div id="feat"><div class="ribbon"><span class="t">BEST VALUE</span></div><div class="skin purple" data-facets="80" data-seed="371" data-streaks="4" data-export="Shop/Bundle_StarterPack">
+            <div class="rays" data-rays="22" data-seed="372" data-ra=".4"></div>
+            <div data-sparkles="8" data-seed="373" style="position:absolute;left:10px;top:10px;width:200px;height:120px;z-index:2"></div>
+            <div class="content"><img class="icon lg" src="assets/icons/gift.png"><div class="txt"><span class="t name">Starter Pack</span><span class="t desc">One-time offer for new players</span>
+              <div class="chips"><div class="chip"><img class="icon" src="assets/icons/cash2.png"><span class="t">$25K</span></div><div class="chip"><img class="icon" src="assets/fluent/four_leaf_clover.png"><span class="t">X2 Luck 30m</span></div></div></div>
+              <div class="buy skin green" data-facets="40" data-seed="374" data-streaks="1" data-export="Shop/Btn_BuyRobux_Large"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">19</span></div></div></div></div></div>
+          <div class="section-label"><img class="icon" src="assets/fluent/ticket.png"><span class="t">GAME PASSES</span></div>
+          <div id="passes">
+            <div class="pass"><div class="skin gold" data-facets="70" data-seed="381" data-streaks="4" data-export="Shop/Pass_X2Money">
+              <div class="wm" style="right:120px;top:-26px;width:130px;height:130px;transform:rotate(14deg);--wm:url(assets/silhouettes/cash.png)"></div>
+              <div class="content"><img class="icon" src="assets/fluent/money_bag.png"><div class="txt"><span class="t tag">PERMANENT</span><span class="t name">X2 Money</span><span class="t desc">Double all cash earned</span></div><div class="buy skin green" data-facets="40" data-seed="382" data-streaks="1" data-export="Shop/Btn_BuyRobux"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">99</span></div></div></div></div></div>
+            <div class="pass"><div class="skin emerald" data-facets="70" data-seed="383" data-streaks="4" data-export="Shop/Pass_X2Luck">
+              <div class="wm" style="right:120px;top:-26px;width:130px;height:130px;transform:rotate(14deg);--wm:url(assets/silhouettes/clover.png)"></div>
+              <div class="content"><img class="icon" src="assets/fluent/four_leaf_clover.png"><div class="txt"><span class="t tag">PERMANENT</span><span class="t name">X2 Luck</span><span class="t desc">Rarer critters appear</span></div><div class="buy skin green" data-facets="40" data-seed="384" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">99</span></div></div></div></div></div>
+          </div>
+          <div class="section-label"><img class="icon" src="assets/icons/cash2.png"><span class="t">CASH PACKS</span></div>
+          <div id="packs">
+          <div class="pack"><div class="skin blue" data-facets="60" data-seed="391" data-streaks="3" data-export="Shop/Pack_10K">
+            <div class="glow" style="left:50%;top:40%;width:170px;height:140px;transform:translate(-50%,-50%)"></div>
+            <div class="content"><img class="icon" src="assets/icons/cash.png"><span class="t amt">$10K</span><div class="buy skin green" data-facets="40" data-seed="441" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">25</span></div></div></div></div></div>
+          <div class="pack"><div class="bonus"><span class="t">+10%</span></div><div class="skin blue" data-facets="60" data-seed="392" data-streaks="3" data-export="Shop/Pack_50K">
+            <div class="glow" style="left:50%;top:40%;width:170px;height:140px;transform:translate(-50%,-50%)"></div>
+            <div class="content"><img class="icon" src="assets/icons/cash2.png"><span class="t amt">$50K</span><div class="buy skin green" data-facets="40" data-seed="442" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">99</span></div></div></div></div></div>
+          <div class="pack"><div class="bonus"><span class="t">+25%</span></div><div class="skin purple" data-facets="60" data-seed="393" data-streaks="3" data-export="Shop/Pack_250K">
+            <div class="glow" style="left:50%;top:40%;width:170px;height:140px;transform:translate(-50%,-50%)"></div>
+            <div class="content"><img class="icon" src="assets/fluent/money_bag.png"><span class="t amt">$250K</span><div class="buy skin green" data-facets="40" data-seed="443" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">399</span></div></div></div></div></div>
+          <div class="pack"><div class="bonus"><span class="t">+50%</span></div><div class="skin gold" data-facets="60" data-seed="394" data-streaks="3" data-export="Shop/Pack_1M">
+            <div class="glow" style="left:50%;top:40%;width:170px;height:140px;transform:translate(-50%,-50%)"></div>
+            <div class="content"><img class="icon" src="assets/icons/chest.png"><span class="t amt">$1M</span><div class="buy skin green" data-facets="40" data-seed="444" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">999</span></div></div></div></div></div>
+          </div>
         </div>
-      </div></div>
+      </div>
     </div>
-    <div class="moss" data-moss="260" data-seed="351" style="left:300px;top:-40px;width:260px;height:32px"></div>
-    <div class="moss" data-moss="160" data-seed="352" style="left:760px;top:-40px;width:160px;height:32px"></div>
     <svg class="vine" style="left:1146px;top:110px" width="60" height="480" data-vine="M36 0 C52 90 26 170 42 260 C54 340 30 420 40 480" data-leaves="40,40,-20,1,A|36,120,195,.9,B|44,200,-15,1,A|40,280,190,.9,B|44,360,-20,.95,A|38,440,200,.85,B"></svg>
     <img class="abs icon lg" src="assets/icons/cart.png" style="left:-8px;top:-26px;width:130px;height:130px;z-index:9" data-export="Shop/Icon_Header">
   </div>
 
   <!-- ============================== CENTRE: INDEX ============================== -->
   <div id="scr-index" class="abs panel-wrap screen" data-export="Index/Panel_Full">
-    <div class="pframe wood" data-grain="1" data-seed="401">
-      <div class="peg" style="left:8px;top:8px"></div><div class="peg" style="right:8px;top:8px"></div>
-      <div class="peg" style="left:8px;bottom:8px"></div><div class="peg" style="right:8px;bottom:8px"></div></div>
     <div class="panel">
-      <div class="body-studs"></div>
-      <div class="phead wood" data-grain="1" data-seed="402" data-export="Index/Header_Bar">
+      <div class="body-studs"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div><div class="leaf-wm" style="right:-50px;top:90px;width:220px;height:220px;transform:rotate(140deg)"></div>
+      <div class="phead skin blue" data-facets="80" data-seed="402" data-streaks="4" data-export="Index/Header_Bar">
+        <div class="dots"></div>
         <div class="content"><span class="t title">Index</span></div>
         <div class="skin red btn-close" data-facets="40" data-seed="403" data-streaks="1"><div class="content"><span class="t">X</span></div></div>
       </div>
@@ -686,7 +685,6 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
           <div class="cat skin green" data-facets="40" data-seed="411" data-streaks="1" data-export="Index/Tab_Critters_On"><div class="content"><span class="t">Critters</span></div></div>
           <div class="cat skin off" data-facets="40" data-seed="412" data-streaks="1" data-export="Index/Tab_Plants_Off"><div class="content"><span class="t">Plants</span></div></div>
           <div class="cat skin off" data-facets="40" data-seed="413" data-streaks="1"><div class="content"><span class="t">Fungi</span></div></div>
-          <div class="cat skin off" data-facets="40" data-seed="414" data-streaks="1"><div class="content"><span class="t">Fossils</span></div></div>
           <div id="index-prog" class="bar green-fill" style="--p:61%" data-export="Index/Progress_Discovered"><div class="track studs-soft"></div><div class="fill"></div>
             <div class="content"><span class="t">Discovered</span><span class="t">11 / 18</span></div></div>
         </div>
@@ -697,20 +695,16 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
             <div class="buy skin gray" data-facets="40" data-seed="421" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div>
       </div>
     </div>
-    <div class="moss" data-moss="240" data-seed="451" style="left:220px;top:-40px;width:240px;height:32px"></div>
-    <div class="moss" data-moss="220" data-seed="452" style="left:820px;top:-40px;width:220px;height:32px"></div>
     <svg class="vine" style="left:1146px;top:130px" width="60" height="480" data-vine="M36 0 C52 90 26 170 42 260 C54 340 30 420 40 480" data-leaves="40,40,-20,1,A|36,120,195,.9,B|44,200,-15,1,A|40,280,190,.9,B|44,360,-20,.95,A|38,440,200,.85,B"></svg>
     <img class="abs icon lg" src="assets/fluent/books.png" style="left:-8px;top:-28px;width:128px;height:128px;z-index:9" data-export="Index/Icon_Header">
   </div>
 
   <!-- ============================== CENTRE: REBIRTH ============================== -->
   <div id="scr-rebirth" class="abs panel-wrap screen" data-export="Rebirth/Panel_Full">
-    <div class="pframe wood" data-grain="1" data-seed="501">
-      <div class="peg" style="left:8px;top:8px"></div><div class="peg" style="right:8px;top:8px"></div>
-      <div class="peg" style="left:8px;bottom:8px"></div><div class="peg" style="right:8px;bottom:8px"></div></div>
     <div class="panel">
-      <div class="body-studs"></div>
-      <div class="phead wood" data-grain="1" data-seed="502" data-export="Rebirth/Header_Bar">
+      <div class="body-studs"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div><div class="leaf-wm" style="right:-50px;top:90px;width:220px;height:220px;transform:rotate(140deg)"></div>
+      <div class="phead skin purple" data-facets="80" data-seed="502" data-streaks="4" data-export="Rebirth/Header_Bar">
+        <div class="dots"></div>
         <div class="content"><span class="t title">Rebirth</span></div>
         <div class="skin red btn-close" data-facets="40" data-seed="503" data-streaks="1"><div class="content"><span class="t">X</span></div></div>
       </div>
@@ -753,8 +747,6 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
         </div>
       </div>
     </div>
-    <div class="moss" data-moss="280" data-seed="551" style="left:180px;top:-40px;width:280px;height:32px"></div>
-    <div class="moss" data-moss="200" data-seed="552" style="left:840px;top:-40px;width:200px;height:32px"></div>
     <svg class="vine" style="left:1146px;top:120px" width="60" height="480" data-vine="M36 0 C52 90 26 170 42 260 C54 340 30 420 40 480" data-leaves="40,40,-20,1,A|36,120,195,.9,B|44,200,-15,1,A|40,280,190,.9,B|44,360,-20,.95,A|38,440,200,.85,B"></svg>
     <img class="abs icon lg" src="assets/icons/rebirth.png" style="left:-8px;top:-26px;width:128px;height:128px;z-index:9" data-export="Rebirth/Icon_Header">
   </div>
