@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>HUD Concept</title>
+<style>
+@font-face { font-family: "Fredoka One"; src: url("assets/fonts/FredokaOne.woff2") format("woff2"); }
+
+:root {
+  --ink: #10131f;          /* outline colour used everywhere */
+  --red: #ff3b4e;   --red-d: #c0142a;
+  --blue: #36b6ff;  --blue-d: #1466d6;
+  --green: #7be633; --green-d: #2f9e12;
+  --gold: #ffd21f;  --gold-d: #f08a00;
+  --purple: #b35cff; --purple-d: #6a1fd6;
+}
+
+* { box-sizing: border-box; margin: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; font-family: "Fredoka One", sans-serif; }
+
+/* ---------- preview backdrop (not exported) ---------- */
+#stage {
+  position: relative; width: 1920px; height: 1080px;
+  background:
+    radial-gradient(ellipse 260px 70px at 18% 22%, #fff 60%, transparent 62%),
+    radial-gradient(ellipse 200px 60px at 24% 18%, #fff 60%, transparent 62%),
+    radial-gradient(ellipse 300px 80px at 78% 16%, #fff 60%, transparent 62%),
+    radial-gradient(ellipse 220px 60px at 70% 26%, #fff 60%, transparent 62%),
+    linear-gradient(180deg, #5fb8ff 0%, #9fd8ff 48%, #5cc24a 48.2%, #3d9a35 100%);
+}
+body.export #stage { background: transparent; }
+
+/* ---------- shared pieces ---------- */
+.comp { position: absolute; padding: 10px; }          /* padding keeps outlines/shadows inside the export */
+
+.btn {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  border: 5px solid var(--ink); border-radius: 14px; overflow: hidden;
+  background: linear-gradient(180deg, var(--c1) 0%, var(--c2) 100%);
+  box-shadow:
+    inset 0 -8px 0 rgba(0,0,0,.22),
+    inset 0 5px 0 rgba(255,255,255,.45),
+    0 5px 0 var(--ink);
+}
+.btn::before {                                         /* diagonal gloss stripes */
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(120deg, rgba(255,255,255,.16) 0 26px, transparent 26px 60px);
+  pointer-events: none;
+}
+.btn > * { position: relative; }
+
+.red    { --c1: var(--red);    --c2: var(--red-d); }
+.blue   { --c1: var(--blue);   --c2: var(--blue-d); }
+.green  { --c1: var(--green);  --c2: var(--green-d); }
+.gold   { --c1: var(--gold);   --c2: var(--gold-d); }
+.purple { --c1: var(--purple); --c2: var(--purple-d); }
+
+.t {                                                   /* chunky outlined text */
+  color: #fff; line-height: 1; white-space: nowrap;
+  -webkit-text-stroke: 8px var(--ink); paint-order: stroke fill;
+  text-shadow: 0 4px 0 var(--ink);
+}
+.icon { display: block; object-fit: contain; filter: drop-shadow(0 4px 0 rgba(0,0,0,.35)); }
+
+/* ---------- top tabs ---------- */
+#tabs { left: 50%; top: 4px; transform: translateX(-50%); display: flex; align-items: flex-start; gap: 10px; }
+.tab { width: 260px; height: 88px; font-size: 50px; }
+.tab.main { width: 330px; height: 112px; font-size: 64px;
+  background: linear-gradient(135deg, #3fc4ff 0%, #6a7bff 45%, #9b4dff 55%, #2a8cff 100%); }
+
+/* ---------- left menu ---------- */
+.daily { width: 360px; height: 92px; font-size: 42px; }
+.badge {
+  position: absolute; right: -2px; top: -14px; width: 50px; height: 50px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff7a86, #e0102a 70%);
+  border: 5px solid var(--ink); display: flex; align-items: center; justify-content: center;
+  font-size: 34px; box-shadow: 0 4px 0 var(--ink);
+}
+.tile { width: 170px; height: 160px; flex-direction: column; justify-content: flex-end; padding-bottom: 8px; }
+.tile .icon { position: absolute; top: 4px; left: 50%; transform: translateX(-50%); width: 118px; height: 118px; }
+.tile .t { font-size: 40px; }
+
+/* ---------- right side ---------- */
+.starter { width: 210px; display: flex; flex-direction: column; align-items: center; }
+.starter .label { font-size: 30px; }
+.starter .icon  { width: 150px; height: 150px; margin-top: -4px; }
+.price { display: flex; align-items: center; gap: 4px; margin-top: -26px; }
+.price img.icon { width: 44px; height: 44px; margin: 0; }
+.price .t  { font-size: 38px; color: #9dff4a; }
+
+.card { width: 270px; height: 86px; font-size: 42px; border-radius: 12px;
+  background: linear-gradient(135deg, #b35cff 0%, #5f7bff 50%, #36d0ff 100%); }
+.card .price { position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); margin: 0; }
+.card .price img.icon { width: 38px; height: 38px; }
+.card .price .t  { font-size: 32px; }
+
+/* ---------- bottom left ---------- */
+.stat { display: flex; align-items: center; gap: 10px; }
+.stat img { width: 72px; height: 72px; }
+.money .t { font-size: 66px; color: #7dff3a; }
+.plus { width: 66px; height: 66px; border-radius: 12px; }
+.plus .t { font-size: 60px; line-height: .8; padding-bottom: 6px; }
+.small .t { font-size: 34px; }
+
+/* ---------- bottom centre ---------- */
+.mult .t { font-size: 38px; color: #ffe23a; }
+.xpbar {
+  position: relative; width: 780px; height: 64px; border: 5px solid var(--ink); border-radius: 12px;
+  background: #f4f4f4; overflow: hidden; box-shadow: 0 5px 0 var(--ink), inset 0 -8px 0 rgba(0,0,0,.08);
+}
+.xpbar .fill { position: absolute; inset: 0 auto 0 0; width: 57%;
+  background: linear-gradient(180deg, #ffe45a 0%, #ffb400 55%, #ff8a00 100%);
+  box-shadow: inset 0 5px 0 rgba(255,255,255,.45), inset 0 -8px 0 rgba(0,0,0,.18); }
+.xpbar .t { position: absolute; top: 50%; transform: translateY(-50%); font-size: 36px; }
+.xpbar .l { left: 18px; } .xpbar .r { right: 18px; }
+.lvl { width: 250px; height: 72px; font-size: 40px; }
+.lvl .t { -webkit-text-stroke-width: 8px; }
+
+/* ---------- bottom right boosts ---------- */
+.boost { display: flex; flex-direction: column; align-items: center; width: 90px; }
+.boost img { width: 84px; height: 84px; }
+.boost .t { font-size: 32px; margin-top: -14px; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- TOP -->
+  <div class="comp" id="tabs">
+    <div class="comp" style="position:relative;padding:0" data-export="Top/Tab_Shop"><div class="btn tab red"><span class="t">Shop</span></div></div>
+    <div class="comp" style="position:relative;padding:0" data-export="Top/Tab_MyBase"><div class="btn tab main"><span class="t">My Base</span></div></div>
+    <div class="comp" style="position:relative;padding:0" data-export="Top/Tab_Upgrades"><div class="btn tab green"><span class="t">Upgrades</span></div></div>
+  </div>
+
+  <!-- LEFT -->
+  <div class="comp" style="left:14px;top:300px" data-export="Left/Btn_DailyRewards">
+    <div class="btn daily green" style="overflow:visible"><span class="t">Daily Rewards</span></div>
+    <div class="badge" style="right:0;top:-6px"><span class="t" style="font-size:34px">!</span></div>
+  </div>
+  <div class="comp" style="left:14px;top:412px" data-export="Left/Btn_Shop">
+    <div class="btn tile red"><img class="icon" src="assets/icons/cart.png"><span class="t">Shop</span></div></div>
+  <div class="comp" style="left:204px;top:412px" data-export="Left/Btn_Pass">
+    <div class="btn tile gold"><img class="icon" src="assets/icons/ticket.png"><span class="t">Pass</span></div></div>
+  <div class="comp" style="left:14px;top:592px" data-export="Left/Btn_Rebirth">
+    <div class="btn tile purple"><img class="icon" src="assets/icons/rebirth.png"><span class="t">Rebirth</span></div></div>
+  <div class="comp" style="left:204px;top:592px" data-export="Left/Btn_Index">
+    <div class="btn tile blue"><img class="icon" src="assets/icons/book.png"><span class="t">Index</span></div></div>
+
+  <!-- RIGHT -->
+  <div class="comp starter" style="right:40px;top:330px;width:230px" data-export="Right/StarterPack">
+    <span class="t label">Starter Pack</span>
+    <img class="icon" src="assets/icons/gift.png">
+    <div class="price"><img class="icon" src="assets/icons/robux.png"><span class="t">19</span></div>
+  </div>
+  <div class="comp" style="right:20px;top:560px" data-export="Right/Card_X2Money">
+    <div class="btn card" style="overflow:visible"><span class="t">X2 Money</span>
+      <div class="price"><img class="icon" src="assets/icons/robux.png"><span class="t">9</span></div></div>
+  </div>
+  <div class="comp" style="right:20px;top:680px" data-export="Right/Card_X2Luck">
+    <div class="btn card" style="overflow:visible"><span class="t">X2 Luck</span>
+      <div class="price"><img class="icon" src="assets/icons/robux.png"><span class="t">9</span></div></div>
+  </div>
+
+  <!-- BOTTOM LEFT -->
+  <div class="comp stat" style="left:14px;top:870px" data-export="BottomLeft/RebirthCounter">
+    <img class="icon" src="assets/icons/rebirth.png"><span class="t" style="font-size:52px;color:#ff4a5a">4</span></div>
+  <div class="comp stat money" style="left:14px;top:942px" data-export="BottomLeft/Money">
+    <span class="t">$572,831</span></div>
+  <div class="comp" style="left:318px;top:944px" data-export="BottomLeft/Btn_AddMoney">
+    <div class="btn plus green"><span class="t">+</span></div></div>
+  <div class="comp small" style="left:14px;top:1022px" data-export="BottomLeft/FriendBoost">
+    <span class="t">Friend Boost: +0%</span></div>
+
+  <!-- BOTTOM CENTRE -->
+  <div class="comp mult" style="left:1090px;top:852px" data-export="Bottom/MultiplierLabel">
+    <span class="t">x3 Multiplier</span></div>
+  <div class="comp" style="left:560px;top:898px" data-export="Bottom/XPBar">
+    <div class="xpbar"><div class="fill"></div><span class="t l">Level 5</span><span class="t r">57/100 XP</span></div></div>
+  <div class="comp" style="left:560px;top:985px" data-export="Bottom/Btn_5Levels">
+    <div class="btn lvl green"><span class="t" style="color:#fff04a">+5 Levels</span></div></div>
+  <div class="comp" style="left:825px;top:985px" data-export="Bottom/Btn_10Levels">
+    <div class="btn lvl green"><span class="t" style="color:#4ad2ff">+10 Levels</span></div></div>
+  <div class="comp" style="left:1090px;top:985px" data-export="Bottom/Btn_25Levels">
+    <div class="btn lvl green"><span class="t" style="color:#ff6af0">+25 Levels</span></div></div>
+
+  <!-- BOTTOM RIGHT -->
+  <div class="comp boost" style="right:230px;top:925px;width:110px" data-export="BottomRight/Boost_Money">
+    <img class="icon" src="assets/icons/cash.png"><span class="t">x1.1</span></div>
+  <div class="comp boost" style="right:120px;top:925px;width:110px" data-export="BottomRight/Boost_Rebirth">
+    <img class="icon" src="assets/icons/rebirth.png"><span class="t">x1.2</span></div>
+  <div class="comp boost" style="right:10px;top:925px;width:110px" data-export="BottomRight/Boost_Gems">
+    <img class="icon" src="assets/icons/diamond.png"><span class="t">x1.3</span></div>
+
+</div>
+</body>
+</html>
