@@ -10,7 +10,7 @@ catch { ({ chromium } = require('/opt/node22/lib/node_modules/playwright')); }
 const root = path.resolve(__dirname, '..', '..');
 const out = path.resolve(root, process.argv[2] || 'Concepts');
 const MARGIN = 16;                       // transparent breathing room around each export (CSS px)
-const types = { '.html': 'text/html', '.png': 'image/png', '.woff2': 'font/woff2' };
+const types = { '.html': 'text/html', '.png': 'image/png', '.woff2': 'font/woff2', '.ttf': 'font/ttf', '.svg': 'image/svg+xml' };
 
 // CSS masks need a real origin, so serve the folder over http instead of file://
 const server = http.createServer((req, res) => {
@@ -29,7 +29,12 @@ server.listen(0, async () => {
   await page.waitForLoadState('networkidle');
 
   fs.mkdirSync(out, { recursive: true });
-  await page.screenshot({ path: path.join(out, '_Preview.png'), omitBackground: true, scale: 'css' });
+  const screens = { daily: 'DailyRewards', shop: 'Shop', index: 'Index', rebirth: 'Rebirth' };
+  for (const [key, label] of Object.entries(screens)) {
+    await page.evaluate(k => { document.body.dataset.screen = k; }, key);
+    await page.screenshot({ path: path.join(out, `_Preview_${label}.png`), omitBackground: true, scale: 'css' });
+  }
+  await page.evaluate(() => { document.body.dataset.screen = 'daily'; });
 
   const names = await page.$$eval('[data-export]', els => els.map(e => e.dataset.export));
   for (const name of names) {
