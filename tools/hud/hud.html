@@ -112,6 +112,7 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 .icon { display: block; object-fit: contain; filter: url(#outline); }
 .icon.lg { filter: url(#outline-lg); }
 .icon.sil { filter: brightness(0) opacity(.55); }
+.icon[src*="voxel/"] { filter: url(#outline-sm); }
 .svgi { display: block; }
 .svgi > svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .wm {
@@ -126,10 +127,8 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
   background: radial-gradient(circle, rgba(255,250,220,var(--ga,.45)) 0%, rgba(255,250,220,0) 68%); }
 .sparkle { position: absolute; pointer-events: none; z-index: 2; }
 .studs-soft {
-  background-image:
-    radial-gradient(circle at 50% 42%, rgba(255,255,255,.55) 0 3px, transparent 3.6px),
-    radial-gradient(circle at 50% 60%, rgba(96,112,110,.12) 0 3.6px, transparent 4.2px);
-  background-size: 15px 15px; background-position: 4px 3px;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2715%27%20height%3D%2715%27%3E%3Crect%20x%3D%274.6%27%20y%3D%275.2%27%20width%3D%277%27%20height%3D%277%27%20rx%3D%271%27%20fill%3D%27rgb%2880%2C95%2C90%29%27%20fill-opacity%3D%27.07%27/%3E%3Crect%20x%3D%274%27%20y%3D%274%27%20width%3D%277%27%20height%3D%277%27%20rx%3D%271%27%20fill%3D%27white%27%20fill-opacity%3D%27.45%27/%3E%3C/svg%3E");
+  background-size: 15px 15px; background-position: 3px 2px;
 }
 .sel { box-shadow: 0 0 0 4px #ffd84a, 0 0 0 8px var(--ink), 0 0 26px 8px rgba(255,210,70,.55) !important; }
 
@@ -163,16 +162,13 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
   mask-size: contain, 100% 100%; mask-repeat: no-repeat; mask-position: center; mask-composite: intersect;
   opacity: .8;
 }
-#tab-chip {
-  left: 941px; top: 2px; width: 40px; height: 24px; z-index: 8;
-  border: 3px solid var(--ink); border-radius: 6px;
-  background: linear-gradient(180deg, #fff27a 0%, #ffd21f 50%, #ffa400 100%);
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,.35), 0 3px 0 var(--ink);
-}
-#tab-chip::after { content: ""; position: absolute; left: 50%; top: 4px; width: 9px; height: 9px; transform: translateX(-50%) rotate(45deg);
-  border-right: 3px solid #c86a00; border-bottom: 3px solid #c86a00; }
-body[data-screen="shop"] #tab-chip { left: 632px; }
-body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box-shadow: 0 0 0 4px #ffd84a, 0 0 0 8px var(--ink), 0 0 26px 8px rgba(255,210,70,.6); }
+/* selected menu button: lifted, with a crisp white inner ring (no gold outline) */
+body[data-screen="daily"] #btn-daily, body[data-screen="shop"] #tile-shop,
+body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb {
+  transform: translateY(-4px); box-shadow: 0 8px 0 var(--ink), 0 12px 14px rgba(0,0,0,.28); }
+body[data-screen="daily"] #btn-daily::after, body[data-screen="shop"] #tile-shop::after,
+body[data-screen="index"] #tile-idx::after, body[data-screen="rebirth"] #tile-reb::after {
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,.92), inset 0 -6px 0 rgba(0,0,0,.24); }
 
 /* ======================================================================
    LEFT MENU (mounted on a wooden board)
@@ -195,9 +191,13 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 .tile .glow { left: 50%; top: 58px; width: 150px; height: 150px; transform: translate(-50%,-50%); --ga: .38; }
 .tile .wm { right: -26px; bottom: -22px; width: 118px; height: 118px; transform: rotate(-16deg); --wmc: #fff; --wmo: .13; }
 #tile-shop { left: 23px;  top: 428px; }
-#tile-pass { left: 191px; top: 428px; }
-#tile-reb  { left: 23px;  top: 596px; }
-#tile-idx  { left: 191px; top: 596px; }
+#tile-idx  { left: 191px; top: 428px; }
+#tile-reb  { left: 23px;  top: 598px; width: 326px; height: 112px; }
+#tile-reb > .content { flex-direction: row; justify-content: center; gap: 12px; padding-right: 10px; }
+#tile-reb .icon { width: 92px; height: 92px; margin-top: 0; }
+#tile-reb .t { --fs: 46px; margin-top: -4px; }
+#tile-reb .glow { left: 70px; top: 50%; }
+#tile-reb .wm { right: -10px; bottom: -40px; }
 
 /* ======================================================================
    RIGHT SIDE (wooden board)
@@ -209,7 +209,8 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 #starter .rays { position: absolute; left: 50%; top: 100px; width: 230px; height: 230px; transform: translate(-50%,-50%); z-index: 1; }
 #starter > .icon { position: absolute; left: 50%; top: 36px; width: 128px; height: 128px; transform: translateX(-50%); z-index: 2; }
 .price { position: absolute; display: flex; align-items: center; gap: 4px; z-index: 6; }
-.rbx { width: 38px; height: 38px; flex: none; }
+.rbx { width: 38px; height: 38px; flex: none; color: #ffffff; }
+.price .rbx { color: #7dff3a; }
 .price .t { --tf: var(--tf-green); }
 #starter .price { left: 50%; top: 158px; transform: translateX(-50%); }
 #starter .price .t { --fs: 40px; }
@@ -241,7 +242,7 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
    ====================================================================== */
 #mult { right: 573px; top: 966px; }
 #mult .t { --fs: 38px; --tf: var(--tf-gold); }
-#bio-icon { left: 548px; top: 998px; width: 78px; height: 78px; z-index: 5; }
+#bio-icon { left: 544px; top: 988px; width: 84px; height: 84px; z-index: 5; }
 #xpbar { left: 571px; top: 1010px; width: 776px; height: 54px; }
 #xpbar .bar { position: absolute; inset: 0; }
 #xpbar .content { padding-left: 64px; }
@@ -250,19 +251,19 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 /* ======================================================================
    BOTTOM RIGHT: events
    ====================================================================== */
-#events { left: 1580px; top: 910px; width: 332px; }
+#events { left: 1600px; top: 862px; width: 312px; }
 #events .head { display: flex; justify-content: flex-end; padding-right: 10px; margin-bottom: 0; }
 #events .head .t { --fs: 22px; --tf: var(--tf-cream); opacity: .9; }
-.event { position: relative; height: 66px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding-right: 12px; margin-top: 4px; }
+.event { position: relative; height: 62px; display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding-right: 12px; margin-top: 4px; }
 .event::before { content: ""; position: absolute; inset: 4px 0; z-index: -1; border-radius: 6px;
   background: linear-gradient(90deg, rgba(10,18,8,0) 0%, rgba(10,18,8,.34) 38%, rgba(10,18,8,.5) 100%); }
-.event .ev-icon { width: 54px; height: 54px; flex: none; position: relative; }
+.event .ev-icon { width: 54px; height: 54px; flex: none; position: relative; object-fit: contain; }
 .event .ev-icon img { position: absolute; }
 .event .ev-txt { display: flex; flex-direction: column; align-items: flex-end; }
 .event .t.nm { --fs: 20px; --tf: var(--tf-cream); }
 .event .dur { display: flex; align-items: center; gap: 6px; margin-top: -2px; }
 .event .dur img { width: 26px; height: 26px; }
-.event .t.tm { --fs: 32px; --tf: var(--tf-green); }
+.event .t.tm { --fs: 30px; --tf: var(--tf-green); margin-top: -2px; }
 
 /* ======================================================================
    CENTRE PANELS (shared frame)
@@ -273,11 +274,15 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
   position: absolute; inset: 0; border: 5px solid var(--ink); border-radius: 10px; overflow: hidden;
   background: linear-gradient(180deg, rgba(20,38,26,.92) 0%, rgba(13,27,18,.94) 100%);
 }
-.panel .body-rim { position: absolute; inset: 0; border-radius: 6px; box-shadow: inset 0 0 0 2px rgba(255,255,255,.07); z-index: 3; pointer-events: none; }
+.panel .body-rim { position: absolute; inset: 0; border-radius: 6px; box-shadow: inset 0 0 0 2px rgba(150,230,110,.13), inset 0 -30px 40px -30px rgba(120,200,80,.12); z-index: 3; pointer-events: none; }
+.panel .terra { position: absolute; left: 0; right: 0; bottom: 0; height: 120px; z-index: 0; pointer-events: none; }
+.panel .terra svg { display: block; width: 100%; height: 100%; }
+.panel .glass { position: absolute; left: 0; right: 0; top: 93px; bottom: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(118deg, transparent 0 54%, rgba(255,255,255,.045) 54% 60%, transparent 60% 63%, rgba(255,255,255,.03) 63% 65.5%, transparent 65.5%); }
+.wv { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
+.wv.front { z-index: 8; }
 .panel .body-studs { position: absolute; left: 0; right: 0; top: 93px; bottom: 0; z-index: 0;
-  background:
-    radial-gradient(circle at 50% 42%, rgba(255,255,255,.05) 0 4.4px, transparent 5px) 0 0 / 24px 24px,
-    radial-gradient(circle at 50% 58%, rgba(0,0,0,.30) 0 5px, transparent 5.6px) 0 0 / 24px 24px; }
+  background: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2724%27%20height%3D%2724%27%3E%3Crect%20x%3D%278%27%20y%3D%279%27%20width%3D%2710%27%20height%3D%2710%27%20rx%3D%271.5%27%20fill%3D%27black%27%20fill-opacity%3D%27.2%27/%3E%3Crect%20x%3D%277%27%20y%3D%277%27%20width%3D%2710%27%20height%3D%2710%27%20rx%3D%271.5%27%20fill%3D%27white%27%20fill-opacity%3D%27.035%27/%3E%3Crect%20x%3D%277.5%27%20y%3D%277%27%20width%3D%279%27%20height%3D%271.6%27%20rx%3D%27.8%27%20fill%3D%27white%27%20fill-opacity%3D%27.05%27/%3E%3C/svg%3E") 0 0 / 24px 24px; }
 .phead { position: absolute; left: 0; top: 0; right: 0; height: 93px; border: 0; border-bottom: 5px solid var(--ink); border-radius: 0; box-shadow: none; z-index: 2; }
 .phead::after { border-radius: 0; box-shadow: inset 0 3px 0 rgba(255,255,255,.34), inset 0 -5px 0 rgba(0,0,0,.18); }
 .phead .dots { position: absolute; inset: 0; z-index: 1;
@@ -343,7 +348,7 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 .buy .rbx { width: 30px; height: 30px; }
 .buy .t { --fs: 30px; }
 /* featured bundle banner */
-#feat { position: relative; height: 136px; flex: none; }
+#feat { position: relative; height: 128px; flex: none; }
 #feat > .skin { inset: 0; width: auto; height: auto; }
 #feat .rays { position: absolute; left: 90px; top: 50%; width: 360px; height: 360px; transform: translate(-50%,-50%); z-index: 1; }
 #feat > .skin > .content { justify-content: flex-start; gap: 18px; padding: 0 20px 0 24px; }
@@ -359,24 +364,27 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 #feat .buy .t { --fs: 36px; }
 #feat .ribbon { position: absolute; right: -8px; top: 12px; z-index: 6; transform: rotate(8deg); }
 #feat .ribbon .t { --fs: 26px; --tf: var(--tf-gold); }
-/* game pass cards */
-#passes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; height: 128px; flex: none; }
-.pass { position: relative; }
-.pass > .skin { inset: 0; width: auto; height: auto; }
-.pass > .skin > .content { justify-content: flex-start; gap: 14px; padding: 0 16px; }
-.pass .icon { width: 86px; height: 86px; flex: none; }
-.pass .txt { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; flex: 1; }
-.pass .t.tag { --fs: 16px; --tf: var(--tf-cream); --to: .1; }
-.pass .t.name { --fs: 34px; }
-.pass .t.desc { --fs: 18px; --tf: var(--tf-cream); --to: .09; }
-.pass .buy { width: 118px; height: 56px; }
-.pass .wm { --wmc: #fff; --wmo: .16; }
+/* server luck tiers */
+#luck { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; height: 136px; flex: none; }
+.luck { position: relative; }
+.luck > .skin { inset: 0; width: auto; height: auto; }
+.luck > .skin > .content { justify-content: flex-start; gap: 6px; padding: 0 10px 0 6px; }
+.luck .icon { width: 104px; height: 104px; flex: none; }
+.luck .col { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
+.luck .t.sub { --fs: 16px; --tf: var(--tf-cream); --to: .1; }
+.luck .mult { display: flex; align-items: baseline; gap: 6px; }
+.luck .t.from { --fs: 34px; }
+.luck .t.to { --fs: 38px; }
+.luck .buy { width: 150px; height: 44px; }
+.luck .buy .t { --fs: 26px; }
+.luck .buy .rbx { width: 26px; height: 26px; }
+#shop-main .section-label .t.hint { --fs: 17px; --tf: var(--tf-muted); --to: .1; margin-left: 6px; }
 /* currency packs */
 #packs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
 .pack { position: relative; }
 .pack > .skin { inset: 0; width: auto; height: auto; }
 .pack > .skin > .content { flex-direction: column; justify-content: space-between; padding: 6px 0 9px; }
-.pack .icon { width: 72px; height: 72px; }
+.pack .icon { width: 96px; height: 76px; }
 .pack .t.amt { --fs: 30px; --tf: var(--tf-green); }
 .pack .buy { width: 150px; height: 46px; }
 .pack .bonus { position: absolute; right: -6px; top: -8px; z-index: 6; transform: rotate(10deg); }
@@ -456,6 +464,12 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
     <feOffset in="o" dy="3" result="s"/><feFlood flood-color="#0b0f1d" flood-opacity=".55"/><feComposite in2="s" operator="in" result="sh"/>
     <feMerge><feMergeNode in="sh"/><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
   </filter>
+  <filter id="outline-sm" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+    <feMorphology in="SourceAlpha" operator="dilate" radius="2.2" result="d"/>
+    <feFlood flood-color="#0b0f1d"/><feComposite in2="d" operator="in" result="o"/>
+    <feOffset in="o" dy="3" result="s"/><feFlood flood-color="#0b0f1d" flood-opacity=".45"/><feComposite in2="s" operator="in" result="sh"/>
+    <feMerge><feMergeNode in="sh"/><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
   <filter id="outline-lg" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
     <feMorphology in="SourceAlpha" operator="dilate" radius="4" result="d"/>
     <feFlood flood-color="#0b0f1d"/><feComposite in2="d" operator="in" result="o"/>
@@ -471,6 +485,7 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
 <div id="stage">
 
   <!-- ============================== TOP ============================== -->
+  <div class="wrapvine" data-vine="tabLeft"></div><div class="wrapvine" data-vine="tabRight"></div><div class="wrapvine" data-vine="menuLeft"></div><div class="wrapvine" data-vine="bioBar"></div>
   <div id="tab-shop" class="skin red" data-facets="60" data-seed="11" data-streaks="3" data-export="HUD/Top/Tab_Shop">
     <div class="wm" style="left:150px;top:-8px;width:120px;height:110px;transform:rotate(14deg);--wm:url(assets/silhouettes/bag.png);--wmc:#fff;--wmo:.14;--wmfade:linear-gradient(180deg,#000 20%,transparent 100%)"></div>
     <div class="content"><span class="t" style="--fs:52px;margin-top:-4px">Shop</span></div>
@@ -479,7 +494,6 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
     <div class="core"></div>
     <div class="content"><span class="t" style="--fs:66px;margin-top:-6px">My Base</span></div>
   </div>
-  <div id="tab-chip" class="abs" data-export="HUD/Top/Tab_SelectedMarker"></div>
   <div id="tab-upg" class="skin green" data-facets="60" data-seed="37" data-streaks="3" data-export="HUD/Top/Tab_Upgrades">
     <div class="wm" style="left:170px;top:-6px;width:100px;height:110px;transform:rotate(10deg);--wm:url(assets/silhouettes/upgrade.png);--wmc:#fff;--wmo:.15;--wmfade:linear-gradient(180deg,#000 20%,transparent 100%)"></div>
     <div class="content"><span class="t" style="--fs:50px;margin-top:-4px">Upgrades</span></div>
@@ -498,10 +512,6 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
     <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/cart.png)"></div>
     <div class="content"><img class="icon" src="assets/icons/cart.png"><span class="t">Shop</span></div>
   </div>
-  <div id="tile-pass" class="skin tile gold" data-facets="52" data-seed="52" data-streaks="2" data-export="HUD/Left/Btn_Pass">
-    <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/ticket.png)"></div>
-    <div class="content"><img class="icon" src="assets/fluent/ticket.png" style="transform:rotate(-14deg) scale(1.05)"><span class="t">Pass</span></div>
-  </div>
   <div id="tile-reb" class="skin tile purple" data-facets="52" data-seed="53" data-streaks="2" data-export="HUD/Left/Btn_Rebirth">
     <div class="glow"></div><div class="wm" style="--wm:url(assets/icons/rebirth.png)"></div>
     <div class="content"><img class="icon" src="assets/icons/rebirth.png"><span class="t">Rebirth</span></div>
@@ -518,22 +528,6 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
     <div data-sparkles="5" data-seed="61" style="position:absolute;left:20px;top:40px;width:170px;height:120px"></div>
     <img class="icon lg" src="assets/icons/gift.png">
     <div class="price"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">19</span></div>
-  </div>
-  <div id="x2money" class="abs card-wrap" data-export="HUD/Right/Card_X2Money">
-    <div class="skin card gold" data-facets="50" data-seed="71" data-streaks="3" style="left:0;top:0">
-      <div class="wm" style="left:-14px;top:18px;width:74px;height:74px;transform:rotate(-18deg);--wm:url(assets/silhouettes/cash.png)"></div>
-      <div class="wm" style="right:-12px;top:-14px;width:70px;height:70px;transform:rotate(16deg);--wm:url(assets/silhouettes/cash.png)"></div>
-      <div class="content"><span class="t">X2 Money</span></div>
-    </div>
-    <div class="price"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">9</span></div>
-  </div>
-  <div id="x2luck" class="abs card-wrap" data-export="HUD/Right/Card_X2Luck">
-    <div class="skin card emerald" data-facets="50" data-seed="72" data-streaks="3" style="left:0;top:0">
-      <div class="wm" style="left:-12px;top:18px;width:72px;height:72px;transform:rotate(-14deg);--wm:url(assets/silhouettes/clover.png)"></div>
-      <div class="wm" style="right:-10px;top:-14px;width:68px;height:68px;transform:rotate(18deg);--wm:url(assets/silhouettes/clover.png)"></div>
-      <div class="content"><span class="t">X2 Luck</span></div>
-    </div>
-    <div class="price"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">9</span></div>
   </div>
 
   <!-- ============================== BOTTOM LEFT ============================== -->
@@ -552,24 +546,27 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
     <div class="bar green-fill" style="--p:57%"><div class="track studs-soft"></div><div class="fill"></div>
       <div class="content"><span class="t">Bioactivity 5</span><span class="t">57/100</span></div></div>
   </div>
-  <img id="bio-icon" class="abs icon lg" src="assets/fluent/seedling.png" data-export="HUD/Bottom/Icon_Bioactivity">
+  <img id="bio-icon" class="abs icon lg" src="assets/voxel/Seedling.png" data-export="HUD/Bottom/Icon_Bioactivity">
 
   <!-- ============================== BOTTOM RIGHT: EVENTS ============================== -->
   <div id="events" class="abs" data-export="HUD/BottomRight/Events">
     <div class="head"><span class="t">ACTIVE EVENTS</span></div>
+    <div class="event" data-export="HUD/BottomRight/Event_ServerLuck">
+      <img class="ev-icon icon" src="assets/voxel/Clover_Tier1.png">
+      <div class="ev-txt"><span class="t nm">Server Luck</span><span class="t tm">x2 &#183; 14m</span></div></div>
     <div class="event" data-export="HUD/BottomRight/Event_ToxicRain">
-      <div class="ev-icon"><img class="icon" src="assets/icons/potion.png" style="left:2px;top:0;width:50px;height:54px"></div>
-      <div class="ev-txt"><span class="t nm">Toxic Rain</span><div class="dur"><img class="icon" src="assets/fluent/hourglass_not_done.png"><span class="t tm">Lasts 5m</span></div></div></div>
-    <div class="event" data-export="HUD/BottomRight/Event_Night">
-      <div class="ev-icon"><img class="icon" src="assets/fluent/crescent_moon.png" style="left:10px;top:0;width:40px;height:40px">
-        <img class="icon" src="assets/fluent/cloud.png" style="left:0;top:20px;width:44px;height:34px;filter:url(#outline) brightness(.55) saturate(.6)"></div>
-      <div class="ev-txt"><span class="t nm">Night Time</span><div class="dur"><img class="icon" src="assets/fluent/hourglass_not_done.png"><span class="t tm">Lasts 3m</span></div></div></div>
+      <img class="ev-icon icon" src="assets/voxel/Event_ToxicRain.png">
+      <div class="ev-txt"><span class="t nm">Toxic Rain</span><span class="t tm">Lasts 5m</span></div></div>
+    <div class="event" data-export="HUD/BottomRight/Event_NightTime">
+      <img class="ev-icon icon" src="assets/voxel/Event_NightTime.png">
+      <div class="ev-txt"><span class="t nm">Night Time</span><span class="t tm">Lasts 3m</span></div></div>
   </div>
 
   <!-- ============================== CENTRE: DAILY REWARDS ============================== -->
   <div id="scr-daily" class="abs panel-wrap screen" data-export="DailyRewards/Panel_Full">
+    <div class="wrapvine" data-vine="panelTop"></div><div class="wrapvine" data-vine="panelBottom"></div>
     <div class="panel" data-export="DailyRewards/Panel_Body">
-      <div class="body-studs"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div><div class="leaf-wm" style="right:-50px;top:90px;width:220px;height:220px;transform:rotate(140deg)"></div>
+      <div class="body-studs"></div><div class="terra" data-terra="1"></div><div class="glass"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div><div class="leaf-wm" style="right:-50px;top:90px;width:220px;height:220px;transform:rotate(140deg)"></div>
       <div class="phead skin blue" data-facets="80" data-seed="202" data-streaks="4" data-export="DailyRewards/Header_Bar">
         <div class="dots"></div>
         <div class="svgi cal-burn" data-src="assets/icons-custom/calendar-silhouette.svg"></div>
@@ -610,15 +607,15 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
             <div class="status skin red" data-facets="40" data-seed="126" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div></div>
       </div></div>
     </div>
-    <svg class="vine" style="left:1146px;top:120px" width="60" height="480" data-vine="M36 0 C52 90 26 170 42 260 C54 340 30 420 40 480" data-leaves="40,40,-20,1,A|36,120,195,.9,B|44,200,-15,1,A|40,280,190,.9,B|44,360,-20,.95,A|38,440,200,.85,B"></svg>
     <div id="cal-icon" class="abs svgi phead-icon" data-src="assets/icons-custom/calendar.svg" data-export="DailyRewards/Icon_Calendar"></div>
     <div id="op" class="abs" data-export="DailyRewards/Sticker_OP"><span class="t">OP</span></div>
   </div>
 
   <!-- ============================== CENTRE: SHOP (Robux store) ============================== -->
   <div id="scr-shop" class="abs panel-wrap screen" data-export="Shop/Panel_Full">
+    <div class="wrapvine" data-vine="panelTop"></div><div class="wrapvine" data-vine="panelBottom"></div>
     <div class="panel">
-      <div class="body-studs"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div>
+      <div class="body-studs"></div><div class="terra" data-terra="1"></div><div class="glass"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div>
       <div class="phead skin red" data-facets="80" data-seed="302" data-streaks="4" data-export="Shop/Header_Bar">
         <div class="dots"></div>
         <div class="content"><span class="t title">Shop</span></div>
@@ -628,8 +625,8 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
       <div class="pbody">
         <div id="shop-side">
           <div class="scat skin gold" data-facets="40" data-seed="361" data-streaks="1" data-export="Shop/Category_Bundles_On"><div class="content"><img class="icon" src="assets/icons/gift.png"><span class="t">Bundles</span></div></div>
-          <div class="scat skin off" data-facets="40" data-seed="362" data-streaks="1" data-export="Shop/Category_GamePasses_Off"><div class="content"><img class="icon" src="assets/fluent/ticket.png"><span class="t">Passes</span></div></div>
-          <div class="scat skin off" data-facets="40" data-seed="363" data-streaks="1" data-export="Shop/Category_Currency_Off"><div class="content"><img class="icon" src="assets/icons/cash2.png"><span class="t">Cash</span></div></div>
+          <div class="scat skin off" data-facets="40" data-seed="362" data-streaks="1" data-export="Shop/Category_ServerLuck_Off"><div class="content"><img class="icon" src="assets/voxel/Clover_Tier1.png"><span class="t">Luck</span></div></div>
+          <div class="scat skin off" data-facets="40" data-seed="363" data-streaks="1" data-export="Shop/Category_Currency_Off"><div class="content"><img class="icon" src="assets/voxel/Cash_Tier2.png"><span class="t">Cash</span></div></div>
           <div class="note"><span class="t">Purchases support<br>Build a Terrarium!</span></div>
         </div>
         <div id="shop-main">
@@ -637,43 +634,55 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
             <div class="rays" data-rays="22" data-seed="372" data-ra=".4"></div>
             <div data-sparkles="8" data-seed="373" style="position:absolute;left:10px;top:10px;width:200px;height:120px;z-index:2"></div>
             <div class="content"><img class="icon lg" src="assets/icons/gift.png"><div class="txt"><span class="t name">Starter Pack</span><span class="t desc">One-time offer for new players</span>
-              <div class="chips"><div class="chip"><img class="icon" src="assets/icons/cash2.png"><span class="t">$25K</span></div><div class="chip"><img class="icon" src="assets/fluent/four_leaf_clover.png"><span class="t">X2 Luck 30m</span></div></div></div>
+              <div class="chips"><div class="chip"><img class="icon" src="assets/voxel/Cash_Tier1.png"><span class="t">$25K</span></div><div class="chip"><img class="icon" src="assets/voxel/Clover_Tier1.png"><span class="t">2x Luck 15m</span></div></div></div>
               <div class="buy skin green" data-facets="40" data-seed="374" data-streaks="1" data-export="Shop/Btn_BuyRobux_Large"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">19</span></div></div></div></div></div>
-          <div class="section-label"><img class="icon" src="assets/fluent/ticket.png"><span class="t">GAME PASSES</span></div>
-          <div id="passes">
-            <div class="pass"><div class="skin gold" data-facets="70" data-seed="381" data-streaks="4" data-export="Shop/Pass_X2Money">
-              <div class="wm" style="right:120px;top:-26px;width:130px;height:130px;transform:rotate(14deg);--wm:url(assets/silhouettes/cash.png)"></div>
-              <div class="content"><img class="icon" src="assets/fluent/money_bag.png"><div class="txt"><span class="t tag">PERMANENT</span><span class="t name">X2 Money</span><span class="t desc">Double all cash earned</span></div><div class="buy skin green" data-facets="40" data-seed="382" data-streaks="1" data-export="Shop/Btn_BuyRobux"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">99</span></div></div></div></div></div>
-            <div class="pass"><div class="skin emerald" data-facets="70" data-seed="383" data-streaks="4" data-export="Shop/Pass_X2Luck">
-              <div class="wm" style="right:120px;top:-26px;width:130px;height:130px;transform:rotate(14deg);--wm:url(assets/silhouettes/clover.png)"></div>
-              <div class="content"><img class="icon" src="assets/fluent/four_leaf_clover.png"><div class="txt"><span class="t tag">PERMANENT</span><span class="t name">X2 Luck</span><span class="t desc">Rarer critters appear</span></div><div class="buy skin green" data-facets="40" data-seed="384" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">99</span></div></div></div></div></div>
+          <div class="section-label"><img class="icon" src="assets/voxel/Clover_Tier1.png"><span class="t">SERVER LUCK</span><span class="t hint">boosts everyone in the server</span></div>
+          <div id="luck">
+            <div class="luck"><div class="skin emerald" data-facets="60" data-seed="381" data-streaks="3" data-export="Shop/ServerLuck_Tier1">
+              <div class="glow" style="left:58px;top:50%;width:150px;height:150px;transform:translate(-50%,-50%)"></div>
+              <div class="content"><img class="icon lg" src="assets/voxel/Clover_Tier1.png"><div class="col">
+                <span class="t sub">+15 MINUTES</span>
+                <div class="mult"><span class="t from">1x &gt;</span><span class="t to" style="--tf:var(--tf-gold)">2x</span></div>
+                <div class="buy skin green" data-facets="40" data-seed="382" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">249</span></div></div></div></div></div></div>
+            <div class="luck"><div class="skin gold" data-facets="60" data-seed="383" data-streaks="3" data-export="Shop/ServerLuck_Tier2">
+              <div class="glow" style="left:58px;top:50%;width:150px;height:150px;transform:translate(-50%,-50%)"></div>
+              <div class="content"><img class="icon lg" src="assets/voxel/Clover_Tier2.png"><div class="col">
+                <span class="t sub">+15 MINUTES</span>
+                <div class="mult"><span class="t from">2x &gt;</span><span class="t to" style="--tf:var(--tf-white)">4x</span></div>
+                <div class="buy skin green" data-facets="40" data-seed="384" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">999</span></div></div></div></div></div></div>
+            <div class="luck"><div class="skin amber7" data-facets="60" data-seed="385" data-streaks="3" data-export="Shop/ServerLuck_Tier3">
+              <div class="glow" style="left:58px;top:50%;width:150px;height:150px;transform:translate(-50%,-50%)"></div>
+              <div class="content"><img class="icon lg" src="assets/voxel/Clover_Tier3.png"><div class="col">
+                <span class="t sub">+15 MINUTES</span>
+                <div class="mult"><span class="t from">4x &gt;</span><span class="t to" style="--tf:var(--tf-white)">8x</span></div>
+                <div class="buy skin green" data-facets="40" data-seed="386" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">2,999</span></div></div></div></div></div></div>
           </div>
-          <div class="section-label"><img class="icon" src="assets/icons/cash2.png"><span class="t">CASH PACKS</span></div>
+          <div class="section-label"><img class="icon" src="assets/voxel/Cash_Tier1.png"><span class="t">CASH PACKS</span></div>
           <div id="packs">
           <div class="pack"><div class="skin blue" data-facets="60" data-seed="391" data-streaks="3" data-export="Shop/Pack_10K">
             <div class="glow" style="left:50%;top:40%;width:170px;height:140px;transform:translate(-50%,-50%)"></div>
-            <div class="content"><img class="icon" src="assets/icons/cash.png"><span class="t amt">$10K</span><div class="buy skin green" data-facets="40" data-seed="441" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">25</span></div></div></div></div></div>
+            <div class="content"><img class="icon" src="assets/voxel/Cash_Tier1.png"><span class="t amt">$10K</span><div class="buy skin green" data-facets="40" data-seed="441" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">25</span></div></div></div></div></div>
           <div class="pack"><div class="bonus"><span class="t">+10%</span></div><div class="skin blue" data-facets="60" data-seed="392" data-streaks="3" data-export="Shop/Pack_50K">
             <div class="glow" style="left:50%;top:40%;width:170px;height:140px;transform:translate(-50%,-50%)"></div>
-            <div class="content"><img class="icon" src="assets/icons/cash2.png"><span class="t amt">$50K</span><div class="buy skin green" data-facets="40" data-seed="442" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">99</span></div></div></div></div></div>
+            <div class="content"><img class="icon" src="assets/voxel/Cash_Tier2.png"><span class="t amt">$50K</span><div class="buy skin green" data-facets="40" data-seed="442" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">99</span></div></div></div></div></div>
           <div class="pack"><div class="bonus"><span class="t">+25%</span></div><div class="skin purple" data-facets="60" data-seed="393" data-streaks="3" data-export="Shop/Pack_250K">
             <div class="glow" style="left:50%;top:40%;width:170px;height:140px;transform:translate(-50%,-50%)"></div>
-            <div class="content"><img class="icon" src="assets/fluent/money_bag.png"><span class="t amt">$250K</span><div class="buy skin green" data-facets="40" data-seed="443" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">399</span></div></div></div></div></div>
+            <div class="content"><img class="icon" src="assets/voxel/Cash_Tier3.png"><span class="t amt">$250K</span><div class="buy skin green" data-facets="40" data-seed="443" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">399</span></div></div></div></div></div>
           <div class="pack"><div class="bonus"><span class="t">+50%</span></div><div class="skin gold" data-facets="60" data-seed="394" data-streaks="3" data-export="Shop/Pack_1M">
             <div class="glow" style="left:50%;top:40%;width:170px;height:140px;transform:translate(-50%,-50%)"></div>
-            <div class="content"><img class="icon" src="assets/icons/chest.png"><span class="t amt">$1M</span><div class="buy skin green" data-facets="40" data-seed="444" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">999</span></div></div></div></div></div>
+            <div class="content"><img class="icon" src="assets/voxel/Cash_Tier4.png"><span class="t amt">$1M</span><div class="buy skin green" data-facets="40" data-seed="444" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux2d.svg"></div><span class="t">999</span></div></div></div></div></div>
           </div>
         </div>
       </div>
     </div>
-    <svg class="vine" style="left:1146px;top:110px" width="60" height="480" data-vine="M36 0 C52 90 26 170 42 260 C54 340 30 420 40 480" data-leaves="40,40,-20,1,A|36,120,195,.9,B|44,200,-15,1,A|40,280,190,.9,B|44,360,-20,.95,A|38,440,200,.85,B"></svg>
     <img class="abs icon lg" src="assets/icons/cart.png" style="left:-8px;top:-26px;width:130px;height:130px;z-index:9" data-export="Shop/Icon_Header">
   </div>
 
   <!-- ============================== CENTRE: INDEX ============================== -->
   <div id="scr-index" class="abs panel-wrap screen" data-export="Index/Panel_Full">
+    <div class="wrapvine" data-vine="panelTop"></div><div class="wrapvine" data-vine="panelBottom"></div>
     <div class="panel">
-      <div class="body-studs"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div><div class="leaf-wm" style="right:-50px;top:90px;width:220px;height:220px;transform:rotate(140deg)"></div>
+      <div class="body-studs"></div><div class="terra" data-terra="1"></div><div class="glass"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div><div class="leaf-wm" style="right:-50px;top:90px;width:220px;height:220px;transform:rotate(140deg)"></div>
       <div class="phead skin blue" data-facets="80" data-seed="402" data-streaks="4" data-export="Index/Header_Bar">
         <div class="dots"></div>
         <div class="content"><span class="t title">Index</span></div>
@@ -690,19 +699,19 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
         </div>
         <div id="index-grid"></div>
         <div id="index-reward" class="skin earth" data-facets="60" data-seed="420" data-streaks="2" data-export="Index/Reward_Strip">
-          <div class="content"><img class="icon" src="assets/fluent/four_leaf_clover.png"><span class="t lbl">Complete Critters:</span><span class="t val">x1.5 Luck</span>
+          <div class="content"><img class="icon" src="assets/voxel/Clover_Tier1.png"><span class="t lbl">Complete Critters:</span><span class="t val">x1.5 Luck</span>
             <div class="bar green-fill" style="--p:61%"><div class="track studs-soft"></div><div class="fill"></div><div class="content" style="justify-content:center"><span class="t">11 / 18</span></div></div>
             <div class="buy skin gray" data-facets="40" data-seed="421" data-streaks="1"><div class="content"><span class="t">LOCKED</span></div></div></div></div>
       </div>
     </div>
-    <svg class="vine" style="left:1146px;top:130px" width="60" height="480" data-vine="M36 0 C52 90 26 170 42 260 C54 340 30 420 40 480" data-leaves="40,40,-20,1,A|36,120,195,.9,B|44,200,-15,1,A|40,280,190,.9,B|44,360,-20,.95,A|38,440,200,.85,B"></svg>
     <img class="abs icon lg" src="assets/fluent/books.png" style="left:-8px;top:-28px;width:128px;height:128px;z-index:9" data-export="Index/Icon_Header">
   </div>
 
   <!-- ============================== CENTRE: REBIRTH ============================== -->
   <div id="scr-rebirth" class="abs panel-wrap screen" data-export="Rebirth/Panel_Full">
+    <div class="wrapvine" data-vine="panelTop"></div><div class="wrapvine" data-vine="panelBottom"></div>
     <div class="panel">
-      <div class="body-studs"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div><div class="leaf-wm" style="right:-50px;top:90px;width:220px;height:220px;transform:rotate(140deg)"></div>
+      <div class="body-studs"></div><div class="terra" data-terra="1"></div><div class="glass"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div><div class="leaf-wm" style="right:-50px;top:90px;width:220px;height:220px;transform:rotate(140deg)"></div>
       <div class="phead skin purple" data-facets="80" data-seed="502" data-streaks="4" data-export="Rebirth/Header_Bar">
         <div class="dots"></div>
         <div class="content"><span class="t title">Rebirth</span></div>
@@ -719,11 +728,11 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
           <div id="reb-reqs">
             <div class="section-label"><span class="t">REQUIREMENTS</span></div>
             <div class="req"><div class="skin earth" data-facets="60" data-seed="521" data-streaks="2" data-export="Rebirth/Req_Money">
-              <div class="content"><img class="icon" src="assets/fluent/money_bag.png"><div class="col"><span class="t lbl">Earn $1M</span>
+              <div class="content"><img class="icon" src="assets/voxel/Cash_Tier3.png"><div class="col"><span class="t lbl">Earn $1M</span>
                 <div class="bar" style="--p:57%"><div class="track studs-soft"></div><div class="fill"></div><div class="content"><span class="t">$572,831</span><span class="t">57%</span></div></div></div>
                 <div class="check no"><span class="t">-</span></div></div></div></div>
             <div class="req"><div class="skin earth" data-facets="60" data-seed="522" data-streaks="2" data-export="Rebirth/Req_Bioactivity">
-              <div class="content"><img class="icon" src="assets/fluent/seedling.png"><div class="col"><span class="t lbl">Reach Bioactivity 8</span>
+              <div class="content"><img class="icon" src="assets/voxel/Seedling.png"><div class="col"><span class="t lbl">Reach Bioactivity 8</span>
                 <div class="bar green-fill" style="--p:62%"><div class="track studs-soft"></div><div class="fill"></div><div class="content"><span class="t">5 / 8</span><span class="t">62%</span></div></div></div>
                 <div class="check no"><span class="t">-</span></div></div></div></div>
             <div class="req"><div class="skin earth" data-facets="60" data-seed="523" data-streaks="2" data-export="Rebirth/Req_Discoveries">
@@ -735,9 +744,9 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
         <div id="reb-right">
           <div class="section-label"><span class="t">REWARDS</span></div>
           <div class="rew"><div class="skin gold" data-facets="60" data-seed="531" data-streaks="3" data-export="Rebirth/Reward_Money">
-            <div class="content"><img class="icon" src="assets/fluent/money_bag.png"><div class="col"><span class="t name">Money Multiplier</span><span class="t desc">All earnings boosted</span></div><span class="t val">x1.2 &gt; x1.4</span></div></div></div>
+            <div class="content"><img class="icon" src="assets/voxel/Cash_Tier4.png"><div class="col"><span class="t name">Money Multiplier</span><span class="t desc">All earnings boosted</span></div><span class="t val">x1.2 &gt; x1.4</span></div></div></div>
           <div class="rew"><div class="skin emerald" data-facets="60" data-seed="532" data-streaks="3" data-export="Rebirth/Reward_Luck">
-            <div class="content"><img class="icon" src="assets/fluent/four_leaf_clover.png"><div class="col"><span class="t name">Luck Boost</span><span class="t desc">Rarer critters appear</span></div><span class="t val">+10%</span></div></div></div>
+            <div class="content"><img class="icon" src="assets/voxel/Clover_Tier1.png"><div class="col"><span class="t name">Luck Boost</span><span class="t desc">Rarer critters appear</span></div><span class="t val">+10%</span></div></div></div>
           <div class="rew"><div class="skin blue" data-facets="60" data-seed="533" data-streaks="3" data-export="Rebirth/Reward_Biome">
             <div class="content"><img class="icon" src="assets/fluent/sauropod.png"><div class="col"><span class="t name">New Biome</span><span class="t desc">Prehistoric Swamp</span></div><span class="t val">UNLOCK</span></div></div></div>
           <div id="reb-action">
@@ -747,7 +756,6 @@ body[data-screen="index"] #tile-idx, body[data-screen="rebirth"] #tile-reb { box
         </div>
       </div>
     </div>
-    <svg class="vine" style="left:1146px;top:120px" width="60" height="480" data-vine="M36 0 C52 90 26 170 42 260 C54 340 30 420 40 480" data-leaves="40,40,-20,1,A|36,120,195,.9,B|44,200,-15,1,A|40,280,190,.9,B|44,360,-20,.95,A|38,440,200,.85,B"></svg>
     <img class="abs icon lg" src="assets/icons/rebirth.png" style="left:-8px;top:-26px;width:128px;height:128px;z-index:9" data-export="Rebirth/Icon_Header">
   </div>
 
@@ -923,6 +931,96 @@ function buildSparkles(el) {
   }
 }
 
+
+// Wrap vines: a continuous stem made of cubic segments. Segments flagged 'f' are drawn in front of the UI,
+// 'b' segments behind it — so where a vine crosses an edge it reads as growing around the element.
+const P = (x, y) => [x, y];
+const VINES = {
+  // panel-local coordinates (panel is 1168 x 684)
+  panelTop: { start: [470, -30], segs: [
+      [500, -36, 540, -20, 560, 0, 'b'], [585, 14, 640, 14, 665, 0, 'f'], [700, -24, 790, -28, 845, 0, 'b'],
+      [870, 13, 925, 13, 950, 0, 'b'], [1000, -26, 1120, -34, 1178, -4, 'b'], [1196, 24, 1192, 64, 1168, 92, 'b'],
+      [1150, 122, 1150, 172, 1168, 202, 'f'], [1190, 236, 1194, 296, 1168, 332, 'b'], [1152, 362, 1152, 412, 1168, 442, 'b'],
+      [1188, 476, 1192, 536, 1176, 590, 'b']],
+    leaves: [[522, -31, 205, .85, 'A', 'b'], [606, 10, 60, .72, 'B', 'f'], [640, 9, -65, .7, 'A', 'f'], [760, -26, -115, .85, 'B', 'b'],
+      [1030, -27, 235, .85, 'A', 'b'], [1110, -31, -70, .8, 'B', 'b'], [1193, 36, 15, .9, 'A', 'b'], [1156, 150, 165, .78, 'B', 'f'],
+      [1192, 262, -15, .9, 'A', 'b'], [1189, 296, 35, .75, 'B', 'b'], [1189, 500, -10, .88, 'A', 'b'], [1177, 588, 70, .9, 'B', 'b'], [1176, 590, 125, .75, 'A', 'b']],
+    curls: [[1176, 590, 1]] },
+  panelBottom: { start: [40, 734], segs: [
+      [60, 714, 92, 697, 118, 684, 'b'], [140, 673, 190, 671, 214, 684, 'f'], [240, 702, 300, 708, 330, 684, 'b'],
+      [352, 671, 400, 671, 420, 684, 'b'], [440, 700, 480, 716, 520, 712, 'b']],
+    leaves: [[72, 716, 205, .82, 'A', 'b'], [162, 676, -75, .66, 'B', 'f'], [192, 676, -118, .66, 'A', 'f'], [288, 706, 115, .82, 'B', 'b'],
+      [518, 712, 12, .8, 'A', 'b'], [506, 714, 80, .68, 'B', 'b']],
+    curls: [[520, 712, -1]] },
+  // stage coordinates
+  tabLeft: { start: [488, 18], segs: [
+      [500, 26, 512, 34, 520, 42, 'b'], [531, 52, 531, 62, 520, 72, 'b'], [506, 84, 506, 96, 522, 106, 'b'],
+      [540, 99, 556, 99, 572, 106, 'f'], [590, 116, 600, 124, 604, 136, 'b']],
+    leaves: [[493, 20, 200, .8, 'A', 'b'], [510, 62, 160, .62, 'B', 'b'], [507, 90, 170, .75, 'A', 'b'], [556, 101, -80, .6, 'B', 'f'],
+      [602, 132, 40, .75, 'A', 'b'], [602, 134, 120, .62, 'B', 'b']], curls: [[604, 136, 1]] },
+  menuLeft: { start: [98, 304], segs: [
+      [72, 298, 44, 306, 30, 322, 'b'], [26, 336, 31, 352, 23, 368, 'f'], [13, 392, 10, 412, 16, 440, 'b'],
+      [31, 462, 31, 492, 23, 522, 'f'], [12, 560, 10, 600, 23, 632, 'b'], [32, 664, 30, 694, 23, 712, 'b'], [14, 740, 16, 770, 24, 790, 'b']],
+    leaves: [[80, 300, 195, .8, 'A', 'b'], [45, 311, -110, .66, 'B', 'b'], [28, 346, -25, .64, 'A', 'f'], [11, 404, 150, .7, 'B', 'b'],
+      [29, 486, -20, .66, 'A', 'f'], [11, 584, 160, .72, 'A', 'b'], [14, 616, 120, .6, 'B', 'b'], [18, 758, 140, .7, 'A', 'b'], [24, 790, 70, .66, 'B', 'b']],
+    curls: [[24, 790, 1]] },
+  bioBar: { start: [604, 1000], segs: [
+      [616, 996, 636, 1000, 648, 1010, 'b'], [660, 1015, 682, 1015, 694, 1010, 'f'], [712, 1000, 742, 996, 764, 1004, 'b'],
+      [776, 1012, 800, 1013, 812, 1010, 'b'], [826, 1004, 846, 998, 862, 1002, 'b']],
+    leaves: [[626, 998, -130, .6, 'B', 'b'], [672, 1013, -60, .55, 'A', 'f'], [740, 997, -100, .62, 'B', 'b'], [858, 1001, -20, .64, 'A', 'b'], [850, 1000, -80, .54, 'B', 'b']],
+    curls: [[862, 1002, 1]] },
+};
+// mirrored copy for the Upgrades tab (mirror across the centre of the tab row)
+VINES.tabRight = (() => {
+  const m = x => 1923 - x, v = VINES.tabLeft;
+  return { start: [m(v.start[0]), v.start[1]], segs: v.segs.map(([a, b, c, d, e, f, g]) => [m(a), b, m(c), d, m(e), f, g]),
+    leaves: v.leaves.map(([x, y, a, sc, k, l]) => [m(x), y, 180 - a, sc, k, l]), curls: v.curls.map(([x, y, d]) => [m(x), y, -d]) };
+})();
+
+function buildWrapVines() {
+  document.querySelectorAll('.wrapvine[data-vine]').forEach(host => {
+    const v = VINES[host.dataset.vine];
+    const parts = { b: [], f: [] };
+    let [x, y] = v.start, all = `M${x} ${y}`;
+    for (const [c1x, c1y, c2x, c2y, ex, ey, layer] of v.segs) {
+      const seg = `M${x} ${y} C${c1x} ${c1y} ${c2x} ${c2y} ${ex} ${ey}`;
+      all += ` C${c1x} ${c1y} ${c2x} ${c2y} ${ex} ${ey}`;
+      if (layer === 'f') parts.f.push(seg);
+      [x, y] = [ex, ey];
+    }
+    const stem = d => `<path d="${d}" fill="none" stroke="#0b0f1d" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${d}" fill="none" stroke="#3aa822" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${d}" fill="none" stroke="#8fe35a" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="6 10" transform="translate(-.6 -1)"/>`;
+    const leaves = l => v.leaves.filter(q => q[5] === l).map(([lx, ly, a, sc, k]) => `<use href="#leaf${k}" transform="translate(${lx} ${ly}) rotate(${a}) scale(${sc})"/>`).join('');
+    const curls = (v.curls || []).map(([cx, cy, d]) => `<path d="M${cx} ${cy} c${6 * d} 4 ${10 * d} 12 ${4 * d} 16 c${-5 * d} 3 ${-9 * d} -2 ${-6 * d} -6" fill="none" stroke="#0b0f1d" stroke-width="5" stroke-linecap="round"/>
+      <path d="M${cx} ${cy} c${6 * d} 4 ${10 * d} 12 ${4 * d} 16 c${-5 * d} 3 ${-9 * d} -2 ${-6 * d} -6" fill="none" stroke="#3aa822" stroke-width="2.2" stroke-linecap="round"/>`).join('');
+    const back = `<svg class="wv back">${stem(all)}${curls}${leaves('b')}</svg>`;
+    const front = `<svg class="wv front">${parts.f.map(stem).join('')}${leaves('f')}</svg>`;
+    host.insertAdjacentHTML('beforebegin', back);
+    host.parentElement.insertAdjacentHTML('beforeend', front);
+    host.remove();
+  });
+}
+
+// Terrarium floor inside each panel: a low blocky hill line of soil and moss with a few sprouts, very faint
+function buildTerra(el) {
+  const w = el.clientWidth, h = el.clientHeight, r = rng(+el.dataset.terra * 97 + w);
+  let top = 'M0 ' + h, x = 0, cols = [];
+  const base = h * .55;
+  while (x < w) { const cw = 16 * (1 + Math.floor(r() * 3)), ch = base - Math.floor(r() * 4) * 12 + (Math.sin(x / 190) * 14); cols.push([x, cw, ch]); x += cw; }
+  for (const [cx, cw, ch] of cols) top += ` L${cx} ${ch.toFixed(0)} L${cx + cw} ${ch.toFixed(0)}`;
+  top += ` L${w} ${h} Z`;
+  const lip = cols.map(([cx, cw, ch]) => `<rect x="${cx}" y="${ch.toFixed(0)}" width="${cw}" height="5" fill="#9cf06a" fill-opacity=".10"/>`).join('');
+  let sprouts = '';
+  for (let i = 0; i < 5; i++) {
+    const c = cols[Math.floor(r() * cols.length)], sx = c[0] + c[1] / 2, sy = c[2];
+    sprouts += `<path d="M${sx} ${sy} v-12 M${sx} ${sy - 8} l-7 -5 M${sx} ${sy - 10} l7 -6" stroke="#8fe35a" stroke-opacity=".16" stroke-width="3" stroke-linecap="square" fill="none"/>`;
+  }
+  el.innerHTML = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="tg${uid}" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#3f7a2c" stop-opacity=".22"/><stop offset=".45" stop-color="#3a2a18" stop-opacity=".22"/><stop offset="1" stop-color="#2a1d10" stop-opacity=".3"/></linearGradient></defs>
+    <path d="${top}" fill="url(#tg${uid++})"/>${lip}${sprouts}</svg>`;
+}
+
 (async () => {
   await document.fonts.load('40px CNA');
   buildIndexGrid();
@@ -931,7 +1029,8 @@ function buildSparkles(el) {
   document.querySelectorAll('[data-facets]').forEach(buildFacets);
   document.querySelectorAll('[data-grain]').forEach(buildGrain);
   document.querySelectorAll('[data-moss]').forEach(buildMoss);
-  document.querySelectorAll('[data-vine]').forEach(buildVine);
+  buildWrapVines();
+  document.querySelectorAll('[data-terra]').forEach(buildTerra);
   document.querySelectorAll('[data-rays]').forEach(buildRays);
   document.querySelectorAll('[data-sparkles]').forEach(buildSparkles);
   document.body.dataset.ready = '1';

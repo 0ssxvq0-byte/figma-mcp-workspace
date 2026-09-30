@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Voxel Icons</title></head>
+<body style="margin:0;background:transparent">
+<script type="module">
+import * as THREE from './lib/three.module.min.js';
+import { MODELS } from './models.js';
+
+const SIZE = 640;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setSize(SIZE, SIZE);
+renderer.setPixelRatio(1);
+renderer.setClearColor(0x000000, 0);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+// Bevel texture: every voxel face gets a soft light top-left edge and darker bottom-right edge,
+// so individual bricks read clearly without looking noisy.
+function bevelTexture() {
+  const c = document.createElement('canvas'); c.width = c.height = 32;
+  const x = c.getContext('2d');
+  x.fillStyle = 'rgb(246,246,246)'; x.fillRect(0, 0, 32, 32);
+  x.fillStyle = 'rgb(255,255,255)'; x.fillRect(0, 0, 32, 3); x.fillRect(0, 0, 3, 32);
+  x.fillStyle = 'rgb(214,214,214)'; x.fillRect(0, 29, 32, 3); x.fillRect(29, 0, 3, 32);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+  return t;
+}
+const BEVEL = bevelTexture();
+
+// face definitions: normal, the two in-plane axes, and the four corners in (u, v) order
+const FACES = [
+  { n: [1, 0, 0], u: [0, 1, 0], v: [0, 0, 1] }, { n: [-1, 0, 0], u: [0, 0, 1], v: [0, 1, 0] },
+  { n: [0, 1, 0], u: [0, 0, 1], v: [1, 0, 0] }, { n: [0, -1, 0], u: [1, 0, 0], v: [0, 0, 1] },
+  { n: [0, 0, 1], u: [1, 0, 0], v: [0, 1, 0] }, { n: [0, 0, -1], u: [0, 1, 0], v: [1, 0, 0] },
+];
+const AO = [0.64, 0.8, 0.92, 1.0];
+
+function buildMesh(voxels) {
+  const has = (x, y, z) => voxels.has(`${x},${y},${z}`);
+  const pos = [], nor = [], col = [], uv = [], idx = [];
+  const color = new THREE.Color();
+  for (const [key, hex] of voxels) {
+    const [x, y, z] = key.split(',').map(Number);
+    color.set(hex);                                             // sRGB hex -> linear
+    for (const f of FACES) {
+      const [nx, ny, nz] = f.n;
+      if (has(x + nx, y + ny, z + nz)) continue;
+      const base = idx.length ? pos.length / 3 : 0;
+      const ao = [];
+      const corners = [[0, 0], [1, 0], [1, 1], [0, 1]];
+      for (const [cu, cv] of corners) {
+        // corner position on the face
+        const o = [x, y, z].map((p, i) => p + (f.n[i] > 0 ? 1 : 0) + f.u[i] * cu + f.v[i] * cv);
+        pos.push(...o); nor.push(nx, ny, nz); uv.push(cu, cv);
+        // ambient occlusion from the three voxels touching this corner in front of the face
+        const du = f.u.map(a => a * (cu ? 1 : -1)), dv = f.v.map(a => a * (cv ? 1 : -1));
+        const s1 = has(x + nx + du[0], y + ny + du[1], z + nz + du[2]);
+        const s2 = has(x + nx + dv[0], y + ny + dv[1], z + nz + dv[2]);
+        const cn = has(x + nx + du[0] + dv[0], y + ny + du[1] + dv[1], z + nz + du[2] + dv[2]);
+        const a = s1 && s2 ? 0 : 3 - (s1 + s2 + cn);
+        ao.push(a);
+        const k = AO[a];
+        col.push(color.r * k, color.g * k, color.b * k);
+      }
+      if (ao[0] + ao[2] > ao[1] + ao[3]) idx.push(base, base + 1, base + 2, base, base + 2, base + 3);
+      else idx.push(base + 1, base + 2, base + 3, base + 1, base + 3, base);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  geo.setIndex(idx);
+  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, map: BEVEL, roughness: 0.62, metalness: 0, side: THREE.DoubleSide });
+  return new THREE.Mesh(geo, mat);
+}
+
+function render(name) {
+  const { voxels, view } = MODELS[name]();
+  const scene = new THREE.Scene();
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8aa0, 2.0));
+  const key = new THREE.DirectionalLight(0xfffaf0, 2.3); key.position.set(-3, 6, 5); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xdff4ff, 0.9); rim.position.set(5, 2, -4); scene.add(rim);
+
+  const mesh = buildMesh(voxels);
+  mesh.geometry.computeBoundingBox();
+  const c = new THREE.Vector3(); mesh.geometry.boundingBox.getCenter(c);
+  mesh.position.sub(c);
+  const pivot = new THREE.Group(); pivot.add(mesh);
+  pivot.rotation.set(view.rx, view.ry, 0, 'XYZ');
+  scene.add(pivot);
+
+  // fit the rotated model tightly into the frame
+  pivot.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(pivot);
+  const size = new THREE.Vector3(); box.getSize(size);
+  const cam = new THREE.PerspectiveCamera(18, 1, 0.1, 1000);
+  const fit = Math.max(size.x, size.y) * 0.5 / Math.tan(THREE.MathUtils.degToRad(9)) * 1.12;
+  const mid = new THREE.Vector3(); box.getCenter(mid);
+  cam.position.set(mid.x, mid.y, box.max.z + fit);
+  cam.lookAt(mid);
+  renderer.render(scene, cam);
+  return trim(renderer.domElement);
+}
+
+// crop to the visible pixels and centre on a square canvas, so every icon fills its slot the same way
+function trim(src) {
+  const c = document.createElement('canvas'); c.width = c.height = SIZE;
+  const x = c.getContext('2d'); x.drawImage(src, 0, 0);
+  const d = x.getImageData(0, 0, SIZE, SIZE).data;
+  let x0 = SIZE, y0 = SIZE, x1 = 0, y1 = 0;
+  for (let y = 0; y < SIZE; y++) for (let i = 0; i < SIZE; i++) if (d[(y * SIZE + i) * 4 + 3] > 8) {
+    x0 = Math.min(x0, i); y0 = Math.min(y0, y); x1 = Math.max(x1, i); y1 = Math.max(y1, y);
+  }
+  const w = x1 - x0 + 1, h = y1 - y0 + 1, side = Math.ceil(Math.max(w, h) * 1.06);
+  const o = document.createElement('canvas'); o.width = o.height = side;
+  o.getContext('2d').drawImage(c, x0, y0, w, h, (side - w) / 2, (side - h) / 2, w, h);
+  return o.toDataURL('image/png');
+}
+
+window.renderAll = () => Object.fromEntries(Object.keys(MODELS).map(n => [n, render(n)]));
+window.ready = true;
+</script>
+</body>
+</html>
