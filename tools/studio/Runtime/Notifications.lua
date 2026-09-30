@@ -6,10 +6,10 @@ local Tween = require(script.Parent.Tween)
 local Sound = require(script.Parent.Sound)
 local Config = require(script.Parent.UIConfig)
 local ButtonFX = require(script.Parent.ButtonFX)
+local Images = require(script.Parent.Images)
 
 local Notifications = {}
 local sg, root, templates = nil, nil, {}
-local assets
 local toasts = {}
 
 -- the holder (top-level piece) that contains a descendant with this name
@@ -25,8 +25,7 @@ local function texts(g)
 	return list
 end
 
-function Notifications.init(playerGui, assetIds)
-	assets = assetIds
+function Notifications.init(playerGui)
 	sg = playerGui:WaitForChild("UI_Notifications")
 	root = sg.Root
 	templates.toast = holderWith("Toast_Body")
@@ -43,8 +42,8 @@ function Notifications.toast(kind, title, subtitle, icon)
 	local t = templates.toast:Clone()
 	local tabName = kind == "Error" and "Toast_Tab_Red" or kind == "Info" and "Toast_Tab_Blue" or "Toast_Tab_Green"
 	for _, d in ipairs(t:GetDescendants()) do
-		if d:IsA("ImageLabel") and d.Name:find("^Toast_Tab_") then d.Image = assets["15_Notifications/" .. tabName] or d.Image end
-		if d:IsA("ImageLabel") and icon and d.Name:find("^Icon") then d.Image = assets[icon] or icon end
+		if d:IsA("ImageLabel") and d.Name:find("^Toast_Tab_") then Images.apply(d, "15_Notifications/" .. tabName) end
+		if d:IsA("ImageLabel") and icon and d.Name:find("^Icon") then if not Images.apply(d, icon) then d.Image = icon end end
 	end
 	local lines = texts(t)
 	if lines[1] then lines[1].Text = title end
@@ -106,7 +105,7 @@ end
 function Notifications.eventStarted(title, subtitle, icon, activeEventsFrame)
 	local t = templates.toast:Clone()
 	for _, d in ipairs(t:GetDescendants()) do
-		if d:IsA("ImageLabel") and d.Name:find("^Icon") then d.Image = assets[icon] or icon or d.Image end
+		if d:IsA("ImageLabel") and icon and d.Name:find("^Icon") then if not Images.apply(d, icon) then d.Image = icon end end
 	end
 	local lines = texts(t)
 	if lines[1] then lines[1].Text = title end
@@ -142,7 +141,7 @@ function Notifications.eggBanked(worldPosition, image, eggsButton)
 	local finish = eggsButton.AbsolutePosition + eggsButton.AbsoluteSize / 2
 	local egg = Instance.new("ImageLabel")
 	egg.BackgroundTransparency = 1
-	egg.Image = image or assets["00_Shared/Sparkle"]
+	if image then egg.Image = image else Images.apply(egg, "00_Shared/Sparkle") end
 	egg.AnchorPoint = Vector2.new(0.5, 0.5)
 	egg.Size = UDim2.fromOffset(70, 80)
 	egg.ZIndex = 50

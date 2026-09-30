@@ -2,10 +2,10 @@
 local RunService = game:GetService("RunService")
 local Tween = require(script.Parent.Tween)
 local Config = require(script.Parent.UIConfig)
+local Images = require(script.Parent.Images)
 
 local Effects = {}
 local spinners = {}
-local assets -- AssetIds, set in Effects.start
 
 local function track(gui)
 	if gui:GetAttribute("Spin") then spinners[gui] = true end
@@ -30,8 +30,7 @@ local function rescaleStrokes(root, k)
 	end
 end
 
-function Effects.start(playerGui, assetIds)
-	assets = assetIds
+function Effects.start(playerGui)
 	local function scan(root)
 		for _, d in ipairs(root:GetDescendants()) do if d:IsA("GuiObject") then track(d) end end
 		root.DescendantAdded:Connect(function(d) if d:IsA("GuiObject") then task.defer(track, d) end end)
@@ -64,7 +63,7 @@ function Effects.sparkles(parent, count, color)
 		local s = Instance.new("ImageLabel")
 		s.Name = "Sparkle"
 		s.BackgroundTransparency = 1
-		s.Image = assets and assets["00_Shared/Sparkle"] or ""
+		Images.apply(s, "00_Shared/Sparkle")
 		s.ImageColor3 = color or Color3.new(1, 1, 1)
 		s.AnchorPoint = Vector2.new(0.5, 0.5)
 		s.Position = UDim2.fromScale(0.5 + (math.random() - 0.5) * 0.3, 0.5 + (math.random() - 0.5) * 0.3)
@@ -89,7 +88,7 @@ function Effects.twinkle(parent, count)
 		task.spawn(function()
 			local s = Instance.new("ImageLabel")
 			s.BackgroundTransparency = 1
-			s.Image = assets and assets["00_Shared/Sparkle"] or ""
+			Images.apply(s, "00_Shared/Sparkle")
 			s.AnchorPoint = Vector2.new(0.5, 0.5)
 			s.ZIndex = 30
 			local c = Instance.new("UIAspectRatioConstraint"); c.Parent = s

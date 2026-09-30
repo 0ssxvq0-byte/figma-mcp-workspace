@@ -3,10 +3,11 @@
 local UserInputService = game:GetService("UserInputService")
 local Tween = require(script.Parent.Tween)
 local Sound = require(script.Parent.Sound)
+local Images = require(script.Parent.Images)
 
 local ScrollFX = {}
 
-function ScrollFX.attach(frame, assets)
+function ScrollFX.attach(frame)
 	frame.ScrollBarThickness = 0
 	frame.ElasticBehavior = Enum.ElasticBehavior.Always
 	frame.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -14,12 +15,11 @@ function ScrollFX.attach(frame, assets)
 	-- custom scrollbar beside the list
 	local track = Instance.new("ImageLabel")
 	track.Name = "ScrollTrack"; track.BackgroundTransparency = 1
-	track.Image = assets and assets["00_Shared/Scrollbar_Track"] or ""
-	track.ScaleType = Enum.ScaleType.Slice; track.SliceCenter = Rect.new(4, 4, 4, 4)
+	Images.apply(track, "00_Shared/Scrollbar_Track")
 	track.AnchorPoint = Vector2.new(0, 0); track.Size = UDim2.new(0, 8, 1, 0); track.Position = UDim2.new(1, 6, 0, 0)
 	track.Parent = frame.Parent
 	local thumb = track:Clone(); thumb.Name = "ScrollThumb"
-	thumb.Image = assets and assets["00_Shared/Scrollbar_Thumb"] or ""
+	Images.apply(thumb, "00_Shared/Scrollbar_Thumb")
 	thumb.Position = UDim2.fromScale(0, 0); thumb.Size = UDim2.fromScale(1, 0.3); thumb.Parent = track
 	track.Position = UDim2.new(frame.Position.X.Scale + frame.Size.X.Scale, 6, frame.Position.Y.Scale, 0)
 	track.Size = UDim2.new(0, 8, frame.Size.Y.Scale, frame.Size.Y.Offset)

@@ -12,7 +12,7 @@ local function getDestination(player, where)
 		-- e.g. workspace.Plots.<PlayerName>.Spawn  (a part in front of the player's terrarium)
 		local plots = workspace:FindFirstChild("Plots")
 		local plot = plots and plots:FindFirstChild(player.Name)
-		return plot and plot:FindFirstChild("Spawn")
+		return (plot and plot:FindFirstChild("Spawn")) or workspace:FindFirstChild("TerrariumSpawn", true)
 	elseif where == "Keeper" then
 		return workspace:FindFirstChild("NPCs") and workspace.NPCs:FindFirstChild("KeeperStand")
 	elseif where == "Upgrades" then
