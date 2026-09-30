@@ -31,7 +31,11 @@ body[data-screen="daily"]    #scr-daily,
 body[data-screen="store"]    #scr-store,
 body[data-screen="guide"]    #scr-guide,
 body[data-screen="upgrades"] #scr-upgrades,
-body[data-screen="build"]    #scr-build, body[data-screen="build"] #scr-build-drag { visibility: visible; }
+body[data-screen="build"]    #scr-build, body[data-screen="build"] #scr-build-drag,
+body[data-screen="hub"] #scr-hub, body[data-screen="stats"] #scr-stats, body[data-screen="settings"] #scr-settings,
+body[data-screen="hatch"] #scr-hatch, body[data-screen="incubator"] #scr-incubator { visibility: visible; }
+body[data-screen="hub"] :is(#daily-wrap, #tile-guide, #tile-store), body[data-screen="stats"] :is(#daily-wrap, #tile-guide, #tile-store) { visibility: hidden; }
+.state-alt { visibility: hidden; }
 #scr-build-drag { visibility: hidden; }
 body[data-screen="build"] #starter, body[data-screen="build"] #events { visibility: hidden; }
 
@@ -129,6 +133,7 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 .icon.lg { filter: url(#outline-lg); }
 .icon.sil { filter: brightness(0) opacity(.55); }
 .icon[src*="voxel/"] { filter: url(#outline-sm); }
+.icon.lg[src*="voxel/"] { filter: url(#outline); }
 .svgi { display: block; }
 .svgi > svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .wm {
@@ -183,10 +188,10 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 }
 /* selected menu button: lifted, with a crisp white inner ring (no gold outline) */
 body[data-screen="daily"] #btn-daily, body[data-screen="store"] #tile-store, body[data-screen="guide"] #tile-guide,
-body[data-screen="upgrades"] #tab-upg, body[data-screen="build"] #tab-base {
+body[data-screen="upgrades"] #tab-upg, body[data-screen="build"] #tab-base, body[data-screen="hub"] #tab-base, body[data-screen="stats"] #tab-base, body[data-screen="settings"] #btn-settings {
   transform: translateY(-4px); box-shadow: 0 8px 0 var(--ink), 0 12px 14px rgba(0,0,0,.28); }
 body[data-screen="daily"] #btn-daily::after, body[data-screen="store"] #tile-store::after, body[data-screen="guide"] #tile-guide::after,
-body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-base::after {
+body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-base::after, body[data-screen="hub"] #tab-base::after, body[data-screen="stats"] #tab-base::after, body[data-screen="settings"] #btn-settings::after {
   box-shadow: inset 0 0 0 4px rgba(255,255,255,.92), inset 0 -6px 0 rgba(0,0,0,.24); }
 
 /* ======================================================================
@@ -561,6 +566,185 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
 #drop-hint .pill { padding: 6px 16px 8px; border-radius: 10px; background: rgba(10,22,12,.55); }
 #drop-hint .pill .t { --fs: 22px; --to: .09; }
 #drag-trail { left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; z-index: 0; overflow: visible; }
+/* ---------- settings button (HUD) ---------- */
+#btn-settings { left: 18px; top: 18px; width: 78px; height: 78px; }
+#btn-settings .icon { width: 56px; height: 56px; }
+
+/* ---------- My Terrarium hub (left square panel) ---------- */
+.hub-wrap { left: 18px; top: 190px; width: 660px; height: 660px; }
+.hub-wrap .phead .title { --fs: 50px; margin-left: 128px; }
+.hub-wrap .phead-icon { left: -14px; top: -34px; width: 136px; height: 130px; }
+.htabs { position: absolute; left: 16px; right: 16px; top: 12px; height: 50px; display: flex; gap: 8px; }
+.htabs .cat { flex: 1; width: auto; height: 50px; }
+.htabs .cat .t { --fs: 23px; }
+.htabs .cnt { position: absolute; right: -8px; top: -12px; width: 30px; height: 30px; border-radius: 50%; z-index: 6; border: 3px solid var(--ink);
+  background: radial-gradient(circle at 38% 32%, #ff9f8e, #f2503a 45%, #c22a1c); display: flex; align-items: center; justify-content: center; }
+.htabs .cnt .t { --fs: 17px; }
+.capbar { position: absolute; left: 16px; right: 16px; top: 74px; height: 40px; }
+.capbar .t { --fs: 21px; }
+#hub-grid { position: absolute; left: 16px; right: 16px; top: 126px; height: 250px; display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr 1fr; gap: 10px; }
+#hub-grid .crit .icon { width: 74px; height: 74px; }
+.crit.sel > .skin::after { box-shadow: inset 0 0 0 4px rgba(255,255,255,.95), inset 0 -6px 0 rgba(0,0,0,.2); }
+.crit.sel > .skin { transform: translateY(-3px); box-shadow: 0 7px 0 var(--ink), 0 10px 12px rgba(0,0,0,.3); }
+.crit.empty { border: 3px dashed rgba(255,255,255,.35); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+.crit.empty .t { --fs: 18px; --tf: var(--tf-muted); --to: .1; }
+#hub-detail { left: 16px; right: 16px; top: 390px; bottom: 14px; }
+#hub-detail > .content { justify-content: flex-start; gap: 14px; padding: 0 14px 0 8px; }
+#hub-detail .big { width: 150px; height: 128px; flex: none; }
+#hub-detail .col { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; flex: 1; }
+#hub-detail .t.nm { --fs: 34px; }
+.pills { display: flex; gap: 6px; }
+.pill { position: relative; height: 32px; padding: 0 12px; display: flex; align-items: center; gap: 5px; border-radius: 8px; border: 3px solid var(--ink);
+  background: linear-gradient(180deg, var(--c1), var(--c3)); box-shadow: 0 2px 0 var(--ink); }
+.pill .t { --fs: 17px; }
+.pill img { width: 22px; height: 22px; object-fit: contain; }
+.pill.job { --c1: #3a4a3e; --c3: #1d2a20; }
+#hub-detail .t.desc { --fs: 17px; --tf: var(--tf-cream); --to: .1; }
+#hub-detail .btns { display: flex; flex-direction: column; gap: 10px; flex: none; }
+#hub-detail .btns .skin { position: relative; width: 196px; height: 58px; }
+#hub-detail .btns .t { --fs: 23px; }
+#hub-detail .btns .content { gap: 6px; }
+#hub-detail .btns .coin-i { width: 28px; height: 28px; }
+
+/* tank stats tab */
+.tiles { position: absolute; left: 16px; right: 16px; top: 74px; height: 104px; display: flex; gap: 10px; }
+.tile3 { position: relative; flex: 1; }
+.tile3 > .skin { inset: 0; width: auto; height: auto; }
+.tile3 > .skin > .content { flex-direction: column; gap: 0; }
+.tile3 .t.k { --fs: 16px; --tf: var(--tf-cream); --to: .1; }
+.tile3 .t.v { --fs: 42px; }
+#breakdown { position: absolute; left: 16px; right: 16px; top: 190px; display: flex; flex-direction: column; gap: 7px; }
+.brow { position: relative; height: 54px; display: flex; align-items: center; gap: 10px; padding: 0 10px; border-radius: 9px; background: rgba(0,0,0,.24);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.06); }
+.brow .icon { width: 40px; height: 40px; flex: none; }
+.brow .lbl { width: 128px; display: flex; flex-direction: column; flex: none; }
+.brow .lbl .t.a { --fs: 21px; }
+.brow .lbl .t.b { --fs: 13px; --tf: var(--tf-muted); --to: .11; }
+.zbar { position: relative; flex: 1; height: 24px; border: 3px solid var(--ink); border-radius: 12px; background: rgba(255,255,255,.14); }
+.zbar .zone { position: absolute; top: 0; bottom: 0; border-radius: 9px; background: rgba(143,227,74,.42);
+  box-shadow: inset 0 0 0 2px rgba(190,255,140,.55); }
+.zbar .mark { position: absolute; top: -9px; width: 16px; height: 36px; margin-left: -8px; border-radius: 8px; border: 3px solid var(--ink); background: #ffffff; box-shadow: 0 2px 0 var(--ink); }
+.chip2 { width: 104px; height: 32px; flex: none; border-radius: 8px; border: 3px solid var(--ink); display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, var(--c1), var(--c3)); }
+.chip2 .t { --fs: 16px; }
+.ok   { --c1: #b8f82e; --c3: #2ea60c; }
+.warn { --c1: #ffe34a; --c3: #e08a00; }
+.bad  { --c1: #ff6a6a; --c3: #c22a2a; }
+.hint { position: absolute; left: 16px; right: 16px; bottom: 14px; height: 50px; display: flex; align-items: center; gap: 10px; padding: 0 14px;
+  border-radius: 9px; border: 3px solid var(--ink); background: linear-gradient(180deg, #ffe89a, #f5c23a); box-shadow: 0 3px 0 var(--ink); }
+.hint img { width: 34px; height: 34px; }
+.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%); }
+
+/* ---------- settings ---------- */
+#scr-settings .phead .title { margin-left: 132px; }
+.scol { position: absolute; top: 14px; width: 554px; display: flex; flex-direction: column; gap: 8px; }
+.scol.l { left: 20px; } .scol.r { right: 20px; }
+.scol .section-label { height: 30px; }
+.srow { position: relative; height: 66px; }
+.srow > .skin { inset: 0; width: auto; height: auto; }
+.srow > .skin > .content { justify-content: flex-start; gap: 12px; padding: 0 14px 0 10px; }
+.srow .icon { width: 44px; height: 44px; flex: none; }
+.srow .txt { display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
+.srow .t.a { --fs: 23px; }
+.srow .t.b { --fs: 14px; --tf: var(--tf-cream); --to: .1; }
+.srow.tall { height: 88px; }
+.toggle { position: relative; width: 108px; height: 44px; flex: none; border-radius: 22px; border: 4px solid var(--ink); box-shadow: 0 3px 0 var(--ink);
+  display: flex; align-items: center; }
+.toggle.on  { background: linear-gradient(180deg, #c8ff4a, #4fb81a); justify-content: flex-start; padding-left: 12px; }
+.toggle.off { background: linear-gradient(180deg, #a8aea0, #6c7266); justify-content: flex-end; padding-right: 10px; }
+.toggle .knob { position: absolute; top: 3px; width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--ink);
+  background: radial-gradient(circle at 40% 35%, #ffffff, #e2e6e0); }
+.toggle.on .knob { right: 3px; } .toggle.off .knob { left: 3px; }
+.toggle .t { --fs: 17px; }
+.slider { position: relative; width: 230px; height: 44px; flex: none; display: flex; align-items: center; }
+.slider .trk { position: absolute; left: 0; right: 48px; height: 18px; border-radius: 9px; border: 3px solid var(--ink); background: rgba(255,255,255,.2); overflow: hidden; }
+.slider .trk .fl { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(180deg, #c8ff4a, #4fb81a); }
+.slider .kb { position: absolute; top: 4px; width: 34px; height: 34px; margin-left: -17px; border-radius: 50%; border: 3px solid var(--ink);
+  background: radial-gradient(circle at 40% 35%, #ffffff, #e2e6e0); box-shadow: 0 3px 0 var(--ink); }
+.slider .val { position: absolute; right: 0; }
+.slider .val .t { --fs: 19px; }
+.steps { position: relative; width: 300px; height: 70px; flex: none; }
+.steps .trk { position: absolute; left: 14px; right: 14px; top: 12px; height: 18px; border-radius: 9px; border: 3px solid var(--ink); background: rgba(255,255,255,.2); }
+.steps .trk .fl { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: linear-gradient(180deg, #c8ff4a, #4fb81a); }
+.steps .notch { position: absolute; top: 9px; width: 14px; height: 24px; margin-left: -7px; border-radius: 5px; border: 3px solid var(--ink); background: #c9cfc4; }
+.steps .notch.on { background: #ffffff; }
+.steps .kb { position: absolute; top: 3px; width: 26px; height: 36px; margin-left: -13px; border-radius: 8px; border: 3px solid var(--ink); background: #ffffff; box-shadow: 0 3px 0 var(--ink); }
+.steps .lbls { position: absolute; left: 0; right: 0; top: 44px; display: flex; justify-content: space-between; }
+.steps .lbls .t { --fs: 14px; --tf: var(--tf-muted); --to: .12; width: 70px; }
+.steps .lbls .t.cur { --tf: var(--tf-white); }
+#codes { position: absolute; left: 20px; right: 20px; bottom: 18px; height: 130px; }
+#codes > .content { flex-direction: column; align-items: stretch; justify-content: center; gap: 10px; padding: 0 16px; }
+#codes .rowc { display: flex; align-items: center; gap: 12px; }
+#codes .t.cl { --fs: 26px; --tf: var(--tf-cream); width: 110px; }
+.input { position: relative; flex: 1; height: 58px; border-radius: 10px; border: 4px solid var(--ink); background: linear-gradient(180deg, #e9ecdf, #fbfcf6);
+  box-shadow: inset 0 4px 0 rgba(0,0,0,.12); display: flex; align-items: center; padding: 0 16px; font: 700 26px "CNA", sans-serif; color: #26302a; letter-spacing: .06em; }
+.input .caret { width: 3px; height: 30px; background: #26302a; margin-left: 3px; }
+#codes .skin.btnc { position: relative; width: 190px; height: 58px; flex: none; }
+#codes .skin.btnc .t { --fs: 27px; }
+.cstate { display: flex; align-items: center; gap: 8px; padding-left: 122px; }
+.cstate .dotc { width: 24px; height: 24px; border-radius: 50%; border: 3px solid var(--ink); display: flex; align-items: center; justify-content: center; }
+.cstate .t { --fs: 19px; --to: .1; }
+.cstate.good .dotc { background: #7fe03a; } .cstate.good .t.m { --tf: var(--tf-green); }
+.cstate.badc .dotc { background: #ff5a5a; } .cstate.badc .t.m { --tf: var(--tf-red); }
+#codes .cstate.badc { position: absolute; left: 16px; bottom: 12px; }
+
+/* ---------- hatch reveal (full-screen moment) ---------- */
+#scr-hatch { left: 0; top: 0; width: 1920px; height: 1080px; z-index: 60; }
+#hatch-dim { position: absolute; inset: 0; background: radial-gradient(ellipse 58% 62% at 50% 42%, rgba(96,157,214,.42) 0%, rgba(22,40,66,.78) 55%, rgba(6,10,20,.9) 100%); }
+#hatch-rays { position: absolute; left: 960px; top: 420px; width: 1500px; height: 1500px; transform: translate(-50%, -50%); }
+#hatch-glow { position: absolute; left: 960px; top: 420px; width: 700px; height: 560px; transform: translate(-50%, -50%); border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(200,230,255,.75), rgba(96,157,214,.35) 55%, rgba(96,157,214,0)); }
+#hatch-creature { position: absolute; left: 960px; top: 410px; width: 600px; height: 470px; transform: translate(-50%, -50%) rotate(-4deg); object-fit: contain; }
+#hatch-banner { position: absolute; left: 960px; top: 92px; transform: translate(-50%, -50%) rotate(-3deg); width: 560px; height: 96px; }
+#hatch-banner > .skin { inset: 0; width: auto; height: auto; }
+#hatch-banner .t { --fs: 56px; }
+#hatch-banner .tail { position: absolute; top: 26px; width: 70px; height: 62px; border: 4px solid var(--ink); background: linear-gradient(180deg, #e8a012, #b8700a); z-index: -1; }
+#hatch-banner .tail.l { left: -46px; clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 34% 50%); }
+#hatch-banner .tail.r { right: -46px; clip-path: polygon(0 0, 100% 0, 66% 50%, 100% 100%, 0 100%); }
+#hatch-name { position: absolute; left: 0; right: 0; top: 648px; display: flex; justify-content: center; }
+#hatch-name .t { --fs: 92px; }
+#hatch-pills { position: absolute; left: 0; right: 0; top: 760px; display: flex; justify-content: center; gap: 12px; }
+#hatch-pills .pill { height: 48px; padding: 0 18px; border-width: 4px; }
+#hatch-pills .pill .t { --fs: 26px; }
+#hatch-pills .pill img { width: 32px; height: 32px; }
+#hatch-fact { position: absolute; left: 960px; top: 872px; transform: translate(-50%, -50%); width: 900px; padding: 12px 22px; border-radius: 14px;
+  background: rgba(10,18,30,.6); box-shadow: inset 0 0 0 3px rgba(255,255,255,.14); display: flex; align-items: center; gap: 14px; }
+#hatch-fact img { width: 46px; height: 46px; flex: none; }
+#hatch-fact .t.k { --fs: 18px; --tf: var(--tf-gold); }
+#hatch-fact .t.f { --fs: 23px; --tf: var(--tf-cream); --to: .09; white-space: normal; text-align: left; }
+#hatch-btn { position: absolute; left: 960px; top: 990px; transform: translate(-50%, -50%); width: 440px; height: 88px; }
+#hatch-btn .t { --fs: 40px; }
+#hatch-btn-alt { left: 1440px; top: 990px; transform: translate(-50%, -50%); width: 440px; height: 88px; }
+#hatch-btn-alt .t { --fs: 38px; }
+.burst { position: absolute; width: 520px; height: 520px; left: 0; top: 0; }
+
+/* ---------- incubator (small floating pop-ups over the incubators) ---------- */
+.inc { position: absolute; width: 300px; padding: 12px 14px 14px; border-radius: 18px; transform: translate(-50%, -100%);
+  background: rgba(10,20,14,.58); border: 3px solid rgba(11,15,29,.85); box-shadow: inset 0 0 0 2px rgba(255,255,255,.14), 0 8px 16px rgba(0,0,0,.25); }
+.inc::after { content: ""; position: absolute; left: 50%; bottom: -17px; width: 26px; height: 16px; transform: translateX(-50%);
+  background: rgba(10,20,14,.58); clip-path: polygon(0 0, 100% 0, 50% 100%); }
+.inc .top { display: flex; align-items: center; gap: 12px; }
+.ring { position: relative; width: 92px; height: 92px; flex: none; border-radius: 50%;
+  background: conic-gradient(#8fe34a 0 var(--pr), rgba(255,255,255,.16) var(--pr) 100%);
+  box-shadow: 0 0 0 3px var(--ink), inset 0 0 0 3px var(--ink); }
+.ring::before { content: ""; position: absolute; inset: 10px; border-radius: 50%; background: rgba(10,20,14,.85); box-shadow: 0 0 0 3px var(--ink); }
+.ring img { position: absolute; left: 50%; top: 50%; width: 62px; height: 62px; transform: translate(-50%, -50%); object-fit: contain; }
+.inc .info { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+.inc .t.nm { --fs: 22px; }
+.inc .rar { display: flex; align-items: center; gap: 6px; }
+.inc .rar .d { width: 14px; height: 14px; border-radius: 50%; border: 3px solid var(--ink); }
+.inc .rar .t { --fs: 15px; --tf: var(--tf-cream); --to: .1; }
+.inc .t.tm { --fs: 34px; --tf: var(--tf-gold); }
+.inc .act { position: relative; margin-top: 10px; height: 50px; width: 100%; }
+.inc .act .t { --fs: 24px; }
+.inc .act .content { gap: 6px; }
+.inc .act .rbx, .inc .act .coin-i { width: 26px; height: 26px; }
+.inc.ready .ring { background: #8fe34a; box-shadow: 0 0 0 3px var(--ink), inset 0 0 0 3px var(--ink), 0 0 24px 6px rgba(160,255,110,.55); }
+.inc.ready .ring img { transform: translate(-50%, -50%) rotate(-12deg); }
+.shake { position: absolute; width: 16px; height: 22px; border: 4px solid #ffffff; border-color: #ffffff transparent transparent transparent; border-radius: 50%; }
+.inc.ready .t.tm { --tf: var(--tf-green); }
+.inc.locked .ring { background: rgba(255,255,255,.1); }
+.inc.locked .ring img { width: 50px; height: 50px; }
 </style>
 </head>
 <body data-screen="daily" data-vines="1">
@@ -606,6 +790,9 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
   </div>
   <div id="restock" class="abs" data-export="HUD/Top/Keeper_Restock_Timer"><span class="t">The Keeper restocks in</span><span class="t" style="--tf:var(--tf-gold)">3m 51s</span></div>
 
+  <div id="btn-settings" class="abs skin earth" data-facets="40" data-seed="701" data-streaks="1" data-export="HUD/Top/Btn_Settings">
+    <div class="content"><img class="icon" src="assets/fluent/gear.png"></div></div>
+
   <!-- ============================== LEFT ============================== -->
   <div id="daily-wrap" class="abs" data-export="HUD/Left/Btn_DailyRewards">
     <div id="btn-daily" class="skin green" data-facets="58" data-seed="41" data-streaks="3" data-export="HUD/Left/Btn_DailyRewards_NoBadge">
@@ -617,7 +804,7 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
   </div>
   <div id="tile-guide" class="skin wide blue" data-facets="56" data-seed="54" data-streaks="3" data-export="HUD/Left/Btn_FieldGuide">
     <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/book.png)"></div>
-    <div class="content"><img class="icon" src="assets/fluent/books.png"><span class="t">Field Guide</span></div>
+    <div class="content"><img class="icon" src="assets/voxel/FieldGuide.png" style="width:74px;height:84px;margin:-4px 2px 0"><span class="t">Field Guide</span></div>
   </div>
   <div id="tile-store" class="skin wide red" data-facets="56" data-seed="51" data-streaks="3" data-export="HUD/Left/Btn_Store">
     <div class="glow"></div>
@@ -737,7 +924,7 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
             <div class="pass"><div class="skin purple" data-facets="70" data-seed="381" data-streaks="4" data-export="Store/Pass_VIP">
               <div class="content"><img class="icon lg" src="assets/voxel/VIP_Crown.png"><div class="txt"><span class="t tag">GAMEPASS</span><span class="t name">VIP</span><span class="t desc">Nametag, chat tag + backdrop</span></div><div class="buy skin green" data-facets="40" data-seed="382" data-streaks="1" data-export="Store/Btn_BuyRobux"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux.svg"></div><span class="t">299</span></div></div></div></div></div>
             <div class="pass"><div class="skin blue" data-facets="70" data-seed="383" data-streaks="4" data-export="Store/Pass_IncubatorSlot">
-              <div class="content"><img class="icon lg" src="assets/voxel/Egg.png"><div class="txt"><span class="t tag">GAMEPASS</span><span class="t name">5th Incubator</span><span class="t desc">Hatch one more egg at a time</span></div><div class="buy skin green" data-facets="40" data-seed="384" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux.svg"></div><span class="t">199</span></div></div></div></div></div>
+              <div class="content"><img class="icon lg" src="assets/voxel/Egg_Moss.png"><div class="txt"><span class="t tag">GAMEPASS</span><span class="t name">5th Incubator</span><span class="t desc">Hatch one more egg at a time</span></div><div class="buy skin green" data-facets="40" data-seed="384" data-streaks="1"><div class="content"><div class="svgi rbx" data-src="assets/icons-custom/robux.svg"></div><span class="t">199</span></div></div></div></div></div>
           </div>
           <div class="section-label"><img class="icon" src="assets/voxel/Clover_Tier1.png"><span class="t">SERVER LUCK</span><span class="t hint">boosts everyone in the server</span></div>
           <div id="luck">
@@ -805,7 +992,7 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
         <div id="milestones"></div>
       </div>
     </div>
-    <img class="abs icon lg" src="assets/fluent/books.png" style="left:-8px;top:-28px;width:128px;height:128px;z-index:9" data-export="FieldGuide/Icon_Header">
+    <img class="abs icon lg" src="assets/voxel/FieldGuide.png" style="left:-4px;top:-36px;width:118px;height:136px;z-index:9" data-export="FieldGuide/Icon_Header">
   </div>
 
   <!-- ============================== CENTRE: UPGRADES ============================== -->
@@ -830,7 +1017,7 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
                 <div class="buy skin green" data-facets="40" data-seed="512" data-streaks="1"><div class="content"><span class="t">UPGRADE</span></div></div></div></div></div></div>
           <div class="upg"><div class="skin purple" data-facets="70" data-seed="521" data-streaks="4" data-export="Upgrades/Row_IncubatorSlots">
             <div class="glow" style="left:86px;top:50%;width:190px;height:190px;transform:translate(-50%,-50%)"></div>
-            <div class="content"><div class="pic"><img class="icon lg" src="assets/voxel/Egg.png"></div>
+            <div class="content"><div class="pic"><img class="icon lg" src="assets/voxel/Egg_Moss.png"></div>
               <div class="mid"><span class="t name">Incubator Slots</span><div class="tiers"><div class="tier cur"><span class="t">2 Slots</span></div><div class="tier next"><span class="t">3 Slots</span></div><div class="tier "><span class="t">4 Slots</span></div><div class="tier "><span class="t">5th: Store</span></div></div>
                 <div class="stat"><span class="t">2 eggs at once</span><span class="t">&gt;</span><span class="t to">3 eggs at once</span></div></div>
               <div class="right"><div class="cost"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">50K</span></div>
@@ -922,6 +1109,187 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
       <div class="content"><img class="icon" src="assets/voxel/Layer_LeafLitter.png"><span class="t">Leaf Litter</span></div></div></div>
   </div>
 
+  <!-- ============================== MY TERRARIUM hub: Creatures tab ============================== -->
+  <div id="scr-hub" class="abs screen hub-wrap" data-export="MyTerrarium/Panel_Creatures">
+    <div class="vinehost" data-scope="hub"></div>
+    <div class="panel">
+      <div class="body-studs"></div><div class="terra" data-terra="1"></div><div class="glass"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div>
+      <div class="phead skin blue" data-facets="70" data-seed="730" data-streaks="3" data-export="MyTerrarium/Header_Bar">
+        <div class="dots"></div>
+        <div class="content"><span class="t title">My Terrarium</span></div>
+        <div class="skin red btn-close" data-facets="40" data-seed="731" data-streaks="1"><div class="content"><span class="t">X</span></div></div>
+      </div>
+      <div class="body-rim"></div>
+      <div class="pbody">
+        <div class="htabs"><div class="cat skin green" data-facets="40" data-seed="720" data-streaks="1" data-export="MyTerrarium/Tab_Creatures_On"><div class="content"><span class="t">Creatures</span></div></div><div class="cat skin off" data-facets="40" data-seed="721" data-streaks="1" data-export="MyTerrarium/Tab_Holding_Off"><div class="cnt"><span class="t">2</span></div><div class="content"><span class="t">Holding</span></div></div><div class="cat skin off" data-facets="40" data-seed="722" data-streaks="1"><div class="content"><span class="t">Decor</span></div></div><div class="cat skin off" data-facets="40" data-seed="723" data-streaks="1"><div class="content"><span class="t">Stats</span></div></div></div>
+        <div class="capbar bar green-fill" style="--p:87.5%" data-export="MyTerrarium/Capacity_Bar"><div class="track studs-soft"></div><div class="fill"></div>
+          <div class="content"><span class="t">Starter Tank</span><span class="t">7 / 8 creatures</span></div></div>
+        <div id="hub-grid">
+          <div class="crit sel"><div class="skin r-rare" data-facets="50" data-seed="741" data-streaks="2" data-export="MyTerrarium/Card_Selected">
+            <div class="glow" style="left:50%;top:44%;width:130px;height:110px;transform:translate(-50%,-50%)"></div><div class="dot" style="--rc:#609dd6"></div>
+            <div class="job"><img src="assets/fluent/bullseye.png"></div>
+            <div class="content"><img class="icon" src="assets/voxel/Creature_StagBeetle.png"><span class="t">Stag Beetle</span></div></div></div>
+          <div class="crit"><div class="skin r-common" data-facets="50" data-seed="742" data-streaks="2">
+            <div class="glow" style="left:50%;top:44%;width:130px;height:110px;transform:translate(-50%,-50%)"></div><div class="dot" style="--rc:#e2ded1"></div>
+            <div class="job"><img src="assets/fluent/broom.png"></div>
+            <div class="content"><img class="icon" src="assets/fluent/snail.png"><span class="t">Garden Snail</span></div></div></div>
+          <div class="crit"><div class="skin r-common" data-facets="50" data-seed="743" data-streaks="2">
+            <div class="glow" style="left:50%;top:44%;width:130px;height:110px;transform:translate(-50%,-50%)"></div><div class="dot" style="--rc:#e2ded1"></div>
+            <div class="job"><img src="assets/fluent/broom.png"></div>
+            <div class="content"><img class="icon" src="assets/fluent/worm.png"><span class="t">Earthworm</span></div></div></div>
+          <div class="crit"><div class="skin r-common" data-facets="50" data-seed="744" data-streaks="2">
+            <div class="glow" style="left:50%;top:44%;width:130px;height:110px;transform:translate(-50%,-50%)"></div><div class="dot" style="--rc:#e2ded1"></div>
+            <div class="job"><img src="assets/fluent/herb.png"></div>
+            <div class="content"><img class="icon" src="assets/fluent/ant.png"><span class="t">Common Ant</span></div></div></div>
+          <div class="crit"><div class="skin r-uncommon" data-facets="50" data-seed="745" data-streaks="2">
+            <div class="glow" style="left:50%;top:44%;width:130px;height:110px;transform:translate(-50%,-50%)"></div><div class="dot" style="--rc:#8bbe7a"></div>
+            <div class="job"><img src="assets/fluent/blossom.png"></div>
+            <div class="content"><img class="icon" src="assets/fluent/honeybee.png"><span class="t">Honey Bee</span></div></div></div>
+          <div class="crit"><div class="skin r-uncommon" data-facets="50" data-seed="746" data-streaks="2">
+            <div class="glow" style="left:50%;top:44%;width:130px;height:110px;transform:translate(-50%,-50%)"></div><div class="dot" style="--rc:#8bbe7a"></div>
+            <div class="job"><img src="assets/fluent/herb.png"></div>
+            <div class="content"><img class="icon" src="assets/fluent/cricket.png"><span class="t">Cricket</span></div></div></div>
+          <div class="crit"><div class="skin r-uncommon" data-facets="50" data-seed="747" data-streaks="2">
+            <div class="glow" style="left:50%;top:44%;width:130px;height:110px;transform:translate(-50%,-50%)"></div><div class="dot" style="--rc:#8bbe7a"></div>
+            <div class="job"><img src="assets/fluent/bullseye.png"></div>
+            <div class="content"><img class="icon" src="assets/fluent/frog.png"><span class="t">Common Frog</span></div></div></div>
+          <div class="crit empty" data-export="MyTerrarium/Card_EmptySlot"><span class="t">Empty</span></div>
+        </div>
+        <div id="hub-detail" class="abs skin earth" data-facets="60" data-seed="750" data-streaks="2" data-export="MyTerrarium/Detail_Strip">
+          <div class="glow" style="left:80px;top:50%;width:190px;height:170px;transform:translate(-50%,-50%);--ga:.3"></div>
+          <div class="content"><img class="icon lg big" src="assets/voxel/Creature_StagBeetle.png">
+            <div class="col"><span class="t nm">Stag Beetle</span>
+              <div class="pills"><div class="pill r-rare"><span class="t">RARE</span></div><div class="pill job"><img src="assets/fluent/bullseye.png"><span class="t">HUNTER</span></div></div>
+              <span class="t desc">Eats excess insects</span></div>
+            <div class="btns">
+              <div class="skin blue" data-facets="40" data-seed="751" data-streaks="1" data-export="MyTerrarium/Btn_MoveToHolding"><div class="content"><span class="t">Move to Holding</span></div></div>
+              <div class="skin red" data-facets="40" data-seed="752" data-streaks="1" data-export="MyTerrarium/Btn_Release"><div class="content"><span class="t">Release</span><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t" style="--tf:var(--tf-gold)">120</span></div></div>
+            </div></div>
+        </div>
+      </div>
+    </div>
+    <img class="abs icon lg phead-icon" src="assets/voxel/Terrarium.png" data-export="MyTerrarium/Icon_Header">
+  </div>
+  <!-- ============================== MY TERRARIUM hub: Stats tab (Bioactivity breakdown) ============================== -->
+  <div id="scr-stats" class="abs screen hub-wrap" data-export="MyTerrarium/Panel_Stats">
+    <div class="vinehost" data-scope="hub"></div>
+    <div class="panel">
+      <div class="body-studs"></div><div class="terra" data-terra="1"></div><div class="glass"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div>
+      <div class="phead skin blue" data-facets="70" data-seed="770" data-streaks="3">
+        <div class="dots"></div>
+        <div class="content"><span class="t title">My Terrarium</span></div>
+        <div class="skin red btn-close" data-facets="40" data-seed="771" data-streaks="1"><div class="content"><span class="t">X</span></div></div>
+      </div>
+      <div class="body-rim"></div>
+      <div class="pbody">
+        <div class="htabs"><div class="cat skin off" data-facets="40" data-seed="760" data-streaks="1"><div class="content"><span class="t">Creatures</span></div></div><div class="cat skin off" data-facets="40" data-seed="761" data-streaks="1"><div class="cnt"><span class="t">2</span></div><div class="content"><span class="t">Holding</span></div></div><div class="cat skin off" data-facets="40" data-seed="762" data-streaks="1"><div class="content"><span class="t">Decor</span></div></div><div class="cat skin green" data-facets="40" data-seed="763" data-streaks="1"><div class="content"><span class="t">Stats</span></div></div></div>
+        <div class="tiles">
+          <div class="tile3"><div class="skin green" data-facets="50" data-seed="771" data-streaks="2" data-export="MyTerrarium/Stat_Bioactivity"><div class="content"><span class="t k">BIOACTIVITY</span><span class="t v">57</span></div></div></div>
+          <div class="tile3"><div class="skin gold" data-facets="50" data-seed="772" data-streaks="2"><div class="content"><span class="t k">INCOME</span><span class="t v">1.07x</span></div></div></div>
+          <div class="tile3"><div class="skin blue" data-facets="50" data-seed="773" data-streaks="2"><div class="content"><span class="t k">CREATURES</span><span class="t v">7 / 8</span></div></div></div>
+        </div>
+        <div id="breakdown">
+          <div class="brow" data-export="MyTerrarium/Breakdown_Row"><img class="icon" src="assets/fluent/fallen_leaf.png"><div class="lbl"><span class="t a">Waste</span><span class="t b">keep low</span></div>
+            <div class="zbar"><div class="zone" style="left:0%;width:35%"></div><div class="mark" style="left:22%"></div></div>
+            <div class="chip2 ok"><span class="t">GOOD</span></div></div>
+          <div class="brow"><img class="icon" src="assets/fluent/microbe.png"><div class="lbl"><span class="t a">Mould</span><span class="t b">keep low</span></div>
+            <div class="zbar"><div class="zone" style="left:0%;width:35%"></div><div class="mark" style="left:48%"></div></div>
+            <div class="chip2 warn"><span class="t">A BIT HIGH</span></div></div>
+          <div class="brow"><img class="icon" src="assets/fluent/cricket.png"><div class="lbl"><span class="t a">Prey</span><span class="t b">keep balanced</span></div>
+            <div class="zbar"><div class="zone" style="left:35%;width:30%"></div><div class="mark" style="left:82%"></div></div>
+            <div class="chip2 bad"><span class="t">TOO MANY</span></div></div>
+          <div class="brow"><img class="icon" src="assets/fluent/herb.png"><div class="lbl"><span class="t a">Flora</span><span class="t b">keep high</span></div>
+            <div class="zbar"><div class="zone" style="left:65%;width:35%"></div><div class="mark" style="left:58%"></div></div>
+            <div class="chip2 warn"><span class="t">LOW</span></div></div>
+          <div class="brow"><img class="icon" src="assets/fluent/rainbow.png"><div class="lbl"><span class="t a">Diversity</span><span class="t b">keep high</span></div>
+            <div class="zbar"><div class="zone" style="left:65%;width:35%"></div><div class="mark" style="left:72%"></div></div>
+            <div class="chip2 ok"><span class="t">GOOD</span></div></div>
+        </div>
+        <div class="hint" data-export="MyTerrarium/Hint"><img class="icon" src="assets/fluent/bullseye.png"><span class="t">Too many insects &#8212; add a Hunter.</span></div>
+      </div>
+    </div>
+    <img class="abs icon lg phead-icon" src="assets/voxel/Terrarium.png">
+  </div>
+  <!-- ============================== SETTINGS (with Codes) ============================== -->
+  <div id="scr-settings" class="abs panel-wrap screen" data-export="Settings/Panel_Full">
+    <div class="vinehost" data-scope="panel"></div>
+    <div class="panel">
+      <div class="body-studs"></div><div class="terra" data-terra="1"></div><div class="glass"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div>
+      <div class="phead skin purple" data-facets="80" data-seed="802" data-streaks="4" data-export="Settings/Header_Bar">
+        <div class="dots"></div>
+        <div class="content"><span class="t title">Settings</span></div>
+        <div class="skin red btn-close" data-facets="40" data-seed="803" data-streaks="1"><div class="content"><span class="t">X</span></div></div>
+      </div>
+      <div class="body-rim"></div>
+      <div class="pbody">
+        <div class="scol l">
+          <div class="section-label"><span class="t">AUDIO</span></div>
+          <div class="srow"><div class="skin earth" data-facets="50" data-seed="811" data-streaks="1" data-export="Settings/Row">
+            <div class="content"><img class="icon" src="assets/fluent/musical_note.png"><div class="txt"><span class="t a">Music</span><span class="t b">Background music</span></div><div class="slider" data-export="Settings/Slider"><div class="trk"><div class="fl" style="width:70%"></div></div><div class="kb" style="left:calc((100% - 48px) * 0.7)"></div><div class="val"><span class="t">70%</span></div></div></div></div></div>
+          <div class="srow"><div class="skin earth" data-facets="50" data-seed="812" data-streaks="1">
+            <div class="content"><img class="icon" src="assets/fluent/leaf_fluttering_in_wind.png"><div class="txt"><span class="t a">Ambience</span><span class="t b">Birds, wind and bugs</span></div><div class="slider"><div class="trk"><div class="fl" style="width:45%"></div></div><div class="kb" style="left:calc((100% - 48px) * 0.45)"></div><div class="val"><span class="t">45%</span></div></div></div></div></div>
+          <div class="section-label"><span class="t">WORLD</span></div>
+          <div class="srow"><div class="skin earth" data-facets="50" data-seed="813" data-streaks="1">
+            <div class="content"><img class="icon" src="assets/fluent/deciduous_tree.png"><div class="txt"><span class="t a">Environment Animation</span><span class="t b">Swaying trees and grass</span></div><div class="toggle on" data-export="Settings/Toggle_On"><span class="t">ON</span><div class="knob"></div></div></div></div></div>
+          <div class="srow tall"><div class="skin earth" data-facets="50" data-seed="814" data-streaks="1">
+            <div class="content"><img class="icon" src="assets/fluent/sparkles.png"><div class="txt"><span class="t a">Graphics</span><span class="t b">Quality</span></div><div class="steps" data-export="Settings/Stepped_Slider"><div class="trk"><div class="fl" style="width:66.66666666666666%"></div></div><div class="notch on" style="left:calc(14px + (100% - 28px) * 0.0)"></div><div class="notch on" style="left:calc(14px + (100% - 28px) * 0.3333333333333333)"></div><div class="notch on" style="left:calc(14px + (100% - 28px) * 0.6666666666666666)"></div><div class="notch" style="left:calc(14px + (100% - 28px) * 1.0)"></div><div class="kb" style="left:calc(14px + (100% - 28px) * 0.6666666666666666)"></div><div class="lbls"><span class="t">Low</span><span class="t">Medium</span><span class="t cur">High</span><span class="t">Ultra</span></div></div></div></div></div>
+        </div>
+        <div class="scol r">
+          <div class="section-label"><span class="t">CREATURES</span></div>
+          <div class="srow"><div class="skin earth" data-facets="50" data-seed="815" data-streaks="1">
+            <div class="content"><img class="icon" src="assets/fluent/spider.png"><div class="txt"><span class="t a">Arachnophobia</span><span class="t b">Hide spiders</span></div><div class="toggle off" data-export="Settings/Toggle_Off"><span class="t">OFF</span><div class="knob"></div></div></div></div></div>
+          <div class="srow"><div class="skin earth" data-facets="50" data-seed="816" data-streaks="1">
+            <div class="content"><img class="icon" src="assets/fluent/lady_beetle.png"><div class="txt"><span class="t a">Cute Bugs</span><span class="t b">Friendlier-looking creatures</span></div><div class="toggle on"><span class="t">ON</span><div class="knob"></div></div></div></div></div>
+          <div class="section-label"><span class="t">GAMEPLAY</span></div>
+          <div class="srow"><div class="skin earth" data-facets="50" data-seed="817" data-streaks="1">
+            <div class="content"><img class="icon" src="assets/fluent/crossed_swords.png"><div class="txt"><span class="t a">PvP</span><span class="t b">Let other players fight you</span></div><div class="toggle off"><span class="t">OFF</span><div class="knob"></div></div></div></div></div>
+        </div>
+        <div id="codes" class="abs skin earth" data-facets="70" data-seed="820" data-streaks="2" data-export="Settings/Codes_Box">
+          <div class="content">
+            <div class="rowc"><span class="t cl">CODES</span><div class="input" data-export="Settings/Code_Input">TERRARIUM<div class="caret"></div></div>
+              <div class="skin green btnc" data-facets="40" data-seed="821" data-streaks="1" data-export="Settings/Btn_Redeem"><div class="content"><span class="t">Redeem</span></div></div>
+              <div class="skin gray btnc" data-facets="40" data-seed="822" data-streaks="1" data-export="Settings/Btn_Credits"><div class="content"><span class="t">Credits</span></div></div></div>
+            <div class="cstate good" data-export="Settings/Code_Success"><div class="dotc"><span class="t" style="--fs:14px">&#10003;</span></div><span class="t m">Redeemed!</span><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t" style="--tf:var(--tf-gold)">+5K Shillings</span></div>
+          </div>
+          <div class="cstate badc state-alt" data-export="Settings/Code_Invalid"><div class="dotc"><span class="t" style="--fs:14px">!</span></div><span class="t m">Invalid or already used</span></div>
+        </div>
+      </div>
+    </div>
+    <img class="abs icon lg" src="assets/fluent/gear.png" style="left:-6px;top:-24px;width:124px;height:124px;z-index:9" data-export="Settings/Icon_Header">
+  </div>
+  <!-- ============================== HATCH REVEAL (full-screen) ============================== -->
+  <div id="scr-hatch" class="abs screen">
+    <div id="hatch-dim" data-export="HatchReveal/Backdrop_Rare"></div>
+    <div id="hatch-rays" data-rays="30" data-seed="881" data-ra=".55" data-rc="#bfe0ff"></div>
+    <div id="hatch-glow"></div>
+    <div data-sparkles="26" data-seed="882" style="position:absolute;left:560px;top:120px;width:800px;height:560px"></div>
+    <img id="hatch-creature" class="icon lg" src="assets/voxel/Creature_StagBeetle.png" data-export="HatchReveal/Creature">
+    <div id="hatch-banner" data-export="HatchReveal/Banner_NewSpecies"><div class="tail l"></div><div class="tail r"></div>
+      <div class="skin gold" data-facets="60" data-seed="883" data-streaks="3"><div class="content"><span class="t">NEW SPECIES!</span></div></div></div>
+    <div id="hatch-name" data-export="HatchReveal/Name"><span class="t">Stag Beetle</span></div>
+    <div id="hatch-pills" data-export="HatchReveal/Pills"><div class="pill r-rare"><span class="t">RARE</span></div><div class="pill job"><img src="assets/fluent/bullseye.png"><span class="t">HUNTER</span></div></div>
+    <div id="hatch-fact" data-export="HatchReveal/Fact_Card"><img class="icon" src="assets/voxel/FieldGuide.png"><div><span class="t k">REAL FACT</span><br><span class="t f">Male stag beetles use their huge jaws to wrestle rivals &#8212; not to bite.</span></div></div>
+    <div id="hatch-btn" class="skin green" data-facets="60" data-seed="884" data-streaks="3" data-export="HatchReveal/Btn_AddToTerrarium"><div class="content"><span class="t">Add to Terrarium</span></div></div>
+    <div id="hatch-btn-alt" class="abs skin blue state-alt" data-facets="60" data-seed="885" data-streaks="3" data-export="HatchReveal/Btn_SendToHolding"><div class="content"><span class="t">Send to Holding</span></div></div>
+    <div class="burst state-alt" data-rays="28" data-seed="900" data-ra=".8" data-rc="#e2ded1" data-export="HatchReveal/Burst_Common"></div>
+    <div class="burst state-alt" data-rays="28" data-seed="901" data-ra=".8" data-rc="#8bbe7a" data-export="HatchReveal/Burst_Uncommon"></div>
+    <div class="burst state-alt" data-rays="28" data-seed="902" data-ra=".8" data-rc="#609dd6" data-export="HatchReveal/Burst_Rare"></div>
+    <div class="burst state-alt" data-rays="28" data-seed="903" data-ra=".8" data-rc="#a36ed6" data-export="HatchReveal/Burst_Epic"></div>
+    <div class="burst state-alt" data-rays="28" data-seed="904" data-ra=".8" data-rc="#e2a83e" data-export="HatchReveal/Burst_Legendary"></div>
+    <div class="burst state-alt" data-rays="28" data-seed="905" data-ra=".8" data-rc="#e05454" data-export="HatchReveal/Burst_Mythic"></div>
+  </div>
+  <!-- ============================== INCUBATOR pop-ups (hover over each incubator in the world) ============================== -->
+  <div id="scr-incubator" class="abs screen" style="left:0;top:0;width:1920px;height:1080px">
+    <div class="inc" style="left:640px;top:640px" data-export="Incubator/Popup_Incubating"><div class="top"><div class="ring" style="--pr:62%"><img src="assets/voxel/Egg_Moss.png"></div>
+      <div class="info"><span class="t nm">Moss Egg</span><div class="rar"><div class="d" style="background:#e2ded1"></div><span class="t">COMMON</span></div><span class="t tm">2m 14s</span></div></div>
+      <div class="act skin blue" data-facets="40" data-seed="640" data-streaks="1"><div class="content"><span class="t">Skip</span><div class="svgi rbx" data-src="assets/icons-custom/robux.svg"></div><span class="t">15</span></div></div></div>
+    <div class="inc ready" style="left:960px;top:600px" data-export="Incubator/Popup_Ready"><div class="top"><div class="ring"><img src="assets/voxel/Egg_Moss.png"><div class="shake" style="left:-10px;top:14px;transform:rotate(-60deg)"></div><div class="shake" style="right:-10px;top:14px;transform:rotate(60deg)"></div></div>
+      <div class="info"><span class="t nm">Moss Egg</span><div class="rar"><div class="d" style="background:#e2ded1"></div><span class="t">COMMON</span></div><span class="t tm">Ready!</span></div></div>
+      <div class="act skin green" data-facets="40" data-seed="960" data-streaks="1"><div class="content"><span class="t">HATCH</span></div></div></div>
+    <div class="inc locked" style="left:1280px;top:640px" data-export="Incubator/Popup_Locked"><div class="top"><div class="ring"><img src="assets/fluent/locked.png"></div>
+      <div class="info"><span class="t nm">Slot 3</span><div class="rar"><span class="t">LOCKED</span></div><div class="rar"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t" style="--tf:var(--tf-gold);--fs:26px">50K</span></div></div></div>
+      <div class="act skin gold" data-facets="40" data-seed="1280" data-streaks="1"><div class="content"><span class="t">Unlock</span></div></div></div>
+  </div>
 </div>
 
 <script>
@@ -1088,7 +1456,7 @@ function buildRays(el) {
     s += `<polygon points="0,0 ${(len * Math.cos(t - half)).toFixed(1)},${(len * Math.sin(t - half)).toFixed(1)} ${(len * Math.cos(t + half)).toFixed(1)},${(len * Math.sin(t + half)).toFixed(1)}"/>`;
   }
   el.innerHTML = `<svg viewBox="-100 -100 200 200" width="100%" height="100%"><defs><radialGradient id="${gid}" cx="0" cy="0" r="100" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stop-color="#fffbe6" stop-opacity="${a}"/><stop offset=".45" stop-color="#fffbe6" stop-opacity="${a * .55}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+    <stop offset="0" stop-color="${el.dataset.rc || '#fffbe6'}" stop-opacity="${a}"/><stop offset=".45" stop-color="${el.dataset.rc || '#fffbe6'}" stop-opacity="${a * .55}"/><stop offset="1" stop-color="${el.dataset.rc || '#fff'}" stop-opacity="0"/></radialGradient></defs>
     <g fill="url(#${gid})">${s}</g></svg>`;
 }
 
@@ -1189,32 +1557,37 @@ function vineSVG(spec, rect) {
 
 // rects: panel-local (1168 x 684), side panel local (428 x 826), stage coordinates for the HUD
 const RECTS = {
-  panel: [0, 0, 1168, 684], side: [0, 0, 428, 826],
+  panel: [0, 0, 1168, 684], side: [0, 0, 428, 826], hub: [0, 0, 660, 660],
   tabShop: [500, 14, 265, 92], tabBase: [775, 14, 370, 118], tabUpg: [1155, 14, 265, 92],
   menu: [23, 322, 326, 312], bio: [571, 1010, 640, 54],
 };
 const VINE_SETS = {
-  1: [{ scope: 'panel', from: ['top', 520], to: ['right', 440], seed: 11, in: 7 },
+  1: [{ scope: 'hub', from: ['top', 300], to: ['right', 380], seed: 61, in: 7 },
+      { scope: 'panel', from: ['top', 520], to: ['right', 440], seed: 11, in: 7 },
       { scope: 'panel', from: ['bottom', 360], to: ['left', 560], seed: 12, out: 16, sag: true, drapes: 1 },
       { scope: 'side', from: ['left', 560], to: ['left', 160], seed: 13, out: 16, in: 7 },
       { scope: 'stage', rect: 'tabShop', from: ['bottom', 210], to: ['left', 26], seed: 14, out: 15, in: 6, wave: 120, cr: 10 },
       { scope: 'stage', rect: 'bio', from: ['top', 250], to: ['top', 520], seed: 15, out: 14, in: 4, wave: 130, cr: 8, leafGap: 38, frontFirst: false }],
-  2: [{ scope: 'panel', from: ['left', 200], to: ['top', 520], seed: 21, out: 18, in: 7 },
+  2: [{ scope: 'hub', from: ['right', 120], to: ['bottom', 380], seed: 62, sag: true, drapes: 1 },
+      { scope: 'panel', from: ['left', 200], to: ['top', 520], seed: 21, out: 18, in: 7 },
       { scope: 'panel', from: ['right', 300], to: ['bottom', 800], seed: 22, sag: true, drapes: 2 },
       { scope: 'side', from: ['left', 320], to: ['top', 250], seed: 23, out: 16, in: 6 },
       { scope: 'stage', rect: 'tabUpg', from: ['top', 230], to: ['bottom', 120], seed: 24, out: 15, in: 6, wave: 120, cr: 10 },
       { scope: 'stage', rect: 'menu', from: ['left', 290], to: ['left', 30], seed: 25, out: 12, in: 6, wave: 140, cr: 10 }],
-  3: [{ scope: 'panel', from: ['top', 190], to: ['top', 1060], seed: 31, in: 7 },
+  3: [{ scope: 'hub', from: ['top', 120], to: ['top', 560], seed: 63, in: 6 },
+      { scope: 'panel', from: ['top', 190], to: ['top', 1060], seed: 31, in: 7 },
       { scope: 'panel', from: ['right', 480], to: ['bottom', 880], seed: 32, sag: true, drapes: 1 },
       { scope: 'side', from: ['bottom', 380], to: ['left', 480], seed: 33, out: 16, sag: true, drapes: 1 },
       { scope: 'stage', rect: 'tabBase', from: ['bottom', 320], to: ['bottom', 50], seed: 34, out: 15, in: 6, wave: 130, cr: 10, sag: true, drapes: 1 },
       { scope: 'stage', rect: 'bio', from: ['top', 300], to: ['right', 20], seed: 35, out: 14, in: 4, wave: 150, cr: 8, leafGap: 38, frontFirst: false }],
-  4: [{ scope: 'panel', from: ['top', 900], to: ['bottom', 1010], seed: 41, in: 8, sag: true, drapes: 1 },
+  4: [{ scope: 'hub', from: ['right', 560], to: ['right', 140], seed: 64, out: 16, in: 7 },
+      { scope: 'panel', from: ['top', 900], to: ['bottom', 1010], seed: 41, in: 8, sag: true, drapes: 1 },
       { scope: 'panel', from: ['top', 250], to: ['top', 600], seed: 42, in: 6 },
       { scope: 'side', from: ['left', 740], to: ['left', 140], seed: 43, out: 15, in: 7 },
       { scope: 'stage', rect: 'menu', from: ['top', 80], to: ['left', 200], seed: 44, out: 12, in: 6, wave: 140, cr: 10 },
       { scope: 'stage', rect: 'tabUpg', from: ['bottom', 230], to: ['right', 70], seed: 45, out: 15, in: 6, wave: 110, cr: 10 }],
-  5: [{ scope: 'panel', from: ['bottom', 1080], to: ['bottom', 110], seed: 51, sag: true, drapes: 3, out: 22, in: 8 },
+  5: [{ scope: 'hub', from: ['bottom', 600], to: ['bottom', 200], seed: 65, sag: true, drapes: 2 },
+      { scope: 'panel', from: ['bottom', 1080], to: ['bottom', 110], seed: 51, sag: true, drapes: 3, out: 22, in: 8 },
       { scope: 'panel', from: ['top', 780], to: ['right', 220], seed: 52, in: 6 },
       { scope: 'side', from: ['top', 130], to: ['top', 404], seed: 53, out: 16, in: 5 },
       { scope: 'stage', rect: 'tabShop', from: ['bottom', 230], to: ['left', 20], seed: 54, out: 15, in: 6, wave: 110, cr: 10 },

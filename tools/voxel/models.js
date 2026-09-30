@@ -383,7 +383,7 @@ export const MODELS = {
   'Shillings_Tier3': () => coins(2),
   'Shillings_Tier4': () => coins(3),
   'VIP_Crown': crown,
-  'Egg': egg,
+
   'Terrarium': tank,
   'Layer_ClayBalls': () => slab('clay'),
   'Layer_Pebbles': () => slab('pebbles'),

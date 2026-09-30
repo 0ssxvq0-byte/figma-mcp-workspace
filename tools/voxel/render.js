@@ -20,13 +20,16 @@ server.listen(0, async () => {
   const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
   const page = await browser.newPage();
   page.on('pageerror', e => console.error('page error:', e.message));
-  await page.goto(`http://127.0.0.1:${server.address().port}/voxel.html`);
-  await page.waitForFunction(() => window.ready === true);
-  const images = await page.evaluate(() => window.renderAll());
   fs.mkdirSync(out, { recursive: true });
-  for (const [name, url] of Object.entries(images)) {
-    fs.writeFileSync(path.join(out, name + '.png'), Buffer.from(url.split(',')[1], 'base64'));
-    console.log('rendered', name);
+  // voxel models first, then part models (which replace any voxel icon with the same name)
+  for (const pg of ['voxel.html', 'parts.html']) {
+    await page.goto(`http://127.0.0.1:${server.address().port}/${pg}`);
+    await page.waitForFunction(() => window.ready === true);
+    const images = await page.evaluate(() => window.renderAll());
+    for (const [name, url] of Object.entries(images)) {
+      fs.writeFileSync(path.join(out, name + '.png'), Buffer.from(url.split(',')[1], 'base64'));
+      console.log('rendered', pg.split('.')[0], name);
+    }
   }
   await browser.close();
   server.close();

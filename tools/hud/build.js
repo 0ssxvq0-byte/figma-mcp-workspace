@@ -29,7 +29,8 @@ server.listen(0, async () => {
   await page.waitForLoadState('networkidle');
 
   fs.mkdirSync(path.join(out, 'Vines'), { recursive: true });
-  const screens = { daily: 'DailyRewards', store: 'Store', guide: 'FieldGuide', upgrades: 'Upgrades', build: 'EditTerrarium' };
+  const screens = { daily: 'DailyRewards', store: 'Store', guide: 'FieldGuide', upgrades: 'Upgrades', build: 'EditTerrarium',
+    hub: 'MyTerrarium', stats: 'MyTerrarium_Stats', settings: 'Settings', hatch: 'HatchReveal', incubator: 'Incubator' };
   for (const [key, label] of Object.entries(screens)) {
     await page.evaluate(k => { document.body.dataset.screen = k; document.body.dataset.vines = '1'; }, key);
     await page.screenshot({ path: path.join(out, `_Preview_${label}.png`), omitBackground: true, scale: 'css' });

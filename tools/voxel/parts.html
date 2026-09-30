@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Part Icons</title></head>
+<body style="margin:0;background:transparent">
+<script type="module">
+import * as THREE from './lib/three.module.min.js';
+import { PART_MODELS, makeP } from './parts.js';
+
+const SIZE = 768;
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setSize(SIZE, SIZE); renderer.setPixelRatio(1); renderer.setClearColor(0x000000, 0);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NoToneMapping;
+document.body.appendChild(renderer.domElement);
+
+function render(name) {
+  const scene = new THREE.Scene();
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8aa0, 2.0));
+  const key = new THREE.DirectionalLight(0xfffaf0, 2.4); key.position.set(-3, 6, 5); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xdff4ff, 1.1); rim.position.set(5, 3, -4); scene.add(rim);
+  const group = new THREE.Group();
+  const { view, fov = 18 } = PART_MODELS[name](makeP(group));
+  const box0 = new THREE.Box3().setFromObject(group), c = new THREE.Vector3(); box0.getCenter(c);
+  group.position.sub(c);
+  const pivot = new THREE.Group(); pivot.add(group); pivot.rotation.set(view.rx, view.ry, 0, 'XYZ'); scene.add(pivot);
+  pivot.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(pivot), size = new THREE.Vector3(); box.getSize(size);
+  const cam = new THREE.PerspectiveCamera(fov, 1, 0.1, 2000);
+  const fit = Math.max(size.x, size.y) * .5 / Math.tan(THREE.MathUtils.degToRad(fov / 2)) * 1.1;
+  const mid = new THREE.Vector3(); box.getCenter(mid);
+  cam.position.set(mid.x, mid.y, box.max.z + fit); cam.lookAt(mid);
+  renderer.render(scene, cam);
+  return trim(renderer.domElement);
+}
+function trim(src) {
+  const c = document.createElement('canvas'); c.width = c.height = SIZE;
+  const x = c.getContext('2d'); x.drawImage(src, 0, 0);
+  const d = x.getImageData(0, 0, SIZE, SIZE).data;
+  let x0 = SIZE, y0 = SIZE, x1 = 0, y1 = 0;
+  for (let y = 0; y < SIZE; y++) for (let i = 0; i < SIZE; i++) if (d[(y * SIZE + i) * 4 + 3] > 8) { x0 = Math.min(x0, i); y0 = Math.min(y0, y); x1 = Math.max(x1, i); y1 = Math.max(y1, y); }
+  const w = x1 - x0 + 1, h = y1 - y0 + 1, side = Math.ceil(Math.max(w, h) * 1.06);
+  const o = document.createElement('canvas'); o.width = o.height = side;
+  o.getContext('2d').drawImage(c, x0, y0, w, h, (side - w) / 2, (side - h) / 2, w, h);
+  return o.toDataURL('image/png');
+}
+window.renderAll = () => Object.fromEntries(Object.keys(PART_MODELS).map(n => [n, render(n)]));
+window.ready = true;
+</script>
+</body>
+</html>
