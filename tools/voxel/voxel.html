@@ -36,7 +36,7 @@ const FACES = [
 ];
 const AO = [0.64, 0.8, 0.92, 1.0];
 
-function buildMesh(voxels) {
+function buildMesh(voxels, glass) {
   const has = (x, y, z) => voxels.has(`${x},${y},${z}`);
   const pos = [], nor = [], col = [], uv = [], idx = [];
   const color = new THREE.Color();
@@ -73,20 +73,27 @@ function buildMesh(voxels) {
   geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
   geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   geo.setIndex(idx);
-  const mat = new THREE.MeshStandardMaterial({ vertexColors: true, map: BEVEL, roughness: 0.62, metalness: 0, side: THREE.DoubleSide });
-  return new THREE.Mesh(geo, mat);
+  const mat = glass
+    ? new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.15, metalness: 0, transparent: true, opacity: 0.2, depthWrite: false, side: THREE.DoubleSide })
+    : new THREE.MeshStandardMaterial({ vertexColors: true, map: BEVEL, roughness: 0.62, metalness: 0, side: THREE.DoubleSide });
+  const m = new THREE.Mesh(geo, mat);
+  if (glass) m.renderOrder = 1;
+  return m;
 }
 
 function render(name) {
-  const { voxels, view } = MODELS[name]();
+  const { voxels, view, glass } = MODELS[name]();
   const scene = new THREE.Scene();
   scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8aa0, 2.0));
   const key = new THREE.DirectionalLight(0xfffaf0, 2.3); key.position.set(-3, 6, 5); scene.add(key);
   const rim = new THREE.DirectionalLight(0xdff4ff, 0.9); rim.position.set(5, 2, -4); scene.add(rim);
 
-  const mesh = buildMesh(voxels);
-  mesh.geometry.computeBoundingBox();
-  const c = new THREE.Vector3(); mesh.geometry.boundingBox.getCenter(c);
+  // glass voxels (optional) are a separate see-through mesh drawn after the solid one
+  const mesh = new THREE.Group();
+  mesh.add(buildMesh(voxels));
+  if (glass && glass.size) mesh.add(buildMesh(glass, true));
+  const bb = new THREE.Box3().setFromObject(mesh);
+  const c = new THREE.Vector3(); bb.getCenter(c);
   mesh.position.sub(c);
   const pivot = new THREE.Group(); pivot.add(mesh);
   pivot.rotation.set(view.rx, view.ry, 0, 'XYZ');
@@ -120,7 +127,7 @@ function trim(src) {
   return o.toDataURL('image/png');
 }
 
-window.renderAll = () => Object.fromEntries(Object.keys(MODELS).map(n => [n, render(n)]));
+window.renderAll = only => Object.fromEntries(Object.keys(MODELS).filter(n => !only || only.split(',').includes(n)).map(n => [n, render(n)]));
 window.ready = true;
 </script>
 </body>

@@ -366,6 +366,210 @@ function satchel() {
   return { voxels: g.v, view: { rx: .28, ry: -.5 } };
 }
 
+// ---------------------------------------------------------------- the in-game terrarium (from the reference screenshot)
+// Tall tank: dark studded frame, blue glass, rocky back wall, soil, black vent strip with a centre latch,
+// and a lower compartment with white pebbles. Glass voxels are drawn see-through.
+function terrarium() {
+  const g = new Grid(113), glass = new Map(), W = 16, D = 12, H = 21;
+  const F = '#2a2e36', F2 = '#1d2027';
+  const frame = (x, y, z) => g.set(x, y, z, g.jitter(y < 2 ? F2 : F, .05));
+  const gl = (x, y, z, c) => glass.set(`${x},${y},${z}`, c);
+  // base plinth, 2 high and one wider on every side
+  for (let x = -1; x <= W; x++) for (let z = -1; z <= D; z++) for (let y = 0; y < 2; y++) frame(x, y, z);
+  // corner posts + top rim + the top cross bar
+  for (let y = 2; y < H; y++) for (const [x, z] of [[0, 0], [W - 1, 0], [0, D - 1], [W - 1, D - 1]]) frame(x, y, z);
+  for (let x = -1; x <= W; x++) for (const z of [-1, D]) frame(x, H, z);
+  for (let z = -1; z <= D; z++) for (const x of [-1, W]) frame(x, H, z);
+  for (let x = 0; x < W; x++) frame(x, H, 4);
+  // lower compartment: dark gravel with white pebbles, behind the glass
+  for (let x = 1; x < W - 1; x++) for (let z = 1; z < D - 1; z++) for (let y = 2; y < 5; y++)
+    g.set(x, y, z, y === 4 && g.r() < .12 ? g.jitter('#e9ecef', .05) : g.jitter(y === 4 ? '#3d4550' : '#323841', .08));
+  // black vent strip across the front, with lighter slots and the centre latch
+  for (let x = 0; x < W; x++) for (let y = 5; y < 7; y++) for (let z = 1; z < D; z++) frame(x, y, z);
+  for (let x = 1; x < W - 1; x += 2) if (x < 6 || x > 9) g.set(x, 5, D - 1, '#6b7482');
+  for (let x = 6; x < 10; x++) { frame(x, 7, D - 1); frame(x, 7, D - 2); }
+  // soil: slopes up toward the back wall
+  for (let x = 1; x < W - 1; x++) for (let z = 1; z < D - 1; z++) {
+    const top = 7 + Math.round((D - 1 - z) * .38 + (g.r() < .3 ? 1 : 0));
+    for (let y = 7; y <= top; y++) g.set(x, y, z, g.jitter(y === top ? '#4a4a55' : '#3b3a44', .08));
+  }
+  // rocky back wall with ledges
+  for (let x = 1; x < W - 1; x++) for (let y = 8; y < H - 1; y++) {
+    const depth = 1 + Math.round(1.2 + Math.sin(x * .9 + y * .45) * .9 + Math.sin(y * 1.3 - x * .3) * .6);
+    for (let z = 1; z <= depth; z++) g.set(x, y, z, g.jitter(mix('#a77a55', '#7a5a42', (z - 1) / 3 + (g.r() - .5) * .3), .07));
+  }
+  // a bit of life so it reads as a terrarium at icon size: moss, a fern and a white pebble
+  for (let x = 2; x < W - 2; x++) for (let z = 4; z < D - 2; z++) if (Math.sin(x * .8) + Math.cos(z * 1.1) > .7) {
+    let y = H; while (y > 7 && !g.has(x, y, z)) y--; if (!g.has(x, y + 1, z)) g.set(x, y + 1, z, g.jitter('#63b23c', .1));
+  }
+  const fx = 4, fz = 6; let fy = 7; while (g.has(fx, fy + 1, fz)) fy++;
+  for (let i = 1; i < 5; i++) g.set(fx, fy + i, fz, '#3f8f2a');
+  for (const [dx, dy, dz] of [[-1, 4, 0], [1, 4, 0], [-2, 3, 0], [2, 3, 0], [0, 5, 0], [0, 4, -1], [0, 4, 1], [-1, 2, 1], [1, 2, -1]]) g.set(fx + dx, fy + dy, fz + dz, g.jitter('#6cc43f', .08));
+  // glass panes: front, both sides, top; a couple of lighter diagonal glints on the front
+  for (let x = 1; x < W - 1; x++) for (let y = 2; y < H; y++) if (!g.has(x, y, D - 1)) {
+    const glint = ((x + y) % 11 === 0) || ((x + y) % 11 === 1 && y > 12);
+    gl(x, y, D - 1, glint ? '#f2fbff' : '#bfe2fb');
+  }
+  for (let z = 1; z < D - 1; z++) for (let y = 2; y < H; y++) for (const x of [0, W - 1]) if (!g.has(x, y, z)) gl(x, y, z, '#bfe2fb');
+  for (let x = 0; x < W; x++) for (let z = 0; z < D; z++) if (!g.has(x, H, z)) gl(x, H, z, '#c5e4fa');
+  return { voxels: g.v, glass, view: { rx: .32, ry: -.58 } };
+}
+
+// ---------------------------------------------------------------- eggs (same shape, one surface per type)
+// Moss is modelled from the reference: stacked stone blocks, moss spilling over the top, tiny mushrooms.
+function eggShape(fn, seed) {
+  const g = new Grid(seed), inside = (x, y, z) => { const yy = y > 0 ? y / 11.5 : y / 9; return (x + .5) ** 2 / 56 + yy * yy + (z + .5) ** 2 / 56 <= 1; };
+  const cells = [];
+  for (let x = -8; x <= 8; x++) for (let y = -9; y <= 12; y++) for (let z = -8; z <= 8; z++) if (inside(x, y, z)) cells.push([x, y, z]);
+  const surf = (x, y, z) => !inside(x + 1, y, z) || !inside(x - 1, y, z) || !inside(x, y + 1, z) || !inside(x, y - 1, z) || !inside(x, y, z + 1) || !inside(x, y, z - 1);
+  for (const [x, y, z] of cells) g.set(x, y, z, fn(g, x, y, z, surf(x, y, z)));
+  return { g, inside };
+}
+const cellHash = (x, y, z, s = 2) => { const a = Math.floor(x / s), b = Math.floor(y / s), c = Math.floor(z / s); const h = Math.sin(a * 127.1 + b * 311.7 + c * 74.7) * 43758.5453; return h - Math.floor(h); };
+const wave = (x, y, z, k = 1) => Math.sin(x * .9 * k + z * .5) * .5 + Math.sin(z * .8 * k - y * .45) * .5 + Math.sin(y * .7 * k + x * .35) * .35;
+
+function eggMoss() {
+  const STONE = ['#8e877b', '#a29a89', '#77716a', '#b0a58e', '#857a6b', '#6a655d', '#9a8f7c'];
+  const { g, inside } = eggShape((g, x, y, z) => {
+    const moss = wave(x, y, z) + y / 7 > .55 || (wave(x * 1.7, y, z * 1.7) > 1.05);
+    if (moss) return g.jitter(g.r() < .4 ? '#56852c' : g.r() < .5 ? '#6f9a38' : '#86ad45', .1);
+    return g.jitter(STONE[Math.floor(cellHash(x, y, z, 2) * STONE.length)], .07);
+  }, 131);
+  // moss spills outward from the top as a soft layer, with a few drips
+  for (const [k] of [...g.v]) { const [x, y, z] = k.split(',').map(Number);
+    if (wave(x, y, z) + y / 7 > .8 && !inside(x, y + 1, z) && !g.has(x, y + 1, z) && g.r() < .75) g.set(x, y + 1, z, g.jitter(g.r() < .5 ? '#9cc454' : '#78a53e', .08)); }
+  // three tiny mushrooms
+  for (const [x, z] of [[-3, 3], [3, 4], [0, -3]]) {
+    let yy = 16; while (yy > -10 && !g.has(x, yy, z)) yy--;
+    g.set(x, yy + 1, z, '#efe3c6');
+    for (let dx = -1; dx <= 1; dx++) for (let dz = -1; dz <= 1; dz++) if (dx * dz === 0) g.set(x + dx, yy + 2, z + dz, g.jitter('#c89b6a', .06));
+    g.set(x, yy + 3, z, '#b8875a');
+  }
+  return { voxels: g.v, view: { rx: .18, ry: -.5 } };
+}
+function eggPebble() {
+  const { g } = eggShape((g, x, y, z) => { const c = cellHash(x + 50, y, z, 3);
+    return g.jitter(c < .25 ? '#c9c4b8' : c < .5 ? '#dcd8cc' : c < .8 ? '#e8e4da' : '#b3aea2', .04); }, 141);
+  return { voxels: g.v, view: { rx: .18, ry: -.5 } };
+}
+function eggFern() {
+  const { g } = eggShape((g, x, y, z) => {
+    const frond = Math.abs(Math.sin((Math.atan2(z, x) * 3) + y * .35)) > .82;
+    return frond ? g.jitter('#4f9a3a', .08) : g.jitter(mix('#c9e6a6', '#8bbe7a', (1 - y / 12) / 2), .05); }, 151);
+  return { voxels: g.v, view: { rx: .18, ry: -.5 } };
+}
+function eggAmber() {
+  const { g } = eggShape((g, x, y, z) => {
+    const streak = Math.sin(y * .9 + x * .4) > .75;
+    return g.jitter(streak ? '#c5731c' : mix('#ffcf6a', '#e58f24', (1 - y / 12) / 2), .05); }, 161);
+  for (const [x, y] of [[0, 2], [0, 1], [-1, 2], [1, 2], [0, 0], [-1, 0], [1, 0], [0, 3]]) g.set(x, y, 8, '#4a2a12');   // a tiny insect caught in the amber
+  return { voxels: g.v, view: { rx: .18, ry: -.5 } };
+}
+function eggDusk() {
+  const { g } = eggShape((g, x, y, z, s) => {
+    if (s && g.r() < .05) return '#fff4c8';
+    return g.jitter(mix('#9a6fd6', '#3c2d6e', (1 - y / 12) / 2), .05); }, 171);
+  return { voxels: g.v, view: { rx: .18, ry: -.5 } };
+}
+function eggCanopy() {
+  const { g } = eggShape((g, x, y, z) => {
+    const leaf = wave(x, y, z, 1.3) > .8;
+    return leaf ? g.jitter('#4caf3a', .08) : g.jitter(mix('#ffe08a', '#e2a83e', (1 - y / 12) / 2), .05); }, 181);
+  return { voxels: g.v, view: { rx: .18, ry: -.5 } };
+}
+function eggPrimordial() {
+  const { g } = eggShape((g, x, y, z) => {
+    const crack = Math.abs(Math.sin(x * .7 + y * .5) + Math.sin(z * .6 - y * .8)) < .18;
+    return crack ? g.jitter('#ffb14a', .06) : g.jitter(mix('#7a2a26', '#3a1614', cellHash(x, y, z, 2)), .06); }, 191);
+  return { voxels: g.v, view: { rx: .18, ry: -.5 } };
+}
+
+// ---------------------------------------------------------------- Field Guide: a green field book with a gold beetle
+function fieldGuide() {
+  const g = new Grid(211), W = 15, H = 19, T = 6;
+  const cover = (x, y, z) => g.set(x, y, z, g.jitter(mix('#46a34f', '#2f7d3c', y / H * .6 + (x === 0 ? .4 : 0)), .05));
+  for (let x = 0; x < W; x++) for (let y = 0; y < H; y++) { cover(x, y, 0); cover(x, y, T - 1); }
+  for (let y = 0; y < H; y++) for (let z = 0; z < T; z++) g.set(0, y, z, g.jitter('#276b34', .05));          // spine
+  for (const y of [3, 4, H - 5, H - 4]) for (let z = 1; z < T - 1; z++) g.set(-1, y, z, '#e8b52a');         // spine bands
+  for (let y = 0; y < H; y++) for (let z = 0; z < T; z++) if (!g.has(-1, y, z)) g.set(-1, y, z, g.jitter('#2c7336', .04));
+  for (let x = 1; x < W - 1; x++) for (let y = 1; y < H - 1; y++) for (let z = 1; z < T - 1; z++)           // page block
+    g.set(x, y, z, (x === W - 2 || y === H - 2 || y === 1) && z % 2 ? '#dccfa8' : g.jitter('#f6eed6', .03));
+  // stamped border and gold beetle on the cover
+  for (let x = 2; x < W - 1; x++) for (const y of [2, H - 3]) g.set(x, y, T, '#2c7336');
+  for (let y = 2; y < H - 2; y++) for (const x of [2, W - 2]) g.set(x, y, T, '#2c7336');
+  const beetle = [
+    '.y.....y.',
+    '..y...y..',
+    '...YYY...',
+    '..YYYYY..',
+    'y.YYYYY.y',
+    '.YYYdYYY.',
+    'yYYYdYYYy',
+    '.YYYdYYY.',
+    'yYYYdYYYy',
+    '.YYYdYYY.',
+    '..YYdYY..',
+    '...YYY...',
+  ];
+  beetle.forEach((row, py) => [...row].forEach((ch, px) => { if (ch === '.') return;
+    g.set(3 + px, H - 4 - py, T, ch === 'd' ? '#c98a12' : ch === 'y' ? '#e8a81e' : g.jitter('#ffd23a', .04)); }));
+  // red ribbon bookmark hanging out of the bottom
+  for (let y = -4; y < 1; y++) for (const x of [10, 11]) if (!(y === -4 && x === 10)) g.set(x, y, 3, g.jitter('#d8403a', .05));
+  return { voxels: g.v, view: { rx: .28, ry: .42 } };
+}
+
+// ---------------------------------------------------------------- Stag Beetle (hatch showcase, pixel style)
+function stagBeetle() {
+  const g = new Grid(221);
+  const ell = (cx, cy, cz, rx, ry, rz, col, yMin = -99) => {
+    for (let x = Math.floor(cx - rx); x <= cx + rx; x++) for (let y = Math.floor(cy - ry); y <= cy + ry; y++) for (let z = Math.floor(cz - rz); z <= cz + rz; z++)
+      if (y >= yMin && ((x + .5 - cx) / rx) ** 2 + ((y + .5 - cy) / ry) ** 2 + ((z + .5 - cz) / rz) ** 2 <= 1) g.set(x, y, z, col(x, y, z));
+  };
+  ell(-3, 0, 0, 8, 3.6, 5.4, (x, y, z) => z === 0 || z === -1 ? '#3f2112' : g.jitter(mix('#9a5a2c', '#5a2e16', 1 - (y + 1) / 4.5), .05), -1);   // wing cases
+  ell(6, .4, 0, 3, 3, 4.4, (x, y) => g.jitter(mix('#5a3220', '#2e1a10', 1 - y / 3.5), .05), -1);                                           // thorax
+  ell(10, .3, 0, 2.3, 2.2, 3.4, () => g.jitter('#3a2014', .05), -1);                                                                   // head
+  for (const s of [1, -1]) {
+    // big forked mandibles
+    for (let i = 0; i <= 12; i++) { const t = i / 12, x = 11 + t * 7, z = s * (2 + Math.sin(t * Math.PI * .8) * 1.6 - t * t * 1.3);
+      for (const dy of [0, 1]) g.set(Math.round(x), 1 + dy, Math.round(z), g.jitter('#9a4622', .05)); }
+    g.set(18, 2, Math.round(s * 1.5), '#9a4622'); g.set(15, 1, Math.round(s * 2), '#7a3418');
+    // three legs a side, with a knee
+    for (const lx of [-5, 0, 5]) {
+      for (let i = 0; i <= 6; i++) g.set(lx + Math.round(i * (lx > 0 ? .3 : -.2)), Math.round(-i * .15), Math.round(s * (4 + i)), '#1f1510');
+      for (let i = 1; i <= 3; i++) g.set(lx + (lx > 0 ? 2 : -1), -1 - i, Math.round(s * 10), '#1f1510');
+    }
+    // antennae
+    for (let i = 0; i <= 3; i++) g.set(11 + i, 2 + (i > 1 ? 1 : 0), s * (3 + i), '#2a1a12');
+  }
+  return { voxels: g.v, view: { rx: .62, ry: -.42 } };
+}
+
+// ---------------------------------------------------------------- The Keeper (placeholder portrait: blocky head, ranger hat)
+function keeper() {
+  const g = new Grid(231);
+  for (let x = 0; x < 10; x++) for (let y = 0; y < 10; y++) for (let z = 0; z < 9; z++) g.set(x, y, z, g.jitter('#f2c79a', .03));   // head
+  for (let x = -3; x < 13; x++) for (let z = -3; z < 12; z++) g.set(x, 10, z, g.jitter('#8a6a3c', .05));                          // hat brim
+  for (let x = 0; x < 10; x++) for (let z = 0; z < 9; z++) for (let y = 11; y < 14; y++) g.set(x, y, z, g.jitter(y === 11 ? '#3f6b2a' : '#a07f4a', .05));  // crown + green band
+  for (let x = 1; x < 9; x++) g.set(x, 14, 4, '#8a6a3c');
+  // face on the front (z = 9): round glasses, eyes, moustache
+  const face = [
+    '..........',
+    '.BBB..BBB.',
+    '..........',
+    '..E....E..',
+    '..E....E..',
+    '..........',
+    '..MMMMMM..',
+    '...M..M...',
+  ];
+  face.forEach((row, py) => [...row].forEach((ch, px) => { if (ch === '.') return;
+    g.set(px, 8 - py, 9, ch === 'E' ? '#1d2027' : ch === 'B' ? '#6b4526' : '#8a5a30'); }));
+  // shirt collar
+  for (let x = -1; x < 11; x++) for (let z = -1; z < 10; z++) g.set(x, -1, z, g.jitter('#c2a266', .05));
+  for (let x = 3; x < 7; x++) g.set(x, -1, 10, '#3f6b2a');
+  return { voxels: g.v, view: { rx: .08, ry: -.32 } };
+}
+
 export const MODELS = {
   'Clover_Tier1': () => clover(0),
   'Clover_Tier2': () => clover(1),
@@ -384,7 +588,17 @@ export const MODELS = {
   'Shillings_Tier4': () => coins(3),
   'VIP_Crown': crown,
 
-  'Terrarium': tank,
+  'Terrarium': terrarium,
+  'Egg_Moss': eggMoss,
+  'Egg_Pebble': eggPebble,
+  'Egg_Fern': eggFern,
+  'Egg_Amber': eggAmber,
+  'Egg_Dusk': eggDusk,
+  'Egg_Canopy': eggCanopy,
+  'Egg_Primordial': eggPrimordial,
+  'FieldGuide': fieldGuide,
+  'Creature_StagBeetle': stagBeetle,
+  'Keeper': keeper,
   'Layer_ClayBalls': () => slab('clay'),
   'Layer_Pebbles': () => slab('pebbles'),
   'Layer_Filter': () => slab('filter'),

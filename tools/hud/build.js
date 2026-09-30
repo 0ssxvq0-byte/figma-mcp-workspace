@@ -29,8 +29,12 @@ server.listen(0, async () => {
   await page.waitForLoadState('networkidle');
 
   fs.mkdirSync(path.join(out, 'Vines'), { recursive: true });
-  const screens = { daily: 'DailyRewards', store: 'Store', guide: 'FieldGuide', upgrades: 'Upgrades', build: 'EditTerrarium',
-    hub: 'MyTerrarium', stats: 'MyTerrarium_Stats', settings: 'Settings', hatch: 'HatchReveal', incubator: 'Incubator' };
+  // every screen, numbered in the order a player meets them
+  const screens = { hud: '01_HUD', daily: '02_DailyRewards', store: '03_Store', guide: '04_FieldGuide', rebirth: '05_Rebirth',
+    keeper: '06_KeepersShop', upgrades: '07_Upgrades', hub: '08_MyTerrarium_Creatures', holding: '09_MyTerrarium_Holding',
+    stats: '10_MyTerrarium_Stats', build: '11_EditTank', backdrops: '12_Backdrops', eggs: '13_EggInventory', incubator: '14_Incubator',
+    hatchcrack: '15_Hatch_Cracking', hatch: '16_Hatch_Reveal', release: '17_Release', notify: '18_Notifications', welcome: '19_WelcomeBack',
+    settings: '20_Settings_Codes' };
   for (const [key, label] of Object.entries(screens)) {
     await page.evaluate(k => { document.body.dataset.screen = k; document.body.dataset.vines = '1'; }, key);
     await page.screenshot({ path: path.join(out, `_Preview_${label}.png`), omitBackground: true, scale: 'css' });
