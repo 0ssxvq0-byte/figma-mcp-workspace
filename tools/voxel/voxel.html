@@ -96,7 +96,7 @@ function render(name) {
   const c = new THREE.Vector3(); bb.getCenter(c);
   mesh.position.sub(c);
   const pivot = new THREE.Group(); pivot.add(mesh);
-  pivot.rotation.set(view.rx, view.ry, 0, 'XYZ');
+  pivot.rotation.set(view.rx, view.ry, view.rz || 0, 'XYZ');
   scene.add(pivot);
 
   // fit the rotated model tightly into the frame

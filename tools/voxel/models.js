@@ -570,6 +570,59 @@ function keeper() {
   return { voxels: g.v, view: { rx: .08, ry: -.32 } };
 }
 
+// ---------------------------------------------------------------- crossed swords (PvP / the Wilds)
+function swords() {
+  const g = new Grid(241);
+  const sword = (dir, z0) => {
+    const ax = [Math.SQRT1_2 * dir, Math.SQRT1_2], pv = [-ax[1], ax[0]];
+    for (let x = -14; x <= 14; x++) for (let y = -14; y <= 14; y++) {
+      const px = x + .5, py = y + .5, u = px * ax[0] + py * ax[1] + 3, v = px * pv[0] + py * pv[1], av = Math.abs(v);
+      let c = null, raise = 0;
+      if (u >= 0 && u <= 14 && av <= 1.6 - Math.max(0, u - 11.5) * .55) { c = av < .6 ? '#ffffff' : v > 0 ? '#c7d0d8' : '#e6ecf1'; raise = av < .6 ? 1 : 0; }
+      else if (u >= -1.5 && u < 0 && av <= 4.2) c = av > 3 ? '#e8a81e' : '#ffc93a';
+      else if (u >= -6.5 && u < -1.5 && av <= 1) c = (Math.round(u) % 2) ? '#6b4526' : '#8a5a30';
+      else if (u >= -8.6 && u < -6.5 && av <= 1.6) c = '#ffc93a';
+      if (!c) continue;
+      for (let z = 0; z < 2 + raise; z++) g.set(x, y, z0 + z, g.jitter(c, .03));
+    }
+  };
+  sword(1, 0); sword(-1, 3);
+  return { voxels: g.v, view: { rx: .12, ry: -.35 } };
+}
+// ---------------------------------------------------------------- shield with a leaf (safe again / PvP off)
+function shield() {
+  const g = new Grid(251), W = 18, H = 21;
+  const inside = (x, y) => { const cx = x + .5 - W / 2, t = (y + .5) / H; const half = t > .45 ? W / 2 : (W / 2) * Math.sqrt(t / .45); return Math.abs(cx) <= half - .2; };
+  for (let x = 0; x < W; x++) for (let y = 0; y < H; y++) {
+    if (!inside(x, y)) continue;
+    const rim = !inside(x - 1, y) || !inside(x + 1, y) || !inside(x, y - 1) || !inside(x, y + 1) || !inside(x - 2, y) || !inside(x + 2, y) || !inside(x, y + 2);
+    for (let z = 0; z < (rim ? 4 : 3); z++) g.set(x, y, z, g.jitter(rim ? '#e8a81e' : mix('#5fd05a', '#2e9a3a', 1 - y / H), .04));
+  }
+  // leaf emblem
+  for (let x = 4; x < 14; x++) for (let y = 5; y < 17; y++) {
+    const u = (x - 9 + (y - 11) * .15), v = (y - 11) / 5.6;
+    const halfw = 3.6 * Math.sqrt(Math.max(0, 1 - v * v));
+    if (Math.abs(u) <= halfw) g.set(x, y, 3, Math.abs(u) < .6 ? '#8fd46a' : g.jitter('#e9ffd2', .03));
+  }
+  return { voxels: g.v, view: { rx: .14, ry: -.42 } };
+}
+// ---------------------------------------------------------------- pocket watch (time away)
+function pocketWatch() {
+  const g = new Grid(261), R = 9.4;
+  for (let x = -10; x <= 10; x++) for (let y = -10; y <= 10; y++) {
+    const d = Math.hypot(x + .5, y + .5); if (d > R) continue;
+    const rim = d > R - 1.7;
+    for (let z = 0; z < (rim ? 4 : 3); z++) g.set(x, y, z, g.jitter(rim ? mix('#ffe46a', '#d98c12', (y + 10) / -20 + .5) : '#fbf5e4', .03));
+  }
+  for (let k = 0; k < 12; k++) { const a = k * Math.PI / 6, r = 6.4; g.set(Math.floor(Math.cos(a) * r), Math.floor(Math.sin(a) * r), 3, k % 3 ? '#b8ad92' : '#3a3f46'); }
+  for (let i = 0; i <= 5; i++) g.set(0, i, 3, '#2a2e36');                 // minute hand (12)
+  for (let i = 0; i <= 3; i++) g.set(i, 0, 3, '#2a2e36');                 // hour hand (3)
+  g.set(0, 0, 4, '#d8403a');
+  for (const [x, y] of [[-1, 10], [0, 10], [-1, 11], [0, 11]]) for (let z = 1; z < 3; z++) g.set(x, y, z, '#e8a81e');   // crown
+  for (let a = 0; a < 20; a++) { const t = a / 20 * Math.PI * 2, x = Math.round(Math.cos(t) * 3) - .0, y = Math.round(13.5 + Math.sin(t) * 2.4); g.set(Math.floor(x), y, 1, '#ffc93a'); g.set(Math.floor(x), y, 2, '#ffc93a'); }  // bow ring
+  return { voxels: g.v, view: { rx: .14, ry: -.4 } };
+}
+
 export const MODELS = {
   'Clover_Tier1': () => clover(0),
   'Clover_Tier2': () => clover(1),
@@ -599,6 +652,10 @@ export const MODELS = {
   'FieldGuide': fieldGuide,
   'Creature_StagBeetle': stagBeetle,
   'Keeper': keeper,
+  'PvP_Swords': swords,
+  'Safe_Shield': shield,
+  'PocketWatch': pocketWatch,
+  'FieldGuide_Tilted': () => ({ ...fieldGuide(), view: { rx: -.42, ry: .4, rz: -.1 } }),
   'Layer_ClayBalls': () => slab('clay'),
   'Layer_Pebbles': () => slab('pebbles'),
   'Layer_Filter': () => slab('filter'),

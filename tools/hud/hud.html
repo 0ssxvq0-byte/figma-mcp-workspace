@@ -35,13 +35,13 @@ body[data-screen="build"]    #scr-build, body[data-screen="build"] #scr-build-dr
 body[data-screen="hub"] #scr-hub, body[data-screen="stats"] #scr-stats, body[data-screen="settings"] #scr-settings,
 body[data-screen="hatch"] #scr-hatch, body[data-screen="incubator"] #scr-incubator,
 body[data-screen="rebirth"] #scr-rebirth, body[data-screen="keeper"] #scr-keeper, body[data-screen="eggs"] #scr-eggs,
-body[data-screen="backdrops"] #scr-backdrops, body[data-screen="holding"] #scr-holding, body[data-screen="release"] #scr-release,
-body[data-screen="notify"] #scr-notify, body[data-screen="welcome"] #scr-welcome, body[data-screen="hatchcrack"] #scr-hatchcrack { visibility: visible; }
+body[data-screen="buildbd"] #scr-buildbd, body[data-screen="holding"] #scr-holding, body[data-screen="release"] #scr-release,
+body[data-screen="notify"] #scr-notify, body[data-screen="welcome"] #scr-welcome { visibility: visible; }
 /* the My Terrarium hub opens on the right, over the Starter Pack and Eggs button */
 body:is([data-screen="hub"], [data-screen="stats"], [data-screen="holding"]) :is(#starter, #tile-eggs, #eggs-cnt) { visibility: hidden; }
 .state-alt { visibility: hidden; }
 #scr-build-drag { visibility: hidden; }
-body[data-screen="build"] :is(#starter, #events, #tile-eggs, #eggs-cnt) { visibility: hidden; }
+body:is([data-screen="build"], [data-screen="buildbd"]) :is(#starter, #events, #tile-eggs, #eggs-cnt) { visibility: hidden; }
 
 /* vine variations: the UI picks one of five sets each time it opens */
 .wv[data-v] { display: none; }
@@ -61,6 +61,13 @@ body.isolate #stage * { visibility: hidden; }
 body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
 /* alternate states stay hidden inside a larger export unless they are the export */
 body.isolate #stage .solo .state-alt:not(.solo), body.isolate #stage .solo .state-alt:not(.solo) * { visibility: hidden; }
+/* Roblox layer exports: Base = everything but text and icons, Text = only text, Icon = only icons */
+body.isolate.l-base #stage .solo :is(.t, img, .svgi:not(.bd-thumb)), body.isolate.l-base #stage .solo :is(.t, img, .svgi) * { visibility: hidden; }
+body.isolate.l-text #stage .solo, body.isolate.l-text #stage .solo * { visibility: hidden; }
+body.isolate.l-text #stage .solo .t, body.isolate.l-text #stage .solo .t * { visibility: visible; }
+body.isolate.l-icon #stage .solo, body.isolate.l-icon #stage .solo * { visibility: hidden; }
+body.isolate.l-icon #stage .solo :is(img, .svgi), body.isolate.l-icon #stage .solo :is(img, .svgi) * { visibility: visible; }
+body.isolate.l-icon #stage .solo .t img { visibility: hidden; }
 
 .abs { position: absolute; }
 
@@ -195,11 +202,11 @@ body.isolate #stage .solo .state-alt:not(.solo), body.isolate #stage .solo .stat
 /* selected menu button: lifted, with a crisp white inner ring (no gold outline) */
 body[data-screen="daily"] #btn-daily, body[data-screen="store"] #tile-store, body[data-screen="guide"] #tile-guide, body[data-screen="rebirth"] #tile-reb,
 body[data-screen="eggs"] #tile-eggs, body[data-screen="keeper"] #tab-shop,
-body[data-screen="upgrades"] #tab-upg, body:is([data-screen="build"], [data-screen="hub"], [data-screen="stats"], [data-screen="holding"]) #tab-base, body[data-screen="settings"] #btn-settings {
+body[data-screen="upgrades"] #tab-upg, body:is([data-screen="build"], [data-screen="buildbd"], [data-screen="hub"], [data-screen="stats"], [data-screen="holding"]) #tab-base, body[data-screen="settings"] #btn-settings {
   transform: translateY(-4px); box-shadow: 0 8px 0 var(--ink), 0 12px 14px rgba(0,0,0,.28); }
 body[data-screen="daily"] #btn-daily::after, body[data-screen="store"] #tile-store::after, body[data-screen="guide"] #tile-guide::after, body[data-screen="rebirth"] #tile-reb::after,
 body[data-screen="eggs"] #tile-eggs::after, body[data-screen="keeper"] #tab-shop::after,
-body[data-screen="upgrades"] #tab-upg::after, body:is([data-screen="build"], [data-screen="hub"], [data-screen="stats"], [data-screen="holding"]) #tab-base::after, body[data-screen="settings"] #btn-settings::after {
+body[data-screen="upgrades"] #tab-upg::after, body:is([data-screen="build"], [data-screen="buildbd"], [data-screen="hub"], [data-screen="stats"], [data-screen="holding"]) #tab-base::after, body[data-screen="settings"] #btn-settings::after {
   box-shadow: inset 0 0 0 4px rgba(255,255,255,.92), inset 0 -6px 0 rgba(0,0,0,.24); }
 
 /* ======================================================================
@@ -230,8 +237,9 @@ body[data-screen="upgrades"] #tab-upg::after, body:is([data-screen="build"], [da
 .wide .wm { right: -18px; top: -26px; width: 130px; height: 130px; transform: rotate(-14deg); --wmc: #fff; --wmo: .12; }
 #tile-store { left: 23px; top: 430px; }
 #tile-guide { left: 191px; top: 430px; }
-#tile-guide .icon { width: 92px; height: 92px; margin-top: 2px; }
-#tile-guide .t { --fs: 29px; line-height: .98; margin-top: -2px; }
+#tile-guide > .content { justify-content: flex-end; padding-bottom: 6px; }
+#tile-guide .icon { position: absolute; left: 50%; top: 8px; width: 132px; height: 132px; margin: 0; transform: translateX(-50%) rotate(6deg); }
+#tile-guide .t { --fs: 30px; line-height: .98; z-index: 1; }
 #tile-reb { left: 23px; top: 600px; }
 #tile-reb .icon { width: 80px; height: 80px; }
 /* eggs button (right side, under the Starter Pack): the egg-banked animation flies into it */
@@ -548,7 +556,8 @@ body[data-screen="upgrades"] #tab-upg::after, body:is([data-screen="build"], [da
 #scr-build .btn-close { width: 70px; height: 64px; top: 12px; }
 #btabs { position: absolute; left: 14px; right: 14px; top: 12px; height: 52px; display: flex; gap: 8px; }
 #btabs .cat { flex: 1; width: auto; height: 52px; }
-#btabs .cat .t { --fs: 24px; }
+#btabs .cat .t { --fs: 19px; }
+#btabs .cat:last-child { flex: 1.25; }
 #stack { left: 14px; right: 14px; top: 76px; height: 214px; }
 #stack > .content { display: block; }
 #stack .shead { position: absolute; left: 14px; right: 14px; top: 8px; display: flex; justify-content: space-between; align-items: center; z-index: 5; }
@@ -602,6 +611,29 @@ body[data-screen="upgrades"] #tab-upg::after, body:is([data-screen="build"], [da
 #drop-hint .pill { padding: 6px 16px 8px; border-radius: 10px; background: rgba(10,22,12,.55); }
 #drop-hint .pill .t { --fs: 22px; --to: .09; }
 #drag-trail { left: 0; top: 0; width: 1920px; height: 1080px; pointer-events: none; z-index: 0; overflow: visible; }
+#scr-buildbd { left: 1478px; top: 150px; width: 428px; height: 826px; }
+#scr-buildbd .phead .title { --fs: 44px; margin-left: 104px; }
+#scr-buildbd .btn-close { width: 70px; height: 64px; top: 12px; }
+#bd-now { left: 14px; right: 14px; top: 76px; height: 214px; }
+#bd-now > .content { display: none; }
+#bd-now .shead { position: absolute; left: 14px; right: 14px; top: 8px; display: flex; justify-content: space-between; align-items: center; z-index: 5; }
+#bd-now .shead .t { --fs: 19px; --tf: var(--tf-cream); --to: .1; }
+#bd-now .shead .t.hint { --tf: var(--tf-muted); --fs: 16px; }
+#bd-now .bd-thumb.big { position: absolute; left: 14px; right: 14px; top: 38px; width: auto; height: 124px; z-index: 5; }
+#bd-now .nmrow { position: absolute; left: 0; right: 0; bottom: 8px; display: flex; justify-content: center; z-index: 5; }
+#bd-now .nmrow .t { --fs: 26px; }
+#bdgrid-wrap { position: absolute; left: 14px; right: 26px; top: 302px; bottom: 98px; overflow: hidden;
+  -webkit-mask: linear-gradient(180deg, #000 86%, transparent 100%); mask: linear-gradient(180deg, #000 86%, transparent 100%); }
+#bdgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.bdc.sm { height: 182px; }
+.bdc.sm > .skin > .content { padding: 8px 0 8px; }
+.bdc.sm .bd-thumb { width: 156px; height: 80px; }
+.bdc.sm .t.nm { --fs: 20px; }
+.bdc.sm .btnx { width: 140px; height: 40px; }
+.bdc.sm .btnx .t { --fs: 21px; }
+.bdc.sm .src { height: 40px; }
+.bdc.sm .src .t { --fs: 15px; }
+.bdc.sm.locked .lock { top: 30px; width: 40px; height: 40px; }
 /* ---------- settings button (HUD) ---------- */
 #btn-settings { left: 18px; top: 18px; width: 78px; height: 78px; }
 #btn-settings .icon { width: 56px; height: 56px; }
@@ -847,23 +879,34 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
 #reb-action .warn .t { --fs: 18px; --tf: var(--tf-cream); --to: .09; }
 
 /* ---------- keeper's shop ---------- */
-#kp-left { position: absolute; left: 18px; top: 16px; width: 330px; bottom: 18px; }
-#kp-portrait { left: 0; right: 0; top: 0; height: 232px; }
-#kp-portrait > .content { flex-direction: column; justify-content: flex-end; padding-bottom: 8px; }
-#kp-portrait .icon { width: 176px; height: 176px; margin-bottom: -2px; }
-#kp-portrait .t { --fs: 30px; }
-#kp-say { position: absolute; left: 0; right: 0; top: 256px; height: 150px; border: 4px solid var(--ink); border-radius: 12px; z-index: 3;
-  background: linear-gradient(180deg, #fff9e8, #efe2bf); box-shadow: 0 4px 0 var(--ink); padding: 14px 16px; }
-#kp-say::before { content: ""; position: absolute; left: 70px; top: -24px; width: 34px; height: 24px; background: var(--ink); clip-path: polygon(0 100%, 30% 0, 100% 100%); }
-#kp-say::after { content: ""; position: absolute; left: 76px; top: -15px; width: 24px; height: 16px; background: #fff9e8; clip-path: polygon(0 100%, 30% 0, 100% 100%); }
-#kp-say .who { font: 700 17px "CNA", sans-serif; color: #8a5a1e; letter-spacing: .04em; }
-#kp-say .line { font: 700 20px/1.25 "CNA", sans-serif; color: #2c2418; margin-top: 4px; }
-#kp-timer { left: 0; right: 0; bottom: 0; height: 132px; }
-#kp-timer > .content { flex-direction: column; gap: 4px; padding: 0 16px; }
-#kp-timer .t.k { --fs: 20px; --tf: var(--tf-cream); }
-#kp-timer .t.v { --fs: 48px; --tf: var(--tf-gold); }
-#kp-timer .bar { width: 100%; height: 22px; }
-#kp-grid { position: absolute; left: 366px; right: 18px; top: 16px; bottom: 18px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 12px; }
+#kp-grid { position: absolute; left: 20px; right: 34px; top: 16px; bottom: 18px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 12px; }
+#scr-keeper .scrollbar { right: 14px; top: 16px; bottom: 18px; }
+.kp-timer { display: flex; align-items: center; gap: 10px; margin-left: 26px; margin-top: 4px; padding: 4px 16px 6px; border-radius: 10px; border: 4px solid var(--ink);
+  background: rgba(11,15,29,.42); box-shadow: inset 0 0 0 2px rgba(255,255,255,.14); }
+.kp-timer .t { --fs: 26px; }
+.kp-timer .bar { width: 120px; height: 20px; }
+.row { position: relative; }
+.row > .skin { inset: 0; width: auto; height: auto; }
+.row > .skin > .content { justify-content: flex-start; gap: 16px; padding: 0 16px 0 12px; }
+.row .well { position: relative; width: 142px; height: 142px; flex: none; }
+.row .well > .skin { inset: 0; width: auto; height: auto; box-shadow: inset 0 4px 10px rgba(0,0,0,.3), 0 3px 0 var(--ink); }
+.row .well .icon { width: 118px; height: 110px; }
+.row .well .bd-thumb { width: 124px; height: 86px; }
+.row .col { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; flex: 1; min-width: 0; }
+.row .t.nm { --fs: 34px; }
+.row .t.stock { --fs: 20px; --tf: var(--tf-muted); --to: .09; }
+.row .price { position: relative; display: flex; align-items: center; gap: 6px; }
+.row .price .coin-i { width: 34px; height: 34px; }
+.row .price .t { --fs: 36px; --tf: var(--tf-green); }
+.row .side { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; align-self: stretch; padding: 14px 0; flex: none; }
+.row .rpill { height: 34px; padding: 0 14px; display: flex; align-items: center; border-radius: 8px; border: 3px solid var(--ink); background: linear-gradient(180deg, var(--c1), var(--c3)); box-shadow: 0 2px 0 var(--ink); }
+.row .rpill .t { --fs: 18px; }
+.row .buy { position: relative; width: 150px; height: 56px; }
+.row .buy .t { --fs: 30px; }
+.row.sold .well .icon { filter: url(#outline-sm) grayscale(1) brightness(.7); }
+.row.sold .stamp { left: 10px; top: 62px; padding: 3px 10px 5px; }
+.row.sold .stamp .t { --fs: 19px; }
+.row.poor .price .t { --tf: var(--tf-red); }
 .slot { position: relative; }
 .slot > .skin { inset: 0; width: auto; height: auto; }
 .slot > .skin > .content { flex-direction: column; justify-content: space-between; padding: 10px 0 12px; }
@@ -1038,15 +1081,6 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
 #wb .amt .t { --fs: 72px; --tf: var(--tf-gold); }
 #wb .t.s { --fs: 18px; --tf: var(--tf-muted); --to: .1; }
 
-/* ---------- hatch: the egg cracking ---------- */
-#scr-hatchcrack { left: 0; top: 0; width: 1920px; height: 1080px; z-index: 60; }
-#crack-egg { position: absolute; left: 960px; top: 470px; width: 330px; height: 370px; transform: translate(-50%, -50%) rotate(-6deg); }
-#crack-egg img { width: 100%; height: 100%; }
-#crack-egg svg { position: absolute; inset: 0; overflow: visible; }
-#crack-lbl { position: absolute; left: 960px; top: 740px; transform: translateX(-50%); }
-#crack-lbl .t { --fs: 60px; }
-#crack-sub { position: absolute; left: 960px; top: 820px; transform: translateX(-50%); padding: 6px 18px 8px; border-radius: 10px; background: rgba(10,22,12,.55); }
-#crack-sub .t { --fs: 22px; --tf: var(--tf-cream); }
 </style>
 </head>
 <body data-screen="daily" data-vines="1">
@@ -1110,7 +1144,7 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
   </div>
   <div id="tile-guide" class="skin tile blue" data-facets="56" data-seed="54" data-streaks="3" data-export="HUD/Left/Btn_FieldGuide">
     <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/book.png)"></div>
-    <div class="content"><img class="icon" src="assets/voxel/FieldGuide.png"><span class="t">Field<br>Guide</span></div>
+    <div class="content"><img class="icon" src="assets/voxel/FieldGuide_Tilted.png"><span class="t">Field<br>Guide</span></div>
   </div>
   <div id="tile-reb" class="skin wide purple" data-facets="56" data-seed="57" data-streaks="3" data-export="HUD/Left/Btn_Rebirth">
     <div class="glow"></div><div class="wm" style="--wm:url(assets/icons/rebirth.png);--wmo:.1"></div>
@@ -1376,6 +1410,7 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
           <div class="cat skin green" data-facets="40" data-seed="611" data-streaks="1" data-export="EditTerrarium/Tab_Layers_On"><div class="content"><span class="t">Layers</span></div></div>
           <div class="cat skin off" data-facets="40" data-seed="612" data-streaks="1" data-export="EditTerrarium/Tab_Plants_Off"><div class="content"><span class="t">Plants</span></div></div>
           <div class="cat skin off" data-facets="40" data-seed="613" data-streaks="1" data-export="EditTerrarium/Tab_Decor_Off"><div class="content"><span class="t">Decor</span></div></div>
+          <div class="cat skin off" data-facets="40" data-seed="614" data-streaks="1" data-export="EditTerrarium/Tab_Backdrops_Off"><div class="content"><span class="t">Backdrops</span></div></div>
         </div>
         <div id="stack" class="skin earth" data-facets="60" data-seed="620" data-streaks="2" data-export="EditTerrarium/Layer_Stack">
           <div class="shead"><span class="t">YOUR TANK</span><span class="t hint">top &#8593;</span></div>
@@ -1423,6 +1458,38 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
       </div>
     </div>
     <img class="abs icon lg" src="assets/voxel/Terrarium.png" style="left:-26px;top:-38px;width:124px;height:124px;z-index:9" data-export="EditTerrarium/Icon_Header">
+  </div>
+  <!-- ============================== EDIT TANK: Backdrops tab ============================== -->
+  <div id="scr-buildbd" class="abs screen" data-export="EditTerrarium/Panel_Backdrops">
+    <div class="vinehost" data-scope="side"></div>
+    <div class="panel">
+      <div class="body-studs"></div><div class="glass"></div><div class="leaf-wm" style="left:-80px;bottom:-60px;width:260px;height:260px;transform:rotate(-30deg)"></div>
+      <div class="skin phead green" data-facets="70" data-seed="3033" data-streaks="3"><div class="dots"></div><div class="content"><span class="t title">Edit Tank</span></div>
+        <div class="skin red btn-close" data-facets="40" data-seed="3034" data-streaks="1"><div class="content"><span class="t">X</span></div></div></div>
+      <div class="body-rim"></div>
+      <div class="pbody">
+        <div id="btabs"><div class="cat skin off" data-facets="40" data-seed="3035" data-streaks="1"><div class="content"><span class="t">Layers</span></div></div><div class="cat skin off" data-facets="40" data-seed="3036" data-streaks="1"><div class="content"><span class="t">Plants</span></div></div><div class="cat skin off" data-facets="40" data-seed="3037" data-streaks="1"><div class="content"><span class="t">Decor</span></div></div><div class="cat skin green" data-facets="40" data-seed="3038" data-streaks="1" data-export="EditTerrarium/Tab_Backdrops_On"><div class="content"><span class="t">Backdrops</span></div></div></div>
+        <div id="bd-now" class="skin earth abs" data-facets="60" data-seed="3039" data-streaks="2" data-export="EditTerrarium/Backdrop_OnTank">
+          <div class="shead"><span class="t">ON YOUR TANK</span><span class="t hint">4 / 10 owned</span></div>
+          <div class="bd-thumb big" data-bd="woodland"></div>
+          <div class="nmrow"><span class="t">Woodland</span></div>
+        </div>
+        <div id="bdgrid-wrap"><div id="bdgrid"><div class="bdc sm on"><div class="skin r-common" data-facets="50" data-seed="3020" data-streaks="2" data-export="EditTerrarium/Backdrop_Equipped">
+              <div class="content"><div class="bd-thumb" data-bd="woodland"></div><span class="t nm">Woodland</span><div class="skin gray btnx" data-facets="40" data-seed="3019" data-streaks="1"><div class="content"><span class="t">Equipped</span></div></div></div></div></div><div class="bdc sm"><div class="skin r-common" data-facets="50" data-seed="3022" data-streaks="2" data-export="EditTerrarium/Backdrop_Owned">
+              <div class="content"><div class="bd-thumb" data-bd="default"></div><span class="t nm">Default</span><div class="skin blue btnx" data-facets="40" data-seed="3021" data-streaks="1" data-export="EditTerrarium/Btn_Equip"><div class="content"><span class="t">Equip</span></div></div></div></div></div><div class="bdc sm"><div class="skin r-uncommon" data-facets="50" data-seed="3024" data-streaks="2">
+              <div class="content"><div class="bd-thumb" data-bd="bog"></div><span class="t nm">Bog</span><div class="skin blue btnx" data-facets="40" data-seed="3023" data-streaks="1"><div class="content"><span class="t">Equip</span></div></div></div></div></div><div class="bdc sm"><div class="skin r-uncommon" data-facets="50" data-seed="3026" data-streaks="2">
+              <div class="content"><div class="bd-thumb" data-bd="snowfield"></div><span class="t nm">Snowfield</span><div class="skin blue btnx" data-facets="40" data-seed="3025" data-streaks="1"><div class="content"><span class="t">Equip</span></div></div></div></div></div><div class="bdc sm locked"><div class="skin unknown" data-facets="50" data-seed="3027" data-streaks="0" data-export="EditTerrarium/Backdrop_Locked">
+              <div class="content"><div class="bd-thumb" data-bd="canyon"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Canyon</span><div class="src"><img class="icon" src="assets/voxel/Decor_Fern.png"><span class="t">Keeper's Shop</span></div></div></div></div><div class="bdc sm locked"><div class="skin unknown" data-facets="50" data-seed="3028" data-streaks="0">
+              <div class="content"><div class="bd-thumb" data-bd="rainforest"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Rainforest</span><div class="src"><img class="icon" src="assets/voxel/Decor_Fern.png"><span class="t">Keeper's Shop</span></div></div></div></div><div class="bdc sm locked"><div class="skin unknown" data-facets="50" data-seed="3029" data-streaks="0">
+              <div class="content"><div class="bd-thumb" data-bd="cavern"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Cavern</span><div class="src"><img class="icon" src="assets/voxel/FieldGuide.png"><span class="t">Guide: Epic</span></div></div></div></div><div class="bdc sm locked"><div class="skin unknown" data-facets="50" data-seed="3030" data-streaks="0">
+              <div class="content"><div class="bd-thumb" data-bd="amber"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Amber</span><div class="src"><img class="icon" src="assets/voxel/VIP_Crown.png"><span class="t">VIP</span></div></div></div></div><div class="bdc sm locked"><div class="skin unknown" data-facets="50" data-seed="3031" data-streaks="0">
+              <div class="content"><div class="bd-thumb" data-bd="primordial"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Primordial</span><div class="src"><img class="icon" src="assets/voxel/FieldGuide.png"><span class="t">Guide: Mythic</span></div></div></div></div><div class="bdc sm locked"><div class="skin unknown" data-facets="50" data-seed="3032" data-streaks="0">
+              <div class="content"><div class="bd-thumb" data-bd="underwater"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Underwater</span><div class="src"><div class="svgi" data-src="assets/icons-custom/robux2d.svg" style="width:24px;height:24px;color:#fff"></div><span class="t">Store</span></div></div></div></div></div></div>
+        <div class="scrollbar" style="right:10px;top:302px;height:330px"><div class="thumb" style="height:40%"></div></div>
+        <div id="btools"><div class="skin green" data-facets="40" data-seed="3040" data-streaks="2" style="position:relative;flex:1;height:68px"><div class="content"><span class="t" style="--fs:34px">DONE</span></div></div></div>
+      </div>
+    </div>
+    <img class="abs icon lg" src="assets/voxel/Terrarium.png" style="left:-26px;top:-38px;width:124px;height:124px;z-index:9">
   </div>
   <!-- drag interaction shown in the mockup: a layer card being dragged into the tank -->
   <div id="scr-build-drag" class="screen-build-only">
@@ -1566,7 +1633,7 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
             <div class="content"><img class="icon" src="assets/fluent/lady_beetle.png"><div class="txt"><span class="t a">Cute Bugs</span><span class="t b">Friendlier-looking creatures</span></div><div class="toggle on"><span class="t">ON</span><div class="knob"></div></div></div></div></div>
           <div class="section-label"><span class="t">GAMEPLAY</span></div>
           <div class="srow"><div class="skin earth" data-facets="50" data-seed="817" data-streaks="1">
-            <div class="content"><img class="icon" src="assets/fluent/crossed_swords.png"><div class="txt"><span class="t a">PvP</span><span class="t b">Let other players fight you</span></div><div class="toggle off"><span class="t">OFF</span><div class="knob"></div></div></div></div></div>
+            <div class="content"><img class="icon" src="assets/voxel/PvP_Swords.png"><div class="txt"><span class="t a">PvP</span><span class="t b">Let other players fight you</span></div><div class="toggle off"><span class="t">OFF</span><div class="knob"></div></div></div></div></div>
         </div>
         <div id="codes" class="abs skin earth" data-facets="70" data-seed="820" data-streaks="2" data-export="Settings/Codes_Box">
           <div class="content">
@@ -1689,48 +1756,41 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
       <div class="body-studs"></div><div class="terra" data-terra="1"></div><div class="glass"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div>
       <div class="skin phead red" data-facets="80" data-seed="2027" data-streaks="4" data-export="KeepersShop/Header_Bar">
         <div class="dots"></div>
-        <div class="content"><span class="t title">Keeper's Shop</span></div>
+        <div class="content"><span class="t title">Keeper's Shop</span><div class="kp-timer" data-export="KeepersShop/Restock_Timer"><span class="t">New stock in</span><span class="t" style="--tf:var(--tf-gold)">3m 51s</span><div class="bar" style="--p:23%"><div class="track studs-soft"></div><div class="fill"></div></div></div></div>
         <div class="skin red btn-close" data-facets="40" data-seed="2028" data-streaks="1"><div class="content"><span class="t">X</span></div></div>
       </div>
       <div class="body-rim"></div>
       <div class="pbody">
-        <div id="kp-left">
-          <div id="kp-portrait" class="skin gold abs" data-facets="60" data-seed="2013" data-streaks="3" data-export="KeepersShop/Portrait">
-            <div class="rays" data-rays="16" data-seed="1101" data-ra=".3" style="position:absolute;left:50%;top:45%;width:420px;height:420px;transform:translate(-50%,-50%);z-index:1"></div>
-            <div class="content"><img class="icon lg" src="assets/voxel/Keeper.png"><span class="t">The Keeper</span></div></div>
-          <div id="kp-say" data-export="KeepersShop/Speech_Bubble"><div class="who">THE KEEPER</div><div class="line">"Isopods breathe through<br>gills, so keep their corner<br>of the tank nice and damp!"</div></div>
-          <div id="kp-timer" class="skin earth abs" data-facets="60" data-seed="2014" data-streaks="2" data-export="KeepersShop/Restock_Timer">
-            <div class="content"><span class="t k">NEW STOCK IN</span><span class="t v">3:51</span>
-              <div class="bar" style="--p:23%"><div class="track studs-soft"></div><div class="fill"></div></div></div></div>
-        </div>
         <div id="kp-grid">
-          <div class="slot "><div class="skin r-common" data-facets="50" data-seed="2015" data-streaks="2" data-export="KeepersShop/Slot_Item">
-              <div class="glow" style="left:50%;top:44%;width:180px;height:150px;transform:translate(-50%,-50%);--ga:.3"></div>
-              <div class="rtag"><span class="t">COMMON</span></div>
-              <div class="content"><img class="icon" src="assets/voxel/Decor_MossyRock.png"><span class="t nm">Mossy Rock</span><div class="skin green buy" data-facets="40" data-seed="2016" data-streaks="1"><div class="content" style="gap:6px"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">2.5K</span></div></div></div></div></div>
-          <div class="slot "><div class="tilt"><span class="t">x3</span></div><div class="skin r-uncommon" data-facets="50" data-seed="2017" data-streaks="2">
-              <div class="glow" style="left:50%;top:44%;width:180px;height:150px;transform:translate(-50%,-50%);--ga:.3"></div>
-              <div class="rtag"><span class="t">UNCOMMON</span></div>
-              <div class="content"><img class="icon" src="assets/voxel/Decor_Fern.png"><span class="t nm">Fern</span><div class="skin green buy" data-facets="40" data-seed="2018" data-streaks="1"><div class="content" style="gap:6px"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">6K</span></div></div></div></div></div>
-          <div class="slot "><div class="tilt"><span class="t">1 left</span></div><div class="skin r-rare" data-facets="50" data-seed="2019" data-streaks="2" data-export="KeepersShop/Slot_Backdrop">
-              <div class="glow" style="left:50%;top:44%;width:180px;height:150px;transform:translate(-50%,-50%);--ga:.3"></div>
-              <div class="rtag"><span class="t">RARE</span></div>
-              <div class="content"><div class="bd-thumb" data-bd="bog"></div><span class="t nm">Bog</span><div class="skin green buy" data-facets="40" data-seed="2020" data-streaks="1"><div class="content" style="gap:6px"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">25K</span></div></div></div></div></div>
-          <div class="slot "><div class="skin r-uncommon" data-facets="50" data-seed="2021" data-streaks="2">
-              <div class="glow" style="left:50%;top:44%;width:180px;height:150px;transform:translate(-50%,-50%);--ga:.3"></div>
-              <div class="rtag"><span class="t">UNCOMMON</span></div>
-              <div class="content"><img class="icon" src="assets/voxel/Decor_Mushroom.png"><span class="t nm">Toadstool</span><div class="skin green buy" data-facets="40" data-seed="2022" data-streaks="1"><div class="content" style="gap:6px"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">8K</span></div></div></div></div></div>
-          <div class="slot sold"><div class="stamp" data-export="KeepersShop/Stamp_SoldOut"><span class="t">SOLD OUT</span></div><div class="skin r-common" data-facets="50" data-seed="2023" data-streaks="2" data-export="KeepersShop/Slot_SoldOut">
-              <div class="glow" style="left:50%;top:44%;width:180px;height:150px;transform:translate(-50%,-50%);--ga:.3"></div>
-              <div class="rtag"><span class="t">COMMON</span></div>
-              <div class="content"><img class="icon" src="assets/voxel/Decor_Branch.png"><span class="t nm">Branch</span><div class="skin gray buy" data-facets="40" data-seed="2024" data-streaks="1"><div class="content" style="gap:6px"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">1.8K</span></div></div></div></div></div>
-          <div class="slot poor"><div class="skin r-epic" data-facets="50" data-seed="2025" data-streaks="2" data-export="KeepersShop/Slot_TooExpensive">
-              <div class="glow" style="left:50%;top:44%;width:180px;height:150px;transform:translate(-50%,-50%);--ga:.3"></div>
-              <div class="rtag"><span class="t">EPIC</span></div>
-              <div class="content"><div class="bd-thumb" data-bd="canyon"></div><span class="t nm">Canyon</span><div class="skin gray buy" data-facets="40" data-seed="2026" data-streaks="1"><div class="content" style="gap:6px"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">750K</span></div></div></div></div></div>
-        </div></div>
+          <div class="row "><div class="skin earth" data-facets="60" data-seed="3001" data-streaks="2" data-export="KeepersShop/Row_Item">
+            <div class="content"><div class="well"><div class="skin r-common" data-facets="40" data-seed="3002" data-streaks="1"><div class="content"><img class="icon" src="assets/voxel/Decor_MossyRock.png"></div></div></div>
+              <div class="col"><span class="t nm">Mossy Rock</span><span class="t stock">x6 Stock</span><div class="price"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">2.5K</span></div></div>
+              <div class="side"><div class="rpill r-common"><span class="t">COMMON</span></div><div class="skin green buy" data-facets="40" data-seed="3003" data-streaks="1"><div class="content"><span class="t">Buy</span></div></div></div></div></div></div>
+          <div class="row "><div class="skin earth" data-facets="60" data-seed="3004" data-streaks="2">
+            <div class="content"><div class="well"><div class="skin r-uncommon" data-facets="40" data-seed="3005" data-streaks="1"><div class="content"><img class="icon" src="assets/voxel/Decor_Fern.png"></div></div></div>
+              <div class="col"><span class="t nm">Fern</span><span class="t stock">x3 Stock</span><div class="price"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">6K</span></div></div>
+              <div class="side"><div class="rpill r-uncommon"><span class="t">UNCOMMON</span></div><div class="skin green buy" data-facets="40" data-seed="3006" data-streaks="1"><div class="content"><span class="t">Buy</span></div></div></div></div></div></div>
+          <div class="row "><div class="skin earth" data-facets="60" data-seed="3007" data-streaks="2" data-export="KeepersShop/Row_Backdrop">
+            <div class="content"><div class="well"><div class="skin r-rare" data-facets="40" data-seed="3008" data-streaks="1"><div class="content"><div class="bd-thumb" data-bd="bog"></div></div></div></div>
+              <div class="col"><span class="t nm">Bog Backdrop</span><span class="t stock">1 left</span><div class="price"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">25K</span></div></div>
+              <div class="side"><div class="rpill r-rare"><span class="t">RARE</span></div><div class="skin green buy" data-facets="40" data-seed="3009" data-streaks="1"><div class="content"><span class="t">Buy</span></div></div></div></div></div></div>
+          <div class="row "><div class="skin earth" data-facets="60" data-seed="3010" data-streaks="2">
+            <div class="content"><div class="well"><div class="skin r-uncommon" data-facets="40" data-seed="3011" data-streaks="1"><div class="content"><img class="icon" src="assets/voxel/Decor_Mushroom.png"></div></div></div>
+              <div class="col"><span class="t nm">Toadstool</span><span class="t stock">x2 Stock</span><div class="price"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">8K</span></div></div>
+              <div class="side"><div class="rpill r-uncommon"><span class="t">UNCOMMON</span></div><div class="skin green buy" data-facets="40" data-seed="3012" data-streaks="1"><div class="content"><span class="t">Buy</span></div></div></div></div></div></div>
+          <div class="row sold"><div class="stamp" data-export="KeepersShop/Stamp_SoldOut"><span class="t">SOLD OUT</span></div><div class="skin earth" data-facets="60" data-seed="3013" data-streaks="2" data-export="KeepersShop/Row_SoldOut">
+            <div class="content"><div class="well"><div class="skin r-common" data-facets="40" data-seed="3014" data-streaks="1"><div class="content"><img class="icon" src="assets/voxel/Decor_Branch.png"></div></div></div>
+              <div class="col"><span class="t nm">Branch</span><span class="t stock">No stock</span><div class="price"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">1.8K</span></div></div>
+              <div class="side"><div class="rpill r-common"><span class="t">COMMON</span></div><div class="skin gray buy" data-facets="40" data-seed="3015" data-streaks="1"><div class="content"><span class="t">Sold Out</span></div></div></div></div></div></div>
+          <div class="row poor"><div class="skin earth" data-facets="60" data-seed="3016" data-streaks="2" data-export="KeepersShop/Row_TooExpensive">
+            <div class="content"><div class="well"><div class="skin r-epic" data-facets="40" data-seed="3017" data-streaks="1"><div class="content"><div class="bd-thumb" data-bd="canyon"></div></div></div></div>
+              <div class="col"><span class="t nm">Canyon Backdrop</span><span class="t stock">1 left</span><div class="price"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">750K</span></div></div>
+              <div class="side"><div class="rpill r-epic"><span class="t">EPIC</span></div><div class="skin gray buy" data-facets="40" data-seed="3018" data-streaks="1"><div class="content"><span class="t">Buy</span></div></div></div></div></div></div>
+        </div>
+        <div class="scrollbar"><div class="thumb" style="height:70%"></div></div>
+      </div>
     </div>
-    <img class="abs icon lg" src="assets/voxel/Keeper.png" style="left:-10px;top:-30px;width:128px;height:128px;z-index:9" data-export="KeepersShop/Icon_Header">
+    <img class="abs icon lg" src="assets/voxel/Decor_Fern.png" style="left:-4px;top:-34px;width:124px;height:124px;z-index:9" data-export="KeepersShop/Icon_Header">
   </div>
   <div id="scr-eggs" class="abs panel-wrap screen" data-export="EggInventory/Panel_Full">
     <div class="vinehost" data-scope="panel"></div>
@@ -1775,35 +1835,6 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
         <div id="egg-foot"><img class="icon" src="assets/voxel/Satchel.png"><span class="t">Carry eggs home from the Runway to bank them. 1 of 2 incubators free.</span></div></div>
     </div>
     <img class="abs icon lg" src="assets/voxel/Egg_Moss.png" style="left:4px;top:-34px;width:112px;height:130px;z-index:9" data-export="EggInventory/Icon_Header">
-  </div>
-  <div id="scr-backdrops" class="abs panel-wrap screen" data-export="Backdrops/Panel_Full">
-    <div class="vinehost" data-scope="panel"></div>
-    <div class="panel">
-      <div class="body-studs"></div><div class="terra" data-terra="1"></div><div class="glass"></div><div class="leaf-wm" style="left:-60px;bottom:-70px;width:300px;height:300px;transform:rotate(-30deg)"></div>
-      <div class="skin phead blue" data-facets="80" data-seed="2055" data-streaks="4" data-export="Backdrops/Header_Bar">
-        <div class="dots"></div>
-        <div class="content"><span class="t title">Backdrops</span></div>
-        <div class="skin red btn-close" data-facets="40" data-seed="2056" data-streaks="1"><div class="content"><span class="t">X</span></div></div>
-      </div>
-      <div class="body-rim"></div>
-      <div class="pbody">
-        <div id="bd-top">
-          <div class="cat skin green" data-facets="40" data-seed="2054" data-streaks="1" style="width:190px"><div class="content"><span class="t">All Backdrops</span></div></div>
-          <div class="sortnote"><span class="t">Owned 4 / 10 &#183; the backdrop shows on the back wall of your tank</span></div>
-        </div>
-        <div id="bd-grid"><div class="bdc on"><div class="eq"><span class="t">EQUIPPED</span></div><div class="skin r-common" data-facets="50" data-seed="2041" data-streaks="2" data-export="Backdrops/Card_Equipped">
-            <div class="content"><div class="bd-thumb" data-bd="default"></div><span class="t nm">Default</span><div class="skin gray btnx" data-facets="40" data-seed="2040" data-streaks="1"><div class="content"><span class="t">Equipped</span></div></div></div></div></div><div class="bdc"><div class="skin r-common" data-facets="50" data-seed="2043" data-streaks="2" data-export="Backdrops/Card_Owned">
-            <div class="content"><div class="bd-thumb" data-bd="woodland"></div><span class="t nm">Woodland</span><div class="skin blue btnx" data-facets="40" data-seed="2042" data-streaks="1" data-export="Backdrops/Btn_Equip"><div class="content"><span class="t">Equip</span></div></div></div></div></div><div class="bdc"><div class="skin r-uncommon" data-facets="50" data-seed="2045" data-streaks="2">
-            <div class="content"><div class="bd-thumb" data-bd="bog"></div><span class="t nm">Bog</span><div class="skin blue btnx" data-facets="40" data-seed="2044" data-streaks="1"><div class="content"><span class="t">Equip</span></div></div></div></div></div><div class="bdc"><div class="skin r-uncommon" data-facets="50" data-seed="2047" data-streaks="2">
-            <div class="content"><div class="bd-thumb" data-bd="snowfield"></div><span class="t nm">Snowfield</span><div class="skin blue btnx" data-facets="40" data-seed="2046" data-streaks="1"><div class="content"><span class="t">Equip</span></div></div></div></div></div><div class="bdc locked"><div class="skin unknown" data-facets="50" data-seed="2048" data-streaks="0" data-export="Backdrops/Card_Locked">
-            <div class="content"><div class="bd-thumb" data-bd="canyon"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Canyon</span><div class="src"><img class="icon" src="assets/voxel/Keeper.png"><span class="t">Keeper's Shop</span></div></div></div></div><div class="bdc locked"><div class="skin unknown" data-facets="50" data-seed="2049" data-streaks="0">
-            <div class="content"><div class="bd-thumb" data-bd="rainforest"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Rainforest</span><div class="src"><img class="icon" src="assets/voxel/Keeper.png"><span class="t">Keeper's Shop</span></div></div></div></div><div class="bdc locked"><div class="skin unknown" data-facets="50" data-seed="2050" data-streaks="0">
-            <div class="content"><div class="bd-thumb" data-bd="cavern"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Cavern</span><div class="src"><img class="icon" src="assets/voxel/FieldGuide.png"><span class="t">Field Guide: Epic</span></div></div></div></div><div class="bdc locked"><div class="skin unknown" data-facets="50" data-seed="2051" data-streaks="0">
-            <div class="content"><div class="bd-thumb" data-bd="amber"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Amber</span><div class="src"><img class="icon" src="assets/voxel/VIP_Crown.png"><span class="t">VIP</span></div></div></div></div><div class="bdc locked"><div class="skin unknown" data-facets="50" data-seed="2052" data-streaks="0">
-            <div class="content"><div class="bd-thumb" data-bd="primordial"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Primordial</span><div class="src"><img class="icon" src="assets/voxel/FieldGuide.png"><span class="t">Field Guide: Mythic</span></div></div></div></div><div class="bdc locked"><div class="skin unknown" data-facets="50" data-seed="2053" data-streaks="0">
-            <div class="content"><div class="bd-thumb" data-bd="underwater"></div><img class="lock icon" src="assets/fluent/locked.png"><span class="t nm">Underwater</span><div class="src"><div class="svgi" data-src="assets/icons-custom/robux2d.svg" style="width:28px;height:28px;color:#fff"></div><span class="t">Store</span></div></div></div></div></div></div>
-    </div>
-    <div class="abs bd-thumb" data-bd="woodland" style="left:10px;top:-8px;width:110px;height:84px;z-index:9;transform:rotate(-8deg)" data-export="Backdrops/Icon_Header"></div>
   </div>
   <div id="scr-holding" class="abs hub-wrap screen" data-export="MyTerrarium_Holding/Panel_Full">
     <div class="vinehost" data-scope="hub"></div>
@@ -1875,9 +1906,9 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
       </div></div>
   </div>
   <div id="scr-notify" class="abs screen" style="left:0;top:0;width:1920px;height:1080px;z-index:50">
-    <div id="wilds-ind" class="skin red abs" data-facets="40" data-seed="2085" data-streaks="2" data-export="Notifications/Wilds_Indicator"><div class="content"><img class="icon" src="assets/fluent/crossed_swords.png"><div class="col"><span class="t a">THE WILDS</span><span class="t b">PvP is on</span></div></div></div>
-    <div class="banner" style="top:198px"><div class="skin red" data-facets="70" data-seed="2086" data-streaks="3" data-export="Notifications/Banner_EnteredWilds" style="inset:0"><div class="content"><img class="icon" src="assets/fluent/crossed_swords.png"><span class="t">You've entered the Wilds &#8212; PvP is on until you're home.</span></div></div></div>
-    <div class="banner" style="top:292px"><div class="skin green" data-facets="70" data-seed="2087" data-streaks="3" data-export="Notifications/Banner_SafeAgain" style="inset:0"><div class="content"><img class="icon" src="assets/voxel/Terrarium.png"><span class="t">You're safe again &#8212; PvP is off.</span></div></div></div>
+    <div id="wilds-ind" class="skin red abs" data-facets="40" data-seed="2085" data-streaks="2" data-export="Notifications/Wilds_Indicator"><div class="content"><img class="icon" src="assets/voxel/PvP_Swords.png"><div class="col"><span class="t a">THE WILDS</span><span class="t b">PvP is on</span></div></div></div>
+    <div class="banner" style="top:198px"><div class="skin red" data-facets="70" data-seed="2086" data-streaks="3" data-export="Notifications/Banner_EnteredWilds" style="inset:0"><div class="content"><img class="icon" src="assets/voxel/PvP_Swords.png"><span class="t">You've entered the Wilds &#8212; PvP is on until you're home.</span></div></div></div>
+    <div class="banner" style="top:292px"><div class="skin green" data-facets="70" data-seed="2087" data-streaks="3" data-export="Notifications/Banner_SafeAgain" style="inset:0"><div class="content"><img class="icon" src="assets/voxel/Safe_Shield.png"><span class="t">You're safe again &#8212; PvP is off.</span></div></div></div>
     <div class="announce" data-export="Notifications/Announce_RareHatch"><img class="icon" src="assets/fluent/party_popper.png"><span class="t">Sam hatched a</span><span class="t" style="--tf:linear-gradient(180deg,#ffd0c8 0%,#ff7a6a 50%,#e05454 100%)">Mythic Goliath Birdeater!</span></div>
     <div class="toast" style="top:500px" data-export="Notifications/Toast_EggReady"><div class="tab green"><img class="icon" src="assets/voxel/Egg_Moss.png"></div><div class="msg"><span class="t a">Your Moss Egg is ready!</span><span class="t b">Head to your incubator to hatch it</span></div></div>
     <div class="toast" style="top:580px" data-export="Notifications/Toast_NewSpecies"><div class="tab blue"><img class="icon" src="assets/voxel/FieldGuide.png"></div><div class="msg"><span class="t a">New species: Stag Beetle</span><span class="t b">Added to your Field Guide</span></div></div>
@@ -1900,23 +1931,37 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
           <div class="skin red btn-close" data-facets="40" data-seed="2090" data-streaks="1"><div class="content"><span class="t">X</span></div></div></div>
         <div class="body-rim"></div>
         <div class="pbody"><div id="wb" style="position:absolute;inset:0">
-          <div class="hero"><img class="icon lg" src="assets/voxel/Terrarium.png"></div>
+          <div class="hero"><img class="icon lg" src="assets/voxel/PocketWatch.png"></div>
           <div class="lines"><span class="t k">While you were away, your terrarium earned</span>
             <div class="amt"><img class="icon coin-i" src="assets/voxel/Shilling.png"><span class="t">12.4K</span></div>
             <span class="t s">Away 3h 12m &#183; Bioactivity 57 (1.07x)</span></div></div>
         <div class="acts"><div class="skin green" data-facets="40" data-seed="2088" data-streaks="2" data-export="WelcomeBack/Btn_Collect" style="flex:1"><div class="content"><span class="t">Collect</span></div></div></div></div>
       </div></div>
   </div>
-  <div id="scr-hatchcrack" class="abs screen">
-    <div id="hatch-dim" style="background:radial-gradient(ellipse 36% 50% at 50% 45%, rgba(226,222,209,.18) 0%, rgba(8,16,14,.74) 60%, rgba(4,8,8,.86) 100%)"></div>
-    <div id="crack-egg" data-export="HatchReveal/Egg_Cracking"><img class="icon lg" src="assets/voxel/Egg_Moss.png">
-      <svg viewBox="0 0 330 370"><g fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M120 150 L150 180 L138 206 L170 232 L162 262" stroke="#0b0f1d" stroke-width="12"/><path d="M150 180 L186 170 L204 196" stroke="#0b0f1d" stroke-width="10"/>
-        <path d="M120 150 L150 180 L138 206 L170 232 L162 262" stroke="#fff6d8" stroke-width="5"/><path d="M150 180 L186 170 L204 196" stroke="#fff6d8" stroke-width="4"/></g>
-        <g stroke="#0b0f1d" stroke-width="11" stroke-linecap="round"><path d="M18 150 L-12 136"/><path d="M14 196 L-18 200"/><path d="M312 150 L342 136"/><path d="M316 196 L348 200"/></g>
-        <g stroke="#fff" stroke-width="5" stroke-linecap="round"><path d="M18 150 L-12 136"/><path d="M14 196 L-18 200"/><path d="M312 150 L342 136"/><path d="M316 196 L348 200"/></g></svg></div>
-    <div id="crack-lbl" data-export="HatchReveal/Label_Hatching"><span class="t">Hatching...</span></div>
-    <div id="crack-sub"><span class="t">Moss Egg &#183; Common</span></div>
+  <!-- ============================== 9-SLICE KIT (exported only, for building UI in Studio) ============================== -->
+  <div id="kit" class="state-alt" style="position:absolute;left:0;top:0">
+    <div class="skin red" data-facets="40" data-seed="4000" data-streaks="1" data-export="Kit/Skin_Red" style="left:20px;top:20px;width:160px;height:80px"></div>
+    <div class="skin blue" data-facets="40" data-seed="4001" data-streaks="1" data-export="Kit/Skin_Blue" style="left:220px;top:20px;width:160px;height:80px"></div>
+    <div class="skin green" data-facets="40" data-seed="4002" data-streaks="1" data-export="Kit/Skin_Green" style="left:420px;top:20px;width:160px;height:80px"></div>
+    <div class="skin lime" data-facets="40" data-seed="4003" data-streaks="1" data-export="Kit/Skin_Lime" style="left:620px;top:20px;width:160px;height:80px"></div>
+    <div class="skin gold" data-facets="40" data-seed="4004" data-streaks="1" data-export="Kit/Skin_Gold" style="left:820px;top:20px;width:160px;height:80px"></div>
+    <div class="skin purple" data-facets="40" data-seed="4005" data-streaks="1" data-export="Kit/Skin_Purple" style="left:1020px;top:20px;width:160px;height:80px"></div>
+    <div class="skin emerald" data-facets="40" data-seed="4006" data-streaks="1" data-export="Kit/Skin_Emerald" style="left:20px;top:130px;width:160px;height:80px"></div>
+    <div class="skin gray" data-facets="40" data-seed="4007" data-streaks="1" data-export="Kit/Skin_Gray" style="left:220px;top:130px;width:160px;height:80px"></div>
+    <div class="skin earth" data-facets="40" data-seed="4008" data-streaks="1" data-export="Kit/Skin_Earth" style="left:420px;top:130px;width:160px;height:80px"></div>
+    <div class="cat skin off" data-facets="40" data-seed="4009" data-streaks="1" data-export="Kit/Skin_Off" style="left:620px;top:130px;width:160px;height:80px"></div>
+    <div class="skin unknown" data-facets="40" data-seed="4010" data-streaks="1" data-export="Kit/Skin_Unknown" style="left:820px;top:130px;width:160px;height:80px"></div>
+    <div class="skin r-common" data-facets="40" data-seed="4011" data-streaks="1" data-export="Kit/Skin_Rarity_Common" style="left:1020px;top:130px;width:160px;height:80px"></div>
+    <div class="skin r-uncommon" data-facets="40" data-seed="4012" data-streaks="1" data-export="Kit/Skin_Rarity_Uncommon" style="left:20px;top:240px;width:160px;height:80px"></div>
+    <div class="skin r-rare" data-facets="40" data-seed="4013" data-streaks="1" data-export="Kit/Skin_Rarity_Rare" style="left:220px;top:240px;width:160px;height:80px"></div>
+    <div class="skin r-epic" data-facets="40" data-seed="4014" data-streaks="1" data-export="Kit/Skin_Rarity_Epic" style="left:420px;top:240px;width:160px;height:80px"></div>
+    <div class="skin r-legendary" data-facets="40" data-seed="4015" data-streaks="1" data-export="Kit/Skin_Rarity_Legendary" style="left:620px;top:240px;width:160px;height:80px"></div>
+    <div class="skin r-mythic" data-facets="40" data-seed="4016" data-streaks="1" data-export="Kit/Skin_Rarity_Mythic" style="left:820px;top:240px;width:160px;height:80px"></div>
+    <div class="panel" data-export="Kit/Panel_Body" style="inset:auto;left:20px;top:400px;width:200px;height:200px"><div class="body-studs" style="top:0"></div><div class="body-rim"></div></div>
+    <div class="bar" data-export="Kit/Bar_Track" style="position:absolute;left:260px;top:400px;width:200px;height:40px"><div class="track studs-soft"></div></div>
+    <div class="bar green-fill" data-export="Kit/Bar_Fill_Green" style="position:absolute;left:260px;top:460px;width:200px;height:40px;background:none;border-color:transparent;box-shadow:none"><div class="fill" style="width:100%"></div></div>
+    <div class="bar" data-export="Kit/Bar_Fill_Gold" style="position:absolute;left:260px;top:520px;width:200px;height:40px;background:none;border-color:transparent;box-shadow:none"><div class="fill" style="width:100%"></div></div>
+    <div class="panel" data-export="Kit/Studs_Tile" data-nomargin="1" style="inset:auto;left:500px;top:400px;width:96px;height:96px;border:0;border-radius:0"><div class="body-studs" style="top:0"></div></div>
   </div>
 </div>
 

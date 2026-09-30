@@ -23,19 +23,22 @@ and one transparent PNG per component in its own folder.
   and Release. Footer: Upgrade Tank, Release Commons (opens the bulk release dialog).
 
 ## Keeper's Shop
-- Keeper portrait (placeholder voxel NPC) with the speech bubble for the rotating facts/jokes.
-- Restock countdown card, six slots: rarity tag, tilted stock label (`x3`, `1 left`), price button.
+- Grow a Garden style rows in two columns: item well in the rarity colour, name, stock (`x6 Stock`, `1 left`),
+  price in Shillings, rarity pill and Buy button. Scrolls when there are more items.
+- The restock countdown sits in the header next to the title.
 - States: normal, `SOLD OUT` stamp with grey button, too expensive (grey button, red price).
 
 ## Eggs, Backdrops, Rebirth
 - Eggs: capacity bar, egg cards grouped by type with tilted counts (quantity labels tilt about 9 degrees),
   empty types greyed, detail panel with hatch time, what it can hatch and **Incubate**.
-- Backdrops: 10 launch backdrops. Owned: Equip / Equipped. Locked: greyed thumbnail, padlock and where to get it.
+- Backdrops: a fourth tab in Edit Tank (Layers / Plants / Decor / Backdrops). Shows the backdrop on the tank now,
+  then all 10 launch backdrops. Owned: Equip / Equipped. Locked: greyed, padlock and where to get it
+  (Keeper's Shop, Field Guide milestone, VIP, Store).
 - Rebirth: requirements with progress bars, rewards, locked and ready buttons.
 
 ## Hatch
-1. `Hatch_Cracking`: the egg shakes and cracks ("Hatching...").
-2. `Hatch_Reveal`: a Field Guide style card, not a full-screen burst. Header and window use the rarity colour,
+- No overlay while the egg cracks: the egg shakes and cracks as a 3D model in the incubator, then the reveal opens.
+- `Hatch_Reveal`: a Field Guide style card, not a full-screen burst. Header and window use the rarity colour,
    the creature stands on the broken shell, a `NEW SPECIES!` sticker only on first hatch, then the field note,
    entry number and **Add to Terrarium** (`Btn_SendToHolding` when full).
 - Scale by rarity: Common = card pops in quickly. Rare+ = rays turn slowly in the window. Legendary/Mythic =
@@ -46,10 +49,14 @@ and one transparent PNG per component in its own folder.
 - Every dialog says "Releasing keeps your Field Guide entry."
 
 ## Notifications
-- Red Wilds banner, green safe banner, rare hatch announcement strip (rarity-coloured name), toasts
+- Red Wilds banner (voxel crossed swords), green safe banner (voxel shield), rare hatch announcement strip (rarity-coloured name), toasts
   (egg ready, new species, not enough Shillings, tank full, inventory full), egg-banked flight to the Eggs button,
-  and the Welcome Back dialog.
+  and the Welcome Back dialog (pocket watch icon).
 
 ## Incubator pop-ups
 - Small semi-transparent cards over each incubator, same frame as the panels: rarity-coloured header,
   egg, timer bar, and one action (Skip for Robux / HATCH / Unlock).
+
+## Roblox Studio package
+- `node tools/hud/roblox.js` builds `Roblox/`: every component flattened plus `__Base`, `__Text` and `__Icon`
+  layers, a 9-slice `Kit/`, all `Icons/`, and `layout.json`. See `Roblox/README.md`.
