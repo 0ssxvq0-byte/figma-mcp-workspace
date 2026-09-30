@@ -1,0 +1,28 @@
+{
+  "name": "BuildATerrariumUI",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "TerrariumUI": {
+        "$className": "Folder",
+        "Modules": {
+          "$className": "Folder",
+          "$ignoreUnknownInstances": true,
+          "UILayout": { "$path": "Modules/UILayout.lua" },
+          "AssetIds_Decals": { "$path": "Modules/AssetIds_Decals.lua" }
+        },
+        "Runtime": { "$path": "Runtime" }
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "$ignoreUnknownInstances": true,
+        "UIController": { "$path": "Client/UIController.client.lua" }
+      }
+    },
+    "ServerScriptService": {
+      "$ignoreUnknownInstances": true,
+      "TerrariumNavigation": { "$path": "Server/TerrariumNavigation.server.lua" }
+    }
+  }
+}

@@ -1962,6 +1962,12 @@ div.hint .t { --fs: 21px; --tf: linear-gradient(180deg, #ffffff 0%, #ffffff 100%
     <div class="bar green-fill" data-export="Kit/Bar_Fill_Green" style="position:absolute;left:260px;top:460px;width:200px;height:40px;background:none;border-color:transparent;box-shadow:none"><div class="fill" style="width:100%"></div></div>
     <div class="bar" data-export="Kit/Bar_Fill_Gold" style="position:absolute;left:260px;top:520px;width:200px;height:40px;background:none;border-color:transparent;box-shadow:none"><div class="fill" style="width:100%"></div></div>
     <div class="panel" data-export="Kit/Studs_Tile" data-nomargin="1" style="inset:auto;left:500px;top:400px;width:96px;height:96px;border:0;border-radius:0"><div class="body-studs" style="top:0"></div></div>
+    <div id="sel-ring" style="position:absolute;left:640px;top:400px;width:160px;height:80px;border:4px solid transparent;border-radius:7px"><div style="position:absolute;inset:0;border-radius:3px;box-shadow:inset 0 0 0 4px rgba(255,255,255,.92)"></div></div>
+    <svg id="sparkle-one" viewBox="-10 -10 20 20" style="position:absolute;left:840px;top:400px;width:40px;height:40px"><path d="M0-10C1-3 3-1 10 0C3 1 1 3 0 10C-1 3-3 1-10 0C-3-1-1-3 0-10Z" fill="#fff"/></svg>
+    <div id="glow-one" class="glow" style="left:900px;top:400px;width:160px;height:160px;--ga:.6"></div>
+    <div id="rays-one" data-rays="24" data-seed="77" data-ra=".55" style="position:absolute;left:1080px;top:400px;width:300px;height:300px"></div>
+    <div class="bd-thumb" data-bd="default" style="position:absolute;left:20px;top:720px;width:170px;height:102px"></div><div class="bd-thumb" data-bd="woodland" style="position:absolute;left:200px;top:720px;width:170px;height:102px"></div><div class="bd-thumb" data-bd="bog" style="position:absolute;left:380px;top:720px;width:170px;height:102px"></div><div class="bd-thumb" data-bd="snowfield" style="position:absolute;left:560px;top:720px;width:170px;height:102px"></div><div class="bd-thumb" data-bd="canyon" style="position:absolute;left:740px;top:720px;width:170px;height:102px"></div><div class="bd-thumb" data-bd="rainforest" style="position:absolute;left:920px;top:720px;width:170px;height:102px"></div><div class="bd-thumb" data-bd="cavern" style="position:absolute;left:1100px;top:720px;width:170px;height:102px"></div><div class="bd-thumb" data-bd="amber" style="position:absolute;left:1280px;top:720px;width:170px;height:102px"></div><div class="bd-thumb" data-bd="primordial" style="position:absolute;left:1460px;top:720px;width:170px;height:102px"></div><div class="bd-thumb" data-bd="underwater" style="position:absolute;left:1640px;top:720px;width:170px;height:102px"></div>
+    <div id="panel-frame" class="panel" style="inset:auto;left:1400px;top:400px;width:200px;height:200px"><div class="body-rim"></div></div>
   </div>
 </div>
 
@@ -2279,7 +2285,8 @@ function buildVines() {
   for (const [v, specs] of Object.entries(VINE_SETS)) {
     for (const spec of specs) {
       const { back, front } = vineSVG(spec, RECTS[spec.rect || spec.scope]);
-      const mk = (cls, body, exp) => `<svg class="wv ${cls}" data-v="${v}"${exp ? ` data-export="${exp}"` : ''}>${body}</svg>`;
+      const vn = `${spec.scope === 'stage' ? 'HUD_' + spec.rect : spec.scope}_${spec.seed}`;
+      const mk = (cls, body, exp) => `<svg class="wv ${cls}" data-v="${v}" data-vn="${vn}_${cls === 'back' ? 'Back' : 'Front'}"${exp ? ` data-export="${exp}"` : ''}>${body}</svg>`;
       if (spec.scope === 'stage') {
         stage.insertAdjacentHTML('afterbegin', mk('back', back));
         stage.insertAdjacentHTML('beforeend', mk('front', front));
