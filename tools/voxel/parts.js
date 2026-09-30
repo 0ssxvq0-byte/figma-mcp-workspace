@@ -236,11 +236,11 @@ function coinStacks(tier) {
 function fieldGuide(P) {
   const cover = '#3f9a4a', coverDk = '#2c7336';
   P.box(6.4, 8.2, 1.5, cover, [0, 4.1, 0], 0, .35);                       // closed journal
-  P.box(5.9, 7.7, 1.35, '#fbf3df', [.3, 4.1, 0], 0, .12);                 // page block
+  P.box(5.9, 7.7, 1.35, '#f3dfb0', [.3, 4.1, 0], 0, .12, { roughness: .9 });                 // page block
   P.box(6.4, 8.2, .32, cover, [0, 4.1, .6], 0, .16);                      // front cover
   P.box(6.4, 8.2, .32, cover, [0, 4.1, -.6], 0, .16);                     // back cover
   P.box(.7, 8.25, 1.55, coverDk, [-2.95, 4.1, 0], 0, .3);                  // spine
-  for (let i = 0; i < 5; i++) P.box(5.7, .03, 1.2, '#e2d3b0', [.35, 1.2 + i * .7, 0], 0, .01);   // page lines on the side
+  for (let i = 0; i < 9; i++) P.box(.03, 7.3, 1.2, '#d8bf88', [3.27, 4.1, -.5 + i * .125], 0, .01);   // page lines on the fore-edge
   // stamped leaf on the cover
   P.extrude(P.leafShape(4.2, 1.8), .12, '#8fe04a', [.3, 1.9, .8], [0, 0, -.35], .08);
   P.box(.14, 3.4, .1, '#4fae2a', [.62, 3.9, .98], [0, 0, -.35], .04);
@@ -253,7 +253,7 @@ function fieldGuide(P) {
   P.cyl(1.45, 1.45, .12, '#bfe8ff', [3.5, 2.6, 2.3], [Math.PI / 2, -.25, .5], 32, { transparent: true, opacity: .45, roughness: .05 });
   P.cyl(.32, .38, 2.6, '#7a4a24', [5.1, .2, 2.7], [0, 0, .5], 16);
   P.box(.25, .9, .06, '#ffffff', [3.0, 3.1, 2.5], [0, -.25, .1], .02, { transparent: true, opacity: .8 });
-  return { view: { rx: .16, ry: -.72 } };
+  return { view: { rx: .12, ry: -.52 } };
 }
 
 // ============================================================================================ VIP crown
@@ -291,7 +291,8 @@ function seedling(P) {
 function stagBeetle(P) {
   const shell = '#3a2418', shellHi = '#5a3624', jaw = '#9a3c22', leg = '#2a1a12', o = { roughness: .28 };
   P.sph(3.2, shell, [0, 1.8, -1.2], [1, .62, 1.45], 32, o);                    // elytra
-  P.box(.12, 1.6, 8.6, '#1d120c', [0, 3.0, -1.2], 0, .05);                      // wing seam
+  { const pts = []; for (let i = 0; i <= 12; i++) { const z = -1.2 - 4.4 + i * (8.8 / 12), k = Math.max(0, 1 - ((z + 1.2) / 4.64) ** 2); pts.push([0, 1.8 + 1.984 * Math.sqrt(k) + .03, z]); }
+    P.tube(pts, .09, '#1d120c'); }                                                  // wing seam follows the shell
   P.sph(2.2, shellHi, [0, 2.0, 3.4], [1.25, .6, .85], 28, o);                   // pronotum
   P.sph(1.6, shell, [0, 1.8, 5.4], [1.35, .55, .8], 24, o);                     // head
   for (const sx of [-1, 1]) {
@@ -304,7 +305,7 @@ function stagBeetle(P) {
     P.sph(.3, '#0e0a08', [sx * 1.3, 2.2, 5.9], 1, 12, { roughness: .1 });                                          // eyes
   }
   P.sph(.9, '#ffffff', [-1.2, 3.1, -1.8], [1, .3, 1.6], 16, { transparent: true, opacity: .28 });                  // gloss
-  return { view: { rx: .42, ry: -.62 } };
+  return { view: { rx: .5, ry: -.74 } };
 }
 
 // ============================================================================================ TERRARIUM LAYERS (edit tank items)

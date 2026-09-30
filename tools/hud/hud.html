@@ -130,6 +130,7 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
    ICONS & DECOR
    ====================================================================== */
 .icon { display: block; object-fit: contain; filter: url(#outline); }
+.coin-i { width: 28px; height: 28px; flex: none; }
 .icon.lg { filter: url(#outline-lg); }
 .icon.sil { filter: brightness(0) opacity(.55); }
 .icon[src*="voxel/"] { filter: url(#outline-sm); }
@@ -151,7 +152,6 @@ body.isolate #stage .solo, body.isolate #stage .solo * { visibility: visible; }
   background-image: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%2715%27%20height%3D%2715%27%3E%3Crect%20x%3D%274.6%27%20y%3D%275.2%27%20width%3D%277%27%20height%3D%277%27%20rx%3D%271%27%20fill%3D%27rgb%2880%2C95%2C90%29%27%20fill-opacity%3D%27.07%27/%3E%3Crect%20x%3D%274%27%20y%3D%274%27%20width%3D%277%27%20height%3D%277%27%20rx%3D%271%27%20fill%3D%27white%27%20fill-opacity%3D%27.45%27/%3E%3C/svg%3E");
   background-size: 15px 15px; background-position: 3px 2px;
 }
-.sel { box-shadow: 0 0 0 4px #ffd84a, 0 0 0 8px var(--ink), 0 0 26px 8px rgba(255,210,70,.55) !important; }
 
 /* progress bar */
 .bar { position: relative; overflow: hidden; border: 4px solid var(--ink); border-radius: 8px; box-shadow: 0 3px 0 var(--ink);
@@ -576,8 +576,10 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
 .hub-wrap .phead-icon { left: -14px; top: -34px; width: 136px; height: 130px; }
 .htabs { position: absolute; left: 16px; right: 16px; top: 12px; height: 50px; display: flex; gap: 8px; }
 .htabs .cat { flex: 1; width: auto; height: 50px; }
+.htabs .tabw { position: relative; flex: 1; display: flex; }
+.htabs .tabw .cat { flex: 1; }
 .htabs .cat .t { --fs: 23px; }
-.htabs .cnt { position: absolute; right: -8px; top: -12px; width: 30px; height: 30px; border-radius: 50%; z-index: 6; border: 3px solid var(--ink);
+.htabs .cnt { position: absolute; right: -8px; top: -12px; z-index: 7; width: 30px; height: 30px; border-radius: 50%; z-index: 6; border: 3px solid var(--ink);
   background: radial-gradient(circle at 38% 32%, #ff9f8e, #f2503a 45%, #c22a1c); display: flex; align-items: center; justify-content: center; }
 .htabs .cnt .t { --fs: 17px; }
 .capbar { position: absolute; left: 16px; right: 16px; top: 74px; height: 40px; }
@@ -726,9 +728,9 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
 .inc .top { display: flex; align-items: center; gap: 12px; }
 .ring { position: relative; width: 92px; height: 92px; flex: none; border-radius: 50%;
   background: conic-gradient(#8fe34a 0 var(--pr), rgba(255,255,255,.16) var(--pr) 100%);
-  box-shadow: 0 0 0 3px var(--ink), inset 0 0 0 3px var(--ink); }
-.ring::before { content: ""; position: absolute; inset: 10px; border-radius: 50%; background: rgba(10,20,14,.85); box-shadow: 0 0 0 3px var(--ink); }
-.ring img { position: absolute; left: 50%; top: 50%; width: 62px; height: 62px; transform: translate(-50%, -50%); object-fit: contain; }
+  box-shadow: 0 0 0 3px var(--ink); }
+.ring::before { content: ""; position: absolute; inset: 14px; border-radius: 50%; background: rgba(10,20,14,.85); box-shadow: 0 0 0 3px var(--ink); }
+.ring img { position: absolute; left: 50%; top: 50%; width: 58px; height: 64px; z-index: 2; transform: translate(-50%, -50%); object-fit: contain; }
 .inc .info { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
 .inc .t.nm { --fs: 22px; }
 .inc .rar { display: flex; align-items: center; gap: 6px; }
@@ -741,7 +743,7 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
 .inc .act .rbx, .inc .act .coin-i { width: 26px; height: 26px; }
 .inc.ready .ring { background: #8fe34a; box-shadow: 0 0 0 3px var(--ink), inset 0 0 0 3px var(--ink), 0 0 24px 6px rgba(160,255,110,.55); }
 .inc.ready .ring img { transform: translate(-50%, -50%) rotate(-12deg); }
-.shake { position: absolute; width: 16px; height: 22px; border: 4px solid #ffffff; border-color: #ffffff transparent transparent transparent; border-radius: 50%; }
+.shake { position: absolute; z-index: 3; width: 22px; height: 30px; border: 5px solid #ffffff; border-color: #ffffff transparent transparent transparent; border-radius: 50%; }
 .inc.ready .t.tm { --tf: var(--tf-green); }
 .inc.locked .ring { background: rgba(255,255,255,.1); }
 .inc.locked .ring img { width: 50px; height: 50px; }
@@ -804,7 +806,7 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
   </div>
   <div id="tile-guide" class="skin wide blue" data-facets="56" data-seed="54" data-streaks="3" data-export="HUD/Left/Btn_FieldGuide">
     <div class="glow"></div><div class="wm" style="--wm:url(assets/silhouettes/book.png)"></div>
-    <div class="content"><img class="icon" src="assets/voxel/FieldGuide.png" style="width:74px;height:84px;margin:-4px 2px 0"><span class="t">Field Guide</span></div>
+    <div class="content"><img class="icon" src="assets/voxel/FieldGuide.png" style="width:86px;height:96px;margin:-6px -4px 0 0"><span class="t">Field Guide</span></div>
   </div>
   <div id="tile-store" class="skin wide red" data-facets="56" data-seed="51" data-streaks="3" data-export="HUD/Left/Btn_Store">
     <div class="glow"></div>
@@ -1121,7 +1123,7 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
       </div>
       <div class="body-rim"></div>
       <div class="pbody">
-        <div class="htabs"><div class="cat skin green" data-facets="40" data-seed="720" data-streaks="1" data-export="MyTerrarium/Tab_Creatures_On"><div class="content"><span class="t">Creatures</span></div></div><div class="cat skin off" data-facets="40" data-seed="721" data-streaks="1" data-export="MyTerrarium/Tab_Holding_Off"><div class="cnt"><span class="t">2</span></div><div class="content"><span class="t">Holding</span></div></div><div class="cat skin off" data-facets="40" data-seed="722" data-streaks="1"><div class="content"><span class="t">Decor</span></div></div><div class="cat skin off" data-facets="40" data-seed="723" data-streaks="1"><div class="content"><span class="t">Stats</span></div></div></div>
+        <div class="htabs"><div class="cat skin green" data-facets="40" data-seed="720" data-streaks="1" data-export="MyTerrarium/Tab_Creatures_On"><div class="content"><span class="t">Creatures</span></div></div><div class="tabw"><div class="cat skin off" data-facets="40" data-seed="721" data-streaks="1" data-export="MyTerrarium/Tab_Holding_Off"><div class="content"><span class="t">Holding</span></div></div><div class="cnt"><span class="t">2</span></div></div><div class="cat skin off" data-facets="40" data-seed="722" data-streaks="1"><div class="content"><span class="t">Decor</span></div></div><div class="cat skin off" data-facets="40" data-seed="723" data-streaks="1"><div class="content"><span class="t">Stats</span></div></div></div>
         <div class="capbar bar green-fill" style="--p:87.5%" data-export="MyTerrarium/Capacity_Bar"><div class="track studs-soft"></div><div class="fill"></div>
           <div class="content"><span class="t">Starter Tank</span><span class="t">7 / 8 creatures</span></div></div>
         <div id="hub-grid">
@@ -1182,7 +1184,7 @@ body[data-screen="upgrades"] #tab-upg::after, body[data-screen="build"] #tab-bas
       </div>
       <div class="body-rim"></div>
       <div class="pbody">
-        <div class="htabs"><div class="cat skin off" data-facets="40" data-seed="760" data-streaks="1"><div class="content"><span class="t">Creatures</span></div></div><div class="cat skin off" data-facets="40" data-seed="761" data-streaks="1"><div class="cnt"><span class="t">2</span></div><div class="content"><span class="t">Holding</span></div></div><div class="cat skin off" data-facets="40" data-seed="762" data-streaks="1"><div class="content"><span class="t">Decor</span></div></div><div class="cat skin green" data-facets="40" data-seed="763" data-streaks="1"><div class="content"><span class="t">Stats</span></div></div></div>
+        <div class="htabs"><div class="cat skin off" data-facets="40" data-seed="760" data-streaks="1"><div class="content"><span class="t">Creatures</span></div></div><div class="tabw"><div class="cat skin off" data-facets="40" data-seed="761" data-streaks="1"><div class="content"><span class="t">Holding</span></div></div><div class="cnt"><span class="t">2</span></div></div><div class="cat skin off" data-facets="40" data-seed="762" data-streaks="1"><div class="content"><span class="t">Decor</span></div></div><div class="cat skin green" data-facets="40" data-seed="763" data-streaks="1"><div class="content"><span class="t">Stats</span></div></div></div>
         <div class="tiles">
           <div class="tile3"><div class="skin green" data-facets="50" data-seed="771" data-streaks="2" data-export="MyTerrarium/Stat_Bioactivity"><div class="content"><span class="t k">BIOACTIVITY</span><span class="t v">57</span></div></div></div>
           <div class="tile3"><div class="skin gold" data-facets="50" data-seed="772" data-streaks="2"><div class="content"><span class="t k">INCOME</span><span class="t v">1.07x</span></div></div></div>
