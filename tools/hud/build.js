@@ -28,16 +28,25 @@ server.listen(0, async () => {
   await page.evaluate(() => document.fonts.ready);
   await page.waitForLoadState('networkidle');
 
-  fs.mkdirSync(out, { recursive: true });
-  const screens = { daily: 'DailyRewards', shop: 'Shop', index: 'Index', rebirth: 'Rebirth' };
+  fs.mkdirSync(path.join(out, 'Vines'), { recursive: true });
+  const screens = { daily: 'DailyRewards', store: 'Store', guide: 'FieldGuide', upgrades: 'Upgrades', build: 'EditTerrarium' };
   for (const [key, label] of Object.entries(screens)) {
-    await page.evaluate(k => { document.body.dataset.screen = k; }, key);
+    await page.evaluate(k => { document.body.dataset.screen = k; document.body.dataset.vines = '1'; }, key);
     await page.screenshot({ path: path.join(out, `_Preview_${label}.png`), omitBackground: true, scale: 'css' });
   }
-  await page.evaluate(() => { document.body.dataset.screen = 'daily'; });
+  // the five vine variations (the game picks one at random each time the UI opens)
+  for (const v of [1, 2, 3, 4, 5]) {
+    for (const [key, label] of [['daily', 'DailyRewards'], ['build', 'EditTerrarium']]) {
+      await page.evaluate(([k, v]) => { document.body.dataset.screen = k; document.body.dataset.vines = String(v); }, [key, v]);
+      await page.screenshot({ path: path.join(out, 'Vines', `_Preview_${label}_V${v}.png`), omitBackground: true, scale: 'css' });
+    }
+  }
+  await page.evaluate(() => { document.body.dataset.screen = 'daily'; document.body.dataset.vines = '1'; });
 
   const names = await page.$$eval('[data-export]', els => els.map(e => e.dataset.export));
   for (const name of names) {
+    const vm = name.match(/^Vines\/V(\d)/);
+    await page.evaluate(v => { document.body.dataset.vines = v; }, vm ? vm[1] : '1');
     const clip = await page.evaluate(([name, m]) => {
       document.querySelectorAll('.solo').forEach(e => e.classList.remove('solo'));
       document.body.classList.add('isolate');

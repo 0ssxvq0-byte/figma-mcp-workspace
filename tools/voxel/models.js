@@ -167,6 +167,205 @@ function nightTime() {
   return { voxels: g.v, view: { rx: .22, ry: -.4 } };
 }
 
+
+// ---------------------------------------------------------------- helpers for chunky shapes
+function ball(g, cx, cy, cz, r, colorAt) {
+  for (let x = Math.floor(cx - r); x <= cx + r; x++) for (let y = Math.floor(cy - r); y <= cy + r; y++) for (let z = Math.floor(cz - r); z <= cz + r; z++)
+    if ((x + .5 - cx) ** 2 + (y + .5 - cy) ** 2 + (z + .5 - cz) ** 2 <= r * r) g.set(x, y, z, colorAt(x, y, z));
+}
+function mask(g, rows, colors, depth = 3, z0 = 0) {
+  const H = rows.length;
+  rows.forEach((row, py) => [...row].forEach((ch, px) => {
+    if (ch === '.' || ch === ' ') return;
+    const d = typeof depth === 'function' ? depth(ch) : depth;
+    for (let z = 0; z < d; z++) g.set(px, H - 1 - py, z0 + z, g.jitter(colors[ch], .05));
+  }));
+}
+
+// ---------------------------------------------------------------- Shillings coin (embossed leaf)
+function shilling() {
+  const g = new Grid(61), R = 9.2;
+  for (let x = -10; x <= 10; x++) for (let y = -10; y <= 10; y++) {
+    const d = Math.hypot(x + .5, y + .5);
+    if (d > R) continue;
+    const rim = d > R - 1.6;
+    for (let z = 0; z < 3; z++) g.set(x, y, z, g.jitter(rim ? mix('#ffd84a', '#d98c12', (y + 10) / -20 + .5) : mix('#ffe46a', '#f2a91e', Math.min(1, Math.max(0, (d + y * .4) / 12))), .04));
+  }
+  // raised leaf emblem on the face
+  for (let x = -6; x <= 6; x++) for (let y = -6; y <= 6; y++) {
+    const u = (x + y) / Math.SQRT2, v = (x - y) / Math.SQRT2;        // leaf axis on the diagonal
+    const inLeaf = Math.abs(v) <= 3.1 * Math.sin(Math.PI * Math.min(1, Math.max(0, (u + 6) / 12)));
+    if (!inLeaf || Math.abs(u) > 6) continue;
+    g.set(x, y, 3, Math.abs(v) < .8 ? '#e39a18' : g.jitter('#fff1a8', .04));
+  }
+  return { voxels: g.v, view: { rx: .18, ry: -.5 } };
+}
+function coinFlat(g, cx, cy, cz, layer) {
+  for (let x = -5; x <= 5; x++) for (let z = -5; z <= 5; z++) {
+    const d = Math.hypot(x + .5, z + .5);
+    if (d > 4.9) continue;
+    g.set(cx + x, cy, cz + z, g.jitter(d > 3.7 ? (layer % 2 ? '#e8a81e' : '#f5bf2a') : '#ffd84a', .04));
+  }
+}
+function coinStack(g, cx, cy, cz, n) { for (let i = 0; i < n; i++) coinFlat(g, cx + Math.round((g.r() - .5) * .9), cy + i, cz + Math.round((g.r() - .5) * .9), i); }
+function coins(tier) {
+  const g = new Grid(70 + tier);
+  if (tier === 0) { coinStack(g, 0, 0, 0, 3); }
+  if (tier === 1) { coinStack(g, 0, 0, 0, 6); coinStack(g, 11, 0, 2, 3); }
+  if (tier === 2) { coinStack(g, 0, 0, 0, 8); coinStack(g, 11, 0, -1, 5); coinStack(g, 5, 0, 10, 4); }
+  if (tier === 3) {
+    coinStack(g, 0, 0, 0, 10); coinStack(g, 11, 0, 0, 8); coinStack(g, 0, 0, 11, 6); coinStack(g, 11, 0, 11, 7); coinStack(g, 22, 0, 5, 5);
+    coinStack(g, 5, 10, 5, 3);
+  }
+  return { voxels: g.v, view: { rx: .5, ry: -.55 } };
+}
+
+// ---------------------------------------------------------------- VIP crown, egg, terrarium tank
+function crown() {
+  const g = new Grid(81);
+  mask(g, [
+    '..X.......X.......X..',
+    '.XXX.....XXX.....XXX.',
+    '.XXXX...XXXXX...XXXX.',
+    '.XXXXX.XXXXXXX.XXXXX.',
+    '.XXXXXXXXXXXXXXXXXXX.',
+    '.XXXXXXXXXXXXXXXXXXX.',
+    '.HHHHHHHHHHHHHHHHHHH.',
+    '.HHRRHHHHHBBHHHHHGGH.',
+    '.HHRRHHHHHBBHHHHHGGH.',
+    '.HHHHHHHHHHHHHHHHHHH.',
+    '..LLLLLLLLLLLLLLLLL..',
+  ], { X: '#ffd23a', H: '#f2a91e', L: '#c9780f', R: '#ff4a5e', B: '#4ab8ff', G: '#5fe04a' }, ch => 'RBG'.includes(ch) ? 4 : 3);
+  for (const x of [2, 10, 18]) g.set(x, 11, 1, '#fff6c8');   // bright tips
+  return { voxels: g.v, view: { rx: .22, ry: -.4 } };
+}
+function egg() {
+  const g = new Grid(91);
+  ball(g, 0, 0, 0, 1, () => '#000'); g.v.clear();
+  for (let x = -7; x <= 7; x++) for (let y = -9; y <= 11; y++) for (let z = -7; z <= 7; z++) {
+    const yy = y > 0 ? y / 10.5 : y / 8.5;
+    if ((x + .5) ** 2 / 42 + yy * yy + (z + .5) ** 2 / 42 > 1) continue;
+    const speck = g.r() < .07;
+    g.set(x, y, z, speck ? g.jitter('#7fb865', .1) : g.jitter(mix('#fff8e6', '#e6d7b4', (1 - y / 11) / 2), .03));
+  }
+  return { voxels: g.v, view: { rx: .2, ry: -.5 } };
+}
+function tank() {
+  const g = new Grid(101), W = 18, D = 12, H = 14;
+  const glass = (x, y, z) => g.set(x, y, z, g.jitter(y === H - 1 ? '#e6f8ff' : '#a9ddf2', .03));
+  for (let x = 0; x < W; x++) for (const [y, z] of [[0, 0], [0, D - 1], [H - 1, 0], [H - 1, D - 1]]) glass(x, y, z);
+  for (let z = 0; z < D; z++) for (const [x, y] of [[0, 0], [W - 1, 0], [0, H - 1], [W - 1, H - 1]]) glass(x, y, z);
+  for (let y = 0; y < H; y++) for (const [x, z] of [[0, 0], [W - 1, 0], [0, D - 1], [W - 1, D - 1]]) glass(x, y, z);
+  const layers = [['#d4733a', '#b85a28'], ['#9aa0a6', '#c2c6ca'], ['#3a3f46', '#3a3f46'], ['#6b4526', '#5a3a1f'], ['#6b4526', '#7a4f2c'], ['#5fbf2e', '#7fd83e']];
+  layers.forEach(([a, b], y) => { for (let x = 1; x < W - 1; x++) for (let z = 1; z < D - 1; z++) g.set(x, y + 1, z, g.r() < .5 ? a : b); });
+  for (let y = 7; y < 11; y++) g.set(6, y, 5, '#3f9a1f');                         // a little plant
+  for (const [x, y] of [[5, 10], [7, 10], [4, 9], [8, 9], [6, 11]]) g.set(x, y, 5, '#7fd83e');
+  ball(g, 12.5, 7.6, 7, 2.2, () => g.jitter('#8d949a', .1));                       // mossy rock
+  for (let x = 11; x < 15; x++) for (let z = 6; z < 9; z++) g.set(x, 9, z, '#5fbf2e');
+  return { voxels: g.v, view: { rx: .38, ry: -.55 } };
+}
+
+// ---------------------------------------------------------------- terrarium building layers (all the same slab size)
+function slab(type) {
+  const g = new Grid(200 + type.length * 7), N = 10;
+  const fill = (h, colorAt) => { for (let x = 0; x < N; x++) for (let z = 0; z < N; z++) for (let y = 0; y < h; y++) g.set(x, y, z, colorAt(x, y, z)); };
+  const pick = arr => arr[Math.floor(g.r() * arr.length)];
+  if (type === 'clay') {
+    fill(1, () => '#7a3a18');
+    const clayBall = (cx, cy, cz, r) => { const base = pick(['#e0803f', '#d4733a', '#ea8f4a', '#c86a32']);
+      ball(g, cx, cy, cz, r, (x, y, z) => (y + .5 - cy) > r * .45 && (x + .5 - cx) < 0 ? mix(base, '#ffd0a0', .45) : (y + .5 - cy) < -r * .3 ? shade(base, .82) : base); };
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) clayBall(1.8 + i * 3.4, 2.5, 1.8 + j * 3.4, 1.5);
+    for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) clayBall(3.5 + i * 3.4, 5.2, 3.5 + j * 3.4, 1.5);
+  }
+  if (type === 'pebbles') {
+    fill(2, () => g.jitter('#7d8388', .08));
+    for (let k = 0; k < 11; k++) ball(g, 1 + g.r() * 8, 2.6, 1 + g.r() * 8, 1.1 + g.r() * .9, () => g.jitter(pick(['#9aa0a6', '#c2c6ca', '#b8a58a', '#8d949a']), .04));
+  }
+  if (type === 'filter') {
+    for (let x = 0; x < N; x++) for (let z = 0; z < N; z++) g.set(x, Math.round(Math.sin(x * .7) * .4 + .4), z, (x + z) % 2 ? '#454b54' : '#5f6670');
+    for (let y = 1; y < 4; y++) for (let x = 7; x < N; x++) g.set(x, y, N - 1 - (y - 1), (x + y) % 2 ? '#454b54' : '#5f6670');   // folded corner
+  }
+  if (type === 'charcoal') {
+    fill(2, () => g.jitter('#26262b', .1));
+    for (let k = 0; k < 14; k++) { const x = Math.floor(g.r() * 9), z = Math.floor(g.r() * 9); for (const [dx, dz] of [[0, 0], [1, 0], [0, 1]]) g.set(x + dx, 2 + (g.r() < .4 ? 1 : 0), z + dz, g.jitter(pick(['#3a3a40', '#2e2e34', '#4a4a52']), .06)); }
+  }
+  if (type === 'soil') {
+    fill(4, (x, y) => g.jitter(g.r() < .14 ? '#8a5a32' : y === 3 ? '#5e3c20' : '#6b4526', .1));
+    for (let k = 0; k < 8; k++) g.set(Math.floor(g.r() * N), 4, Math.floor(g.r() * N), '#5a3a1f');
+  }
+  if (type === 'litter') {
+    fill(2, () => g.jitter('#5e3c20', .08));
+    for (let k = 0; k < 16; k++) {
+      const x = Math.floor(g.r() * 8), z = Math.floor(g.r() * 8), c = pick(['#c8742a', '#9a5a22', '#d8a23a', '#b0461e']);
+      for (const [dx, dz] of [[0, 0], [1, 0], [0, 1], [1, 1], [2, 1]]) if (g.r() < .85) g.set(x + dx, 2 + (k % 3 === 0 ? 1 : 0), z + dz, g.jitter(c, .05));
+    }
+  }
+  if (type === 'moss') {
+    fill(2, () => g.jitter('#5e3c20', .08));
+    for (let k = 0; k < 10; k++) ball(g, 1 + g.r() * 8, 2.2, 1 + g.r() * 8, 1.4 + g.r() * 1.1, () => g.jitter(pick(['#5fbf2e', '#7fd83e', '#4aa826', '#8fe34a']), .05));
+  }
+  return { voxels: g.v, view: { rx: .5, ry: -.62 } };
+}
+
+// ---------------------------------------------------------------- decor
+function fern() {
+  const g = new Grid(301);
+  ball(g, 6, 0, 6, 3.4, (x, y) => g.jitter(y > 0 ? '#5a3a1f' : '#6b4526', .1));
+  const frond = (ang, len, lift) => {
+    for (let i = 0; i < len; i++) {
+      const t = i / len, x = 6 + Math.cos(ang) * i, z = 6 + Math.sin(ang) * i, y = 2 + Math.sin(t * Math.PI * .8) * lift;
+      g.set(Math.round(x), Math.round(y), Math.round(z), '#3f9a1f');
+      const w = Math.round(2.2 * (1 - t));
+      for (let s = 1; s <= w; s++) for (const sg of [-1, 1]) g.set(Math.round(x - Math.sin(ang) * s * sg), Math.round(y - s * .3), Math.round(z + Math.cos(ang) * s * sg), g.jitter(mix('#8fe34a', '#4aa826', t), .05));
+    }
+  };
+  [0, 1.3, 2.5, 3.8, 5.0].forEach((a, i) => frond(a, 7 + (i % 2) * 2, 6 + (i % 3)));
+  return { voxels: g.v, view: { rx: .35, ry: -.5 } };
+}
+function mossyRock() {
+  const g = new Grid(311);
+  blob(g, [[6, 3, 6, 4.4], [9.5, 2.4, 7, 3.2], [3.5, 2, 5, 2.8]], (x, y) => g.jitter(mix('#6e757c', '#a7aeb4', Math.min(1, y / 7)), .08));
+  const top = new Map();
+  for (const k of g.v.keys()) { const [x, y, z] = k.split(',').map(Number); if (!top.has(x + ',' + z) || top.get(x + ',' + z) < y) top.set(x + ',' + z, y); }
+  for (const [k, y] of top) { const [x, z] = k.split(',').map(Number); if (y > 4 || g.r() < .35) g.set(x, y, z, g.jitter(g.r() < .5 ? '#5fbf2e' : '#7fd83e', .05)); }
+  return { voxels: g.v, view: { rx: .35, ry: -.5 } };
+}
+function branch() {
+  const g = new Grid(321);
+  for (let i = 0; i < 20; i++) { const x = i, y = Math.round(2 + Math.sin(i / 4) * 1.5 + i * .18); ball(g, x, y, 4, 1.7 - i * .03, () => g.jitter(g.r() < .2 ? '#6a4222' : '#8a5a32', .08)); }
+  for (let i = 0; i < 6; i++) g.set(12 + Math.round(i * .5), 5 + i, 4, '#7a4f2c');                  // twig
+  for (const [x, y] of [[14, 11], [15, 11], [14, 12], [16, 10]]) g.set(x, y, 4, '#7fd83e');
+  for (let i = 2; i < 9; i++) g.set(i, Math.round(2 + Math.sin(i / 4) * 1.5 + i * .18) + 2, 4 - (i % 2), '#5fbf2e'); // moss strip
+  return { voxels: g.v, view: { rx: .3, ry: -.45 } };
+}
+function mushroom() {
+  const g = new Grid(331);
+  for (let y = 0; y < 6; y++) for (const [x, z] of [[0, 0], [1, 0], [0, 1], [1, 1]]) g.set(x + 5, y, z + 5, g.jitter('#f3ead6', .04));
+  for (let x = -1; x <= 12; x++) for (let z = -1; z <= 12; z++) for (let y = 5; y <= 10; y++) {
+    const dx = x + .5 - 6, dz = z + .5 - 6, dy = y - 5;
+    if ((dx * dx + dz * dz) / 36 + (dy * dy) / 25 > 1 || dy < 0) continue;
+    g.set(x, y, z, g.r() < .1 && dy > 1 ? '#fff6ea' : g.jitter(mix('#ff5a4a', '#c8281e', 1 - dy / 5), .04));
+  }
+  for (let y = 0; y < 3; y++) for (const [x, z] of [[10, 9], [10, 10]]) g.set(x, y, z, '#f3ead6');       // small second mushroom
+  ball(g, 10.5, 3.5, 9.5, 1.9, (x, y) => y >= 3 ? '#ff6a4a' : '#e2402e');
+  return { voxels: g.v, view: { rx: .3, ry: -.5 } };
+}
+
+
+function satchel() {
+  const g = new Grid(341), W = 14, H = 10, D = 6;
+  for (let x = 0; x < W; x++) for (let y = 0; y < H; y++) for (let z = 0; z < D; z++) {
+    const corner = (x === 0 || x === W - 1) && (y === 0 || y === H - 1);
+    if (corner) continue;
+    g.set(x, y, z, g.jitter(y < 2 ? '#8a5a2e' : '#b0773c', .06));
+  }
+  for (let x = 1; x < W - 1; x++) for (let y = 5; y < H + 1; y++) g.set(x, y, D, g.jitter(y === 5 ? '#6e4420' : '#9a6632', .05));    // flap
+  for (const [x, y] of [[6, 6], [7, 6], [6, 5], [7, 5]]) g.set(x, y, D + 1, '#ffd23a');                                          // buckle
+  for (let i = 0; i <= 12; i++) { const t = i / 12, x = Math.round(1 + t * 11), y = Math.round(H + 1 + Math.sin(t * Math.PI) * 6); g.set(x, y, 2, '#6e4420'); g.set(x, y, 3, '#6e4420'); } // strap
+  for (const [x, y] of [[2, 3], [3, 3], [2, 4]]) g.set(x, y, D, '#7fd83e');                                                     // leaf patch
+  return { voxels: g.v, view: { rx: .28, ry: -.5 } };
+}
+
 export const MODELS = {
   'Clover_Tier1': () => clover(0),
   'Clover_Tier2': () => clover(1),
@@ -178,4 +377,24 @@ export const MODELS = {
   'Seedling': seedling,
   'Event_ToxicRain': toxicRain,
   'Event_NightTime': nightTime,
+  'Shilling': shilling,
+  'Shillings_Tier1': () => coins(0),
+  'Shillings_Tier2': () => coins(1),
+  'Shillings_Tier3': () => coins(2),
+  'Shillings_Tier4': () => coins(3),
+  'VIP_Crown': crown,
+  'Egg': egg,
+  'Terrarium': tank,
+  'Layer_ClayBalls': () => slab('clay'),
+  'Layer_Pebbles': () => slab('pebbles'),
+  'Layer_Filter': () => slab('filter'),
+  'Layer_Charcoal': () => slab('charcoal'),
+  'Layer_Soil': () => slab('soil'),
+  'Layer_LeafLitter': () => slab('litter'),
+  'Layer_Moss': () => slab('moss'),
+  'Decor_Fern': fern,
+  'Decor_MossyRock': mossyRock,
+  'Decor_Branch': branch,
+  'Decor_Mushroom': mushroom,
+  'Satchel': satchel,
 };
