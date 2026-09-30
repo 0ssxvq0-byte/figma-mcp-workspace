@@ -33,19 +33,44 @@ function Images.apply(gui, key)
 	return true
 end
 
+-- pieces that shouldn't get a placeholder box while their sheet has no ID yet
+local NO_BOX = { "Glow", "Rays", "Vine", "Sparkle", "Burst", "Dim", "Trail", "Pointer", "Tick" }
+local function placeholder(d, on)
+	if on then
+		for _, w in ipairs(NO_BOX) do if d.Name:find(w) then return end end
+		local h = 0
+		for i = 1, #d.Name do h = (h * 31 + d.Name:byte(i)) % 360 end
+		d.BackgroundColor3 = Color3.fromHSV(h / 360, 0.35, 0.75)
+		d.BackgroundTransparency = 0.55
+	elseif d:GetAttribute("Placeholder") then
+		d.BackgroundTransparency = 1
+	end
+	d:SetAttribute("Placeholder", on or nil)
+end
+
+-- returns (images linked, images still waiting for a sheet ID, names of sheets without an ID)
 function Images.applyAll(root, ids)
 	ids = ids or sheetFolder() or (root:FindFirstChild("UI_Core", true) and root:FindFirstChild("UI_Core", true):FindFirstChild("SheetIds"))
-	local count, missing = 0, {}
+	local linked, waiting, missing = 0, 0, {}
 	for _, d in ipairs(root:GetDescendants()) do
 		local sheet = d:GetAttribute("Sheet")
 		if sheet and (d:IsA("ImageLabel") or d:IsA("ImageButton")) then
 			local url = Images.url(sheet, ids)
 			d.Image = url
-			if url == "" then missing[sheet] = true else count += 1 end
+			if url == "" then
+				waiting += 1
+				missing[sheet] = true
+				placeholder(d, true)
+			else
+				linked += 1
+				placeholder(d, false)
+			end
 		end
 	end
-	for sheet in pairs(missing) do warn("Images: no ID pasted for " .. sheet) end
-	return count
+	local names = {}
+	for sheet in pairs(missing) do table.insert(names, sheet) end
+	table.sort(names)
+	return linked, waiting, names
 end
 
 return Images

@@ -358,6 +358,11 @@ local function buildScreen(screenKey)
 			n.gui.Parent = clip
 		end
 	end
+	if screenKey == "Notifications" or screenKey == "Incubator" then   -- templates: cloned by scripts when needed
+		for _, c in ipairs(root:GetChildren()) do
+			if c:IsA("GuiObject") then c.Visible = false end
+		end
+	end
 	print(("  %s: %d pieces"):format(sg.Name, #nodes))
 	return sg
 end
@@ -400,7 +405,7 @@ local function buildCore()
 	local core = Instance.new("ScreenGui")
 	core.Name = "UI_Core"
 	core.ResetOnSpawn = false
-	core.Enabled = false
+	core.Enabled = true
 	local ids = Instance.new("Configuration")
 	ids.Name = "SheetIds"
 	for _, s in ipairs(Sheets.sheets) do
@@ -424,7 +429,7 @@ local function buildCore()
 		ls.Parent = core
 	end
 	local readme = Instance.new("Script")
-	readme.Name = "READ_ME"
+	readme.Name = "README_FIRST"
 	readme.Enabled = false
 	readme.Source = readLua(studioDir .. "/Client/READ_ME.lua")
 	readme.Parent = core
